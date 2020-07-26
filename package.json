@@ -1,0 +1,59 @@
+{
+  "name": "tiwi-react",
+  "version": "0.1.0",
+  "private": true,
+  "main": "dist/index.js",
+  "dependencies": {
+    "@okta/okta-react": "^3.0.0",
+    "@okta/okta-signin-widget": "^3.9.0",
+    "@material-ui/core": "4.10.0",
+    "@material-ui/icons": "4.9.1",
+    "chartist": "0.10.1",
+    "classnames": "2.2.6",
+    "history": "4.10.1",
+    "perfect-scrollbar": "1.5.0",
+    "prop-types": "15.7.2",
+    "react": "16.13.1",
+    "react-chartist": "0.14.3",
+    "react-app-rewired": "^2.1.6",
+    "react-dom": "16.13.1",
+    "react-google-maps": "9.4.5",
+    "react-router-dom": "5.2.0",
+    "react-scripts": "3.4.1",
+    "react-swipeable-views": "0.13.9"
+  },
+  "scripts": {
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test --evn=jsdom",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "optionalDependencies": {
+    "@types/googlemaps": "3.39.6",
+    "@types/markerclustererplus": "2.1.33",
+    "ajv": "6.12.2",
+    "typescript": "3.9.3"
+  },
+  "devDependencies": {
+    "eslint-config-prettier": "6.11.0",
+    "eslint-plugin-prettier": "3.1.3",
+    "gulp": "4.0.2",
+    "gulp-append-prepend": "1.0.8",
+    "prettier": "2.0.5"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
