@@ -1,12 +1,13 @@
 const CLIENT_ID = process.env.CLIENT_ID || ''; //My SPA
 const ISSUER = process.env.ISSUER || '';
+const REDIRECT_URI = process.env.REDIRECT_URI || '';
 const OKTA_TESTING_DISABLEHTTPSCHECK = process.env.OKTA_TESTING_DISABLEHTTPSCHECK || false;
 
 export default {
   oidc: {
     clientId: CLIENT_ID,
     issuer: ISSUER,
-    redirectUri: 'https://master.d9wedg2um9o9f.amplifyapp.com/callback',
+    redirectUri: REDIRECT_URI,
     scopes: ['openid', 'email', 'profile', 'order.status'],
     // scopes: ['openid', 'profile', 'email', 'address','order.create', 'order.status'],
     pkce: true,

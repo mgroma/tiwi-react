@@ -29,13 +29,18 @@ export default function AdminNavbarLinks() {
     const login = async () => authService.login('/admin/login');
     const logout = async () => authService.logout('/');
     const [userInfo, setUserInfo] = React.useState(null);
-    React.useEffect(() => {
-        if (authState.isAuthenticated && !userInfo) {
-            authService.getUser().then(info => setUserInfo(info));
-        } else {
-            setUserInfo(null);
+
+
+    React.useEffect (() => {
+        const updateUserInfo = async () => {
+            if (authState.isAuthenticated && !userInfo) {
+                setUserInfo(await authService.getUser());
+            } else {
+                setUserInfo(null);
+            }
         }
-    }, [authState, authService, userInfo])
+        updateUserInfo();
+    }, [authState, authService])
 
     const classes = useStyles();
     const [openNotification, setOpenNotification] = React.useState(null);

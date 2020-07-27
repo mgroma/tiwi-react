@@ -23,6 +23,7 @@ const env = {};
 
 // List of environment variables made available to the app
 [
+    'REDIRECT_URI',
     'ISSUER',
     'CLIENT_ID',
     'OKTA_TESTING_DISABLEHTTPSCHECK',
