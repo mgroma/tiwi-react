@@ -50,6 +50,14 @@ export default function Login() {
             baseUrl: issuer.split('/oauth2')[0],
             clientId,
             redirectUri,
+            idps: [
+                {type: 'GOOGLE', id: '0oaaix1twko0jyKik0g1'},
+                {type: 'FACEBOOK', id: '0oar25ZnMM5LrpY1O0g2'},
+                {type: 'APPLE', id: '0oaz2emOZGUKjuZwX0g3'},
+                {type: 'MICROSOFT', id: '0oaaix1twko0jyKik0g4'},
+                {type: 'LINKEDIN', id: '0oaaix1twko0jyKik0g5'},
+                {id: '0oabds23xM3ssMjosl0g5', text: 'Login with Cigna', className: 'with-joe' }
+            ],
             logo: '/video-camera-icon.png',
             colors: {
                 brand: '#9c27b0'
