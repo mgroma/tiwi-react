@@ -6,7 +6,7 @@ export default {
   oidc: {
     clientId: CLIENT_ID,
     issuer: ISSUER,
-    redirectUri: 'http://localhost:3000/callback',
+    redirectUri: 'https://master.d9wedg2um9o9f.amplifyapp.com/callback',
     scopes: ['openid', 'email', 'profile', 'order.status'],
     // scopes: ['openid', 'profile', 'email', 'address','order.create', 'order.status'],
     pkce: true,
