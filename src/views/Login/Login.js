@@ -1,6 +1,6 @@
-import React, { useEffect} from "react";
+import React, {useEffect} from "react";
 // @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
+import {makeStyles} from "@material-ui/core/styles";
 // core components
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
@@ -40,7 +40,7 @@ const useStyles = makeStyles(styles);
 
 export default function Login() {
     useEffect(() => {
-        const { pkce, issuer, clientId, redirectUri, scopes } = config.oidc;
+        const {pkce, issuer, clientId, redirectUri, scopes} = config.oidc;
         const widget = new OktaSignIn({
             /**
              * Note: when using the Sign-In Widget for an OIDC flow, it still
@@ -50,7 +50,10 @@ export default function Login() {
             baseUrl: issuer.split('/oauth2')[0],
             clientId,
             redirectUri,
-            logo: '/assets/img/cover.jpeg',
+            logo: '/video-camera-icon.png',
+            colors: {
+                brand: '#9c27b0'
+            },
             i18n: {
                 en: {
                     'primaryauth.title': 'Sign in to Tiwi Player & Company',
@@ -66,7 +69,7 @@ export default function Login() {
         });
 
         widget.renderEl(
-            { el: '#sign-in-widget' },
+            {el: '#sign-in-widget'},
             () => {
                 /**
                  * In this flow, the success handler will not be called beacuse we redirect
@@ -90,33 +93,9 @@ export default function Login() {
                             <p className={classes.cardCategoryWhite}>Enter you credentials</p>
                         </CardHeader>
                         <CardBody>
-            <div id="sign-in-widget" />
-                            <GridContainer>
-                                <GridItem xs={12} sm={12} md={6}>
-                                    <CustomInput
-                                        labelText="Username"
-                                        id="username2"
-                                        formControlProps={{
-                                            fullWidth: true
-                                        }}
-                                    />
-                                </GridItem>
-                            </GridContainer>
-                            <GridContainer>
-                                <GridItem xs={12} sm={12} md={6}>
-                                    <CustomInput
-                                        labelText="Password"
-                                        id="password2"
-                                        formControlProps={{
-                                            fullWidth: true
-                                        }}
-                                    />
-                                </GridItem>
-                            </GridContainer>
+                            <div id="sign-in-widget"/>
                         </CardBody>
-                        <CardFooter>
-                            <Button color="primary">Login</Button>
-                        </CardFooter>
+                        }
                     </Card>
                 </GridItem>
             </GridContainer>
