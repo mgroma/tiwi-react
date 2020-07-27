@@ -74,6 +74,13 @@ export default function Login() {
                 responseMode: pkce ? 'query' : 'fragment',
                 scopes,
             },
+            features: {
+                selfServiceUnlock: true,
+                registration: true,
+                showPasswordToggleOnSignInPage: true,
+                autoPush: true,
+
+            }
         });
 
         widget.renderEl(
