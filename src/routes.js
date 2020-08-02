@@ -23,6 +23,7 @@ import BubbleChart from "@material-ui/icons/BubbleChart";
 import Notifications from "@material-ui/icons/Notifications";
 // core components/views for Admin layout
 import DashboardPage from "views/Dashboard/Dashboard.js";
+import OldDashboardPage from "views/Dashboard/OldDashboard.js";
 import UserProfile from "views/UserProfile/UserProfile.js";
 import TableList from "views/TableList/TableList.js";
 import Typography from "views/Typography/Typography.js";
@@ -33,9 +34,16 @@ const dashboardRoutes = [
     {
         path: "/dashboard",
         name: "Dashboard",
-        rtlName: "لوحة القيادة",
         icon: Dashboard,
         component: DashboardPage,
+        layout: "/admin",
+        unsecure: true
+    },
+    {
+        path: "/old-dashboard",
+        name: "Old Dashboard",
+        icon: Dashboard,
+        component: OldDashboardPage,
         layout: "/admin",
         unsecure: true
     },
@@ -48,7 +56,7 @@ const dashboardRoutes = [
     },
     {
         path: "/recordings",
-        name: "Recorded List",
+        name: "Recordings",
         icon: "video_library",
         component: TableList,
         layout: "/admin"
@@ -63,7 +71,6 @@ const dashboardRoutes = [
     {
         path: "/user",
         name: "User Profile",
-        rtlName: "ملف تعريفي للمستخدم",
         icon: Person,
         component: UserProfile,
         layout: "/admin"
@@ -71,7 +78,6 @@ const dashboardRoutes = [
     {
         path: "/typography",
         name: "Typography",
-        rtlName: "طباعة",
         icon: LibraryBooks,
         component: Typography,
         layout: "/admin"
@@ -79,7 +85,6 @@ const dashboardRoutes = [
     {
         path: "/icons",
         name: "Icons",
-        rtlName: "الرموز",
         icon: BubbleChart,
         component: Icons,
         layout: "/admin"
@@ -87,7 +92,6 @@ const dashboardRoutes = [
     {
         path: "/notifications",
         name: "Notifications",
-        rtlName: "إخطارات",
         icon: Notifications,
         component: NotificationsPage,
         layout: "/admin"
