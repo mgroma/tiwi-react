@@ -14,20 +14,19 @@ import Cloud from "@material-ui/icons/Cloud";
 // core components
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
-import Table from "components/Table/Table.js";
 import Tasks from "components/Tasks/Tasks.js";
 import CustomTabs from "components/CustomTabs/CustomTabs.js";
 import Danger from "components/Typography/Danger.js";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardIcon from "components/Card/CardIcon.js";
-import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 
 import {bugs, website, server} from "variables/general.js";
 
 import styles from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
 import {useOktaAuth} from "@okta/okta-react";
+import WeebList from "../../components/Lists/WeebList";
 
 const useStyles = makeStyles(styles);
 
@@ -63,8 +62,8 @@ export default function Dashboard() {
                 </GridItem>
                 <GridItem xs={12} sm={6} md={4}>
                     <Card>
-                        <CardHeader color="danger" stats icon>
-                            <CardIcon color="danger">
+                        <CardHeader color="primary" stats icon>
+                            <CardIcon color="primary">
                                 <Icon>info_outline</Icon>
                             </CardIcon>
                             <p className={classes.cardCategory}>Recordings</p>
@@ -80,8 +79,8 @@ export default function Dashboard() {
                 </GridItem>
                 <GridItem xs={12} sm={6} md={4}>
                     <Card>
-                        <CardHeader color="info" stats icon>
-                            <CardIcon color="info">
+                        <CardHeader color="success" stats icon>
+                            <CardIcon color="success">
                                 <Accessibility/>
                             </CardIcon>
                             <p className={classes.cardCategory}>What's On Now</p>
@@ -101,7 +100,7 @@ export default function Dashboard() {
             <GridContainer>
                 <GridItem xs={12} sm={12} md={6}>
                     <CustomTabs
-                        title="What's On Now:"
+                        title="Recordings:"
                         headerColor="primary"
                         tabs={[
                             {
@@ -141,26 +140,34 @@ export default function Dashboard() {
                     />
                 </GridItem>
                 <GridItem xs={12} sm={12} md={6}>
-                    <Card>
-                        <CardHeader color="warning">
-                            <h4 className={classes.cardTitleWhite}>What's On Now</h4>
-                            <p className={classes.cardCategoryWhite}>
-                                As per <a href="https://www.teleman.pl" target="_blank">www.teleman.pl</a>
-                            </p>
-                        </CardHeader>
-                        <CardBody>
-                            <Table
-                                tableHeaderColor="warning"
-                                tableHead={["ID", "Name", "Salary", "Country"]}
-                                tableData={[
-                                    ["1", "Dakota Rice", "$36,738", "Niger"],
-                                    ["2", "Minerva Hooper", "$23,789", "Curaçao"],
-                                    ["3", "Sage Rodriguez", "$56,142", "Netherlands"],
-                                    ["4", "Philip Chaney", "$38,735", "Korea, South"]
-                                ]}
-                            />
-                        </CardBody>
-                    </Card>
+                    <CustomTabs
+                        title="What's On Now:"
+                        headerColor="success"
+                        tabs={[
+                            {
+                                tabName: "Weeb.tv",
+                                tabIcon: BugReport,
+                                tabContent: (
+                                    <WeebList
+                                        checkedIndexes={[0, 3]}
+                                        tasksIndexes={[0, 1, 2, 3]}
+                                        tasks={bugs}
+                                    />
+                                )
+                            },
+                            {
+                                tabName: "Teleman.pl",
+                                tabIcon: Cloud,
+                                tabContent: (
+                                    <Tasks
+                                        checkedIndexes={[0]}
+                                        tasksIndexes={[0, 1]}
+                                        tasks={website}
+                                    />
+                                )
+                            },
+                        ]}
+                    />
                 </GridItem>
             </GridContainer>
             </span> }

@@ -54,6 +54,11 @@ const tasksStyle = {
         color: primaryColor[0],
         boxShadow: "none"
     },
+    record: {
+        backgroundColor: "transparent",
+        color: primaryColor[0],
+        boxShadow: "none"
+    },
     close: {
         backgroundColor: "transparent",
         color: dangerColor[0],
