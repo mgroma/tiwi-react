@@ -29,6 +29,7 @@ import TableList from "views/TableList/TableList.js";
 import Typography from "views/Typography/Typography.js";
 import Icons from "views/Icons/Icons.js";
 import NotificationsPage from "views/Notifications/Notifications.js";
+import WebPage from "./views/TableList/WebPage";
 
 const dashboardRoutes = [
     {
@@ -49,9 +50,9 @@ const dashboardRoutes = [
     },
     {
         path: "/watch",
-        name: "Watch Weeb.tv",
+        name: "Watch Web.tv",
         icon: "video_label",
-        component: TableList,
+        component: WebPage,
         layout: "/admin"
     },
     {

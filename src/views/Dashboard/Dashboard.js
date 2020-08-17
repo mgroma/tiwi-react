@@ -26,7 +26,7 @@ import {bugs, website, server} from "variables/general.js";
 
 import styles from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
 import {useOktaAuth} from "@okta/okta-react";
-import WeebList from "../../components/Lists/WeebList";
+import WebList from "../../components/Lists/WebList";
 
 const useStyles = makeStyles(styles);
 
@@ -98,6 +98,34 @@ export default function Dashboard() {
             {authState.isAuthenticated &&
             <span>
             <GridContainer>
+               <GridItem xs={12} sm={12} md={6}>
+                    <CustomTabs
+                        title="What's On Now:"
+                        headerColor="success"
+                        tabs={[
+                            {
+                                tabName: "Web.tv",
+                                tabIcon: BugReport,
+                                tabContent: (
+                                    <WebList
+                                        tasks={bugs}
+                                    />
+                                )
+                            },
+                            {
+                                tabName: "Teleman.pl",
+                                tabIcon: Cloud,
+                                tabContent: (
+                                    <Tasks
+                                        checkedIndexes={[0]}
+                                        tasksIndexes={[0, 1]}
+                                        tasks={website}
+                                    />
+                                )
+                            },
+                        ]}
+                    />
+                </GridItem>
                 <GridItem xs={12} sm={12} md={6}>
                     <CustomTabs
                         title="Recordings:"
@@ -136,36 +164,6 @@ export default function Dashboard() {
                                     />
                                 )
                             }
-                        ]}
-                    />
-                </GridItem>
-                <GridItem xs={12} sm={12} md={6}>
-                    <CustomTabs
-                        title="What's On Now:"
-                        headerColor="success"
-                        tabs={[
-                            {
-                                tabName: "Weeb.tv",
-                                tabIcon: BugReport,
-                                tabContent: (
-                                    <WeebList
-                                        checkedIndexes={[0, 3]}
-                                        tasksIndexes={[0, 1, 2, 3]}
-                                        tasks={bugs}
-                                    />
-                                )
-                            },
-                            {
-                                tabName: "Teleman.pl",
-                                tabIcon: Cloud,
-                                tabContent: (
-                                    <Tasks
-                                        checkedIndexes={[0]}
-                                        tasksIndexes={[0, 1]}
-                                        tasks={website}
-                                    />
-                                )
-                            },
                         ]}
                     />
                 </GridItem>
