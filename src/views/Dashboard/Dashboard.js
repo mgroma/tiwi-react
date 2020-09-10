@@ -27,6 +27,8 @@ import {bugs, website, server} from "variables/general.js";
 import styles from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
 import {useOktaAuth} from "@okta/okta-react";
 import WebList from "../../components/Lists/WebList";
+import ScheduleList from "../../components/Lists/ScheduleList";
+import RecordingList from "../../components/Recordings/RecordingList";
 
 const useStyles = makeStyles(styles);
 
@@ -132,24 +134,19 @@ export default function Dashboard() {
                         headerColor="primary"
                         tabs={[
                             {
-                                tabName: "Bugs",
+                                tabName: "Jobs",
                                 tabIcon: BugReport,
                                 tabContent: (
-                                    <Tasks
-                                        checkedIndexes={[0, 3]}
-                                        tasksIndexes={[0, 1, 2, 3]}
-                                        tasks={bugs}
+                                    <ScheduleList
                                     />
                                 )
                             },
                             {
-                                tabName: "Website",
+                                tabName: "Recordings",
                                 tabIcon: Code,
                                 tabContent: (
-                                    <Tasks
-                                        checkedIndexes={[0]}
-                                        tasksIndexes={[0, 1]}
-                                        tasks={website}
+                                    <RecordingList
+                                        listLength={10}
                                     />
                                 )
                             },

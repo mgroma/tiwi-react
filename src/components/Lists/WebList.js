@@ -12,13 +12,14 @@ import TableCell from "@material-ui/core/TableCell";
 // @material-ui/icons
 import Close from "@material-ui/icons/Close";
 import Play from "@material-ui/icons/PlayArrow";
-import Record from "@material-ui/icons/PlaylistPlay";
+import Record from "@material-ui/icons/FiberManualRecord";//fiber_manual_record
 // core components
 import styles from "assets/jss/material-dashboard-react/components/tasksStyle.js";
 import {useOktaAuth} from "@okta/okta-react";
-import {fetchWebChannels} from "../../service/api";
+import api from "../../service/api";
 
 const useStyles = makeStyles(styles);
+
 
 export default function WebList() {
     //page formatting
@@ -28,11 +29,15 @@ export default function WebList() {
     const [channels, setChannels] = useState(null);
     const {authState} = useOktaAuth();
 
+    const recordChannel = (channelName, channelTitle) => {
+        api.recordWebChannel(authState, channelName, channelTitle)
+    }
+
     useEffect(() => {
 
         if (authState.isAuthenticated && !channels) {
-            fetchWebChannels(authState)
-                .then(json => setChannels(json.filter((i,index)=> index < 5)));
+            api.fetchWebChannels(authState)
+                .then(json => setChannels(json.filter((i) => i.channel_title&&i.channel_title.toUpperCase().includes("SPORT"))));
         }
 
     }, [authState]);
@@ -46,6 +51,24 @@ export default function WebList() {
                         <TableCell className={classes.tableActions}>
                             <Tooltip
                                 id="tooltip-top-start"
+                                title="Record"
+                                placement="top"
+                                classes={{tooltip: classes.tooltip}}
+                            >
+                                <IconButton
+                                    aria-label="Record"
+                                    className={classes.tableActionButton}
+                                    onClick={() => recordChannel(channel.channel_name, channel.channel_title)}
+                                >
+                                    <Record
+                                        className={
+                                            classes.tableActionButtonIcon + " " + classes.play
+                                        }
+                                    />
+                                </IconButton>
+                            </Tooltip>
+                            <Tooltip
+                                id="tooltip-top"
                                 title="Play"
                                 placement="top"
                                 classes={{tooltip: classes.tooltip}}
@@ -57,23 +80,6 @@ export default function WebList() {
                                     <Play
                                         className={
                                             classes.tableActionButtonIcon + " " + classes.play
-                                        }
-                                    />
-                                </IconButton>
-                            </Tooltip>
-                            <Tooltip
-                                id="tooltip-top"
-                                title="Record"
-                                placement="top"
-                                classes={{tooltip: classes.tooltip}}
-                            >
-                                <IconButton
-                                    aria-label="Record"
-                                    className={classes.tableActionButton}
-                                >
-                                    <Record
-                                        className={
-                                            classes.tableActionButtonIcon + " " + classes.record
                                         }
                                     />
                                 </IconButton>
