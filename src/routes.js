@@ -29,6 +29,8 @@ import TableList from "views/TableList/TableList.js";
 import Typography from "views/Typography/Typography.js";
 import Icons from "views/Icons/Icons.js";
 import NotificationsPage from "views/Notifications/Notifications.js";
+import WebPage from "./views/TableList/WebPage";
+import RecordingsPage from "./components/Recordings/RecordingsPage";
 
 const dashboardRoutes = [
     {
@@ -49,16 +51,16 @@ const dashboardRoutes = [
     },
     {
         path: "/watch",
-        name: "Watch Weeb.tv",
+        name: "Watch Web.tv",
         icon: "video_label",
-        component: TableList,
+        component: WebPage,
         layout: "/admin"
     },
     {
         path: "/recordings",
         name: "Recordings",
         icon: "video_library",
-        component: TableList,
+        component: RecordingsPage,
         layout: "/admin"
     },
     {

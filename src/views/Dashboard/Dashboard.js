@@ -26,7 +26,9 @@ import {bugs, website, server} from "variables/general.js";
 
 import styles from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
 import {useOktaAuth} from "@okta/okta-react";
-import WeebList from "../../components/Lists/WeebList";
+import WebList from "../../components/Lists/WebList";
+import ScheduleList from "../../components/Lists/ScheduleList";
+import RecordingList from "../../components/Recordings/RecordingList";
 
 const useStyles = makeStyles(styles);
 
@@ -98,59 +100,16 @@ export default function Dashboard() {
             {authState.isAuthenticated &&
             <span>
             <GridContainer>
-                <GridItem xs={12} sm={12} md={6}>
-                    <CustomTabs
-                        title="Recordings:"
-                        headerColor="primary"
-                        tabs={[
-                            {
-                                tabName: "Bugs",
-                                tabIcon: BugReport,
-                                tabContent: (
-                                    <Tasks
-                                        checkedIndexes={[0, 3]}
-                                        tasksIndexes={[0, 1, 2, 3]}
-                                        tasks={bugs}
-                                    />
-                                )
-                            },
-                            {
-                                tabName: "Website",
-                                tabIcon: Code,
-                                tabContent: (
-                                    <Tasks
-                                        checkedIndexes={[0]}
-                                        tasksIndexes={[0, 1]}
-                                        tasks={website}
-                                    />
-                                )
-                            },
-                            {
-                                tabName: "Server",
-                                tabIcon: Cloud,
-                                tabContent: (
-                                    <Tasks
-                                        checkedIndexes={[1]}
-                                        tasksIndexes={[0, 1, 2]}
-                                        tasks={server}
-                                    />
-                                )
-                            }
-                        ]}
-                    />
-                </GridItem>
-                <GridItem xs={12} sm={12} md={6}>
+               <GridItem xs={12} sm={12} md={6}>
                     <CustomTabs
                         title="What's On Now:"
                         headerColor="success"
                         tabs={[
                             {
-                                tabName: "Weeb.tv",
+                                tabName: "Web.tv",
                                 tabIcon: BugReport,
                                 tabContent: (
-                                    <WeebList
-                                        checkedIndexes={[0, 3]}
-                                        tasksIndexes={[0, 1, 2, 3]}
+                                    <WebList
                                         tasks={bugs}
                                     />
                                 )
@@ -166,6 +125,42 @@ export default function Dashboard() {
                                     />
                                 )
                             },
+                        ]}
+                    />
+                </GridItem>
+                <GridItem xs={12} sm={12} md={6}>
+                    <CustomTabs
+                        title="Recordings:"
+                        headerColor="primary"
+                        tabs={[
+                            {
+                                tabName: "Jobs",
+                                tabIcon: BugReport,
+                                tabContent: (
+                                    <ScheduleList
+                                    />
+                                )
+                            },
+                            {
+                                tabName: "Recordings",
+                                tabIcon: Code,
+                                tabContent: (
+                                    <RecordingList
+                                        listLength={10}
+                                    />
+                                )
+                            },
+                            {
+                                tabName: "Server",
+                                tabIcon: Cloud,
+                                tabContent: (
+                                    <Tasks
+                                        checkedIndexes={[1]}
+                                        tasksIndexes={[0, 1, 2]}
+                                        tasks={server}
+                                    />
+                                )
+                            }
                         ]}
                     />
                 </GridItem>
