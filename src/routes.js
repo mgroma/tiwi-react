@@ -25,12 +25,12 @@ import Notifications from "@material-ui/icons/Notifications";
 import DashboardPage from "views/Dashboard/Dashboard.js";
 import OldDashboardPage from "views/Dashboard/OldDashboard.js";
 import UserProfile from "views/UserProfile/UserProfile.js";
-import TableList from "views/TableList/TableList.js";
 import Typography from "views/Typography/Typography.js";
 import Icons from "views/Icons/Icons.js";
 import NotificationsPage from "views/Notifications/Notifications.js";
-import WebPage from "./views/TableList/WebPage";
+import WebPage from "./components/Web/WebPage";
 import RecordingsPage from "./components/Recordings/RecordingsPage";
+import TelemanList from "./components/Teleman/TelemanList";
 
 const dashboardRoutes = [
     {
@@ -67,7 +67,7 @@ const dashboardRoutes = [
         path: "/schedule",
         name: "Teleman List",
         icon: "list",
-        component: TableList,
+        component: TelemanList,
         layout: "/admin"
     },
     {

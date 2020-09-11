@@ -10,7 +10,11 @@ import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
 import api from "../../service/api";
 import {useOktaAuth} from "@okta/okta-react";
+import WebActions from "./WebActions";
+import styles from "assets/jss/material-dashboard-react/components/tasksStyle.js";
 
+
+/*
 const styles = {
     cardCategoryWhite: {
         "&,& a,& a:hover,& a:focus": {
@@ -40,6 +44,7 @@ const styles = {
         }
     }
 };
+*/
 
 const useStyles = makeStyles(styles);
 
@@ -53,9 +58,12 @@ export default function WebPage() {
             api.fetchWebChannels(authState)
                 .then(channelList => setChannels(channelList
                     .map((channel, index) => {
-                        const {channel_title,  channel_description} = channel;
+                        const {channel_title, channel_description, channel_name} = channel;
                         return Object.values({
-                                index: index+1, channel_title, channel_description
+                                index: index + 1,
+                                channel_title,
+                                actions: WebActions(classes, {channel_name, channel_title}, authState),
+                                channel_description,
                             }
                         )
                     })
@@ -76,7 +84,7 @@ export default function WebPage() {
                     <CardBody>
                         <Table
                             tableHeaderColor="success"
-                            tableHead={["No", "Name", "Description"]}
+                            tableHead={["No", "Name", "Actions", "Description"]}
                             tableData={channels}
                         />
                     </CardBody>

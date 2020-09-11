@@ -22,11 +22,11 @@ import CardHeader from "components/Card/CardHeader.js";
 import CardIcon from "components/Card/CardIcon.js";
 import CardFooter from "components/Card/CardFooter.js";
 
-import {bugs, website, server} from "variables/general.js";
+import {server} from "variables/general.js";
 
 import styles from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
 import {useOktaAuth} from "@okta/okta-react";
-import WebList from "../../components/Lists/WebList";
+import WebList from "../../components/Web/WebList";
 import ScheduleList from "../../components/Lists/ScheduleList";
 import RecordingList from "../../components/Recordings/RecordingList";
 
@@ -106,22 +106,38 @@ export default function Dashboard() {
                         headerColor="success"
                         tabs={[
                             {
-                                tabName: "Web.tv",
+                                tabName: "Sport",
                                 tabIcon: BugReport,
                                 tabContent: (
                                     <WebList
-                                        tasks={bugs}
+                                        keyword={"sport"}
                                     />
                                 )
                             },
                             {
-                                tabName: "Teleman.pl",
+                                tabName: "Film",
+                                tabIcon: BugReport,
+                                tabContent: (
+                                    <WebList
+                                        keyword={"film"}
+                                    />
+                                )
+                            },
+                            {
+                                tabName: "Canal+",
                                 tabIcon: Cloud,
                                 tabContent: (
-                                    <Tasks
-                                        checkedIndexes={[0]}
-                                        tasksIndexes={[0, 1]}
-                                        tasks={website}
+                                    <WebList
+                                        keyword={"canal"}
+                                    />
+                                )
+                            },
+                            {
+                                tabName: "HBO",
+                                tabIcon: Cloud,
+                                tabContent: (
+                                    <WebList
+                                        keyword={"hbo"}
                                     />
                                 )
                             },
@@ -165,7 +181,7 @@ export default function Dashboard() {
                     />
                 </GridItem>
             </GridContainer>
-            </span> }
+            </span>}
         </div>
     );
 }
