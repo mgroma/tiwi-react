@@ -12,6 +12,9 @@ import api from "../../service/api";
 import {useOktaAuth} from "@okta/okta-react";
 import WebActions from "./WebActions";
 import styles from "assets/jss/material-dashboard-react/components/tasksStyle.js";
+import CustomInput from "../CustomInput/CustomInput";
+import Button from "../CustomButtons/Button";
+import Search from "@material-ui/icons/Search";
 
 
 /*
@@ -48,6 +51,27 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
+const SearchWrapper = (props) => {
+    const classes = props && props.classes || {};
+    return <div className={classes.searchWrapper}>
+        <CustomInput
+            formControlProps={{
+                className: classes.margin + " " + classes.search
+            }}
+            inputProps={{
+                placeholder: "Search channel name",
+                inputProps: {
+                    "aria-label": "Search"
+                }
+            }}
+        />
+        <Button color="white" aria-label="edit" justIcon round>
+            <Search/>
+        </Button>
+    </div>;
+}
+
+
 export default function WebPage() {
     const classes = useStyles();
     const [channels, setChannels] = useState(null);
@@ -82,6 +106,7 @@ export default function WebPage() {
                         </p>
                     </CardHeader>
                     <CardBody>
+                        <SearchWrapper/>
                         <Table
                             tableHeaderColor="success"
                             tableHead={["No", "Name", "Actions", "Description"]}

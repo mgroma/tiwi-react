@@ -1,4 +1,4 @@
-const HOSTNAME = 'http://localhost:3001';
+const HOSTNAME = window.location.protocol + '//'+ window.location.hostname + ':3001';
 
 
 const _baseFetch = async (authState, apiPath, operationName) => {
@@ -20,6 +20,7 @@ const fetchRecordings = async (authState) => _baseFetch(authState, 'api/recordin
 const cancelJob = async (authState, jobIndex) => _baseFetch(authState, `api/cancel/${jobIndex}`, 'cancel job');
 const recordWebChannel = async (authState, channelName, channelTitle) => _baseFetch(authState, `api/schedule/${channelName}?channelTitle=${channelTitle}`, 'record web channel ' + channelTitle);
 const playRecording = async (authState, recordingName) => _baseFetch(authState, `api/play/${recordingName}`, 'play recording: ' + recordingName);
+const streamRecording = async (authState, recordingName) => _baseFetch(authState, `api/stream/${recordingName}`, 'stream recording: ' + recordingName);
 
 export default {
     fetchWebChannels,
@@ -27,5 +28,6 @@ export default {
     fetchRecordings,
     recordWebChannel,
     cancelJob,
-    playRecording
+    playRecording,
+    streamRecording,
 }

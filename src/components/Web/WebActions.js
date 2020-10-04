@@ -1,7 +1,6 @@
 import Tooltip from "@material-ui/core/Tooltip";
 import IconButton from "@material-ui/core/IconButton";
 import Record from "@material-ui/icons/FiberManualRecord";
-import Play from "@material-ui/icons/PlayArrow";
 import React from "react";
 import api from "../../service/api";
 
@@ -30,7 +29,7 @@ export default (classes, channel, authState) => {
                 />
             </IconButton>
         </Tooltip>
-        <Tooltip
+        {/*<Tooltip
             id="tooltip-top"
             title="Play"
             placement="top"
@@ -46,6 +45,6 @@ export default (classes, channel, authState) => {
                     }
                 />
             </IconButton>
-        </Tooltip>
+        </Tooltip>*/}
         </span>;
 }

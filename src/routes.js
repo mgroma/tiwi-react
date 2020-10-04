@@ -31,6 +31,7 @@ import NotificationsPage from "views/Notifications/Notifications.js";
 import WebPage from "./components/Web/WebPage";
 import RecordingsPage from "./components/Recordings/RecordingsPage";
 import TelemanList from "./components/Teleman/TelemanList";
+import PlayerPage from "./components/Player/PlayerPage";
 
 const dashboardRoutes = [
     {
@@ -51,7 +52,7 @@ const dashboardRoutes = [
     },
     {
         path: "/watch",
-        name: "Watch Web.tv",
+        name: "Web.tv",
         icon: "video_label",
         component: WebPage,
         layout: "/admin"
@@ -61,7 +62,8 @@ const dashboardRoutes = [
         name: "Recordings",
         icon: "video_library",
         component: RecordingsPage,
-        layout: "/admin"
+        layout: "/admin",
+        unsecure: true
     },
     {
         path: "/schedule",
@@ -69,6 +71,14 @@ const dashboardRoutes = [
         icon: "list",
         component: TelemanList,
         layout: "/admin"
+    },
+    {
+        path: "/player/:file",
+        name: "Player",
+        icon: "list",
+        component: PlayerPage,
+        layout: "/admin",
+        unsecure: true
     },
     {
         path: "/user",
