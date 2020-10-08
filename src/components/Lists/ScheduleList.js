@@ -49,6 +49,7 @@ export default function ScheduleList() {
                     <TableRow key={index} className={classes.tableRow}>
                         <TableCell className={tableCellClasses}>{job.name}</TableCell>
                         <TableCell className={tableCellClasses}>{job.status}</TableCell>
+                        <TableCell className={tableCellClasses}>{new Date(job.jobInfo.startTime).toLocaleString()}</TableCell>
                         <TableCell className={tableCellClasses}>{new Date(job.jobInfo.endTime).toLocaleString()}</TableCell>
                         <TableCell className={classes.tableActions}>
                             <Tooltip
