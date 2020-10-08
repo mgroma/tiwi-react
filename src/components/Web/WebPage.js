@@ -146,14 +146,6 @@ export default function WebPage() {
                                 ))}
                             </TableBody>
                         </Table>
-
-                        {/*
-                        <Table
-                            tableHeaderColor="success"
-                            tableHead={["No", "Name", "Actions", "Description"]}
-                            tableData={channels}
-                        />
-*/}
                     </CardBody>
                 </Card>
             </GridItem>
