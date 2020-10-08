@@ -21,3 +21,7 @@ testenv
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+@ SSL
+.crt
+.key

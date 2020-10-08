@@ -51,7 +51,11 @@ export default function WebList(props) {
                     <TableRow key={index} className={classes.tableRow}>
                         <TableCell className={tableCellClasses}>{channel.channel_title}</TableCell>
                         <TableCell className={classes.tableActions}>
-                            {WebActions(classes, channel, authState )}
+                            <WebActions
+                                classes={classes}
+                                channel={channel}
+                                authState={authState}
+                            />
                         </TableCell>
                     </TableRow>
                 ))}

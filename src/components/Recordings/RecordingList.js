@@ -28,7 +28,8 @@ export default function RecordingList(props) {
     const classes = useStyles();
     const tableCellClasses = classnames(classes.tableCell);
     const tableHeaderColor = "primary";
-    const tableHead = ["Name", "Created", "Modified", "Size"];
+    const tableHead = ["Name", "Modified", "Size"];
+    // const tableHead = ["Name", "Created", "Modified", "Size"];
     const {listLength} = props;
 
     //jobs handling
@@ -102,7 +103,7 @@ export default function RecordingList(props) {
                         key={index}
                         className={classes.tableRow}>
                         {[job.file,
-                            new Date(job.created).toLocaleString(),
+                            // new Date(job.created).toLocaleString(),
                             new Date(job.modified).toLocaleString(),
                             readableBytes(job.size)
                         ].map((item) => (

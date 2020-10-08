@@ -18,7 +18,12 @@ const fetchWebChannels = async (authState) => _baseFetch(authState, 'api/channel
 const fetchSchedules = async (authState) => _baseFetch(authState, 'api/schedules', 'fetch schedules');
 const fetchRecordings = async (authState) => _baseFetch(authState, 'api/recordings', 'fetch recordings');
 const cancelJob = async (authState, jobIndex) => _baseFetch(authState, `api/cancel/${jobIndex}`, 'cancel job');
-const recordWebChannel = async (authState, channelName, channelTitle) => _baseFetch(authState, `api/schedule/${channelName}?channelTitle=${channelTitle}`, 'record web channel ' + channelTitle);
+const recordWebChannel = async (authState, channelName, channelTitle, recordingTime) => {
+    if (recordingTime)
+    return    _baseFetch(authState, `api/schedule/${channelName}?channelTitle=${channelTitle}&startTime=${recordingTime.startTime}&endTime=${recordingTime.endTime}`, 'record web channel ' + channelTitle);
+    else
+    return    _baseFetch(authState, `api/schedule/${channelName}?channelTitle=${channelTitle}`, 'record web channel ' + channelTitle);
+};
 const playRecording = async (authState, recordingName) => _baseFetch(authState, `api/play/${recordingName}`, 'play recording: ' + recordingName);
 const streamRecording = async (authState, recordingName) => _baseFetch(authState, `api/stream/${recordingName}`, 'stream recording: ' + recordingName);
 

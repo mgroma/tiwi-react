@@ -4,12 +4,13 @@ import Record from "@material-ui/icons/FiberManualRecord";
 import React from "react";
 import api from "../../service/api";
 
-const recordChannel = (channelName, channelTitle, authState) => {
-    api.recordWebChannel(authState, channelName, channelTitle)
+const recordChannel = (channelName, channelTitle, recordingTime, authState) => {
+    api.recordWebChannel(authState, channelName, channelTitle, recordingTime)
 }
 
 
-export default (classes, channel, authState) => {
+export default (props) => {
+    const {classes, channel, recordingTime, authState} = props;
     return <span>
     <Tooltip
         id="tooltip-top-start"
@@ -20,7 +21,7 @@ export default (classes, channel, authState) => {
             <IconButton
                 aria-label="Record"
                 className={classes.tableActionButton}
-                onClick={() => recordChannel(channel.channel_name, channel.channel_title, authState)}
+                onClick={() => recordChannel(channel.channel_name, channel.channel_title, recordingTime, authState)}
             >
                 <Record
                     className={
