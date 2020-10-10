@@ -1,6 +1,7 @@
 import Tooltip from "@material-ui/core/Tooltip";
 import IconButton from "@material-ui/core/IconButton";
 import Record from "@material-ui/icons/FiberManualRecord";
+import Play from "@material-ui/icons/PlayArrow";
 import React from "react";
 import api from "../../service/api";
 
@@ -8,6 +9,15 @@ const recordChannel = (channelName, channelTitle, recordingTime, authState) => {
     api.recordWebChannel(authState, channelName, channelTitle, recordingTime)
 }
 
+
+const playChannel = (channelName, authState) => {
+    const streamInfo = api.getStreamInfo(authState, channelName);
+    streamInfo.then(stream => {
+        const streamHref = '/admin/player/file/' + encodeURIComponent(stream.streamInfo);
+        window.location.href = streamHref;
+    });
+
+}
 
 export default (props) => {
     const {classes, channel, recordingTime, authState} = props;
@@ -30,7 +40,7 @@ export default (props) => {
                 />
             </IconButton>
         </Tooltip>
-        {/*<Tooltip
+        <Tooltip
             id="tooltip-top"
             title="Play"
             placement="top"
@@ -39,6 +49,7 @@ export default (props) => {
             <IconButton
                 aria-label="Play"
                 className={classes.tableActionButton}
+                onClick={() => playChannel(channel.channel_name, authState)}
             >
                 <Play
                     className={
@@ -46,6 +57,6 @@ export default (props) => {
                     }
                 />
             </IconButton>
-        </Tooltip>*/}
+        </Tooltip>
         </span>;
 }

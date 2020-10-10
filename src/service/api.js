@@ -24,6 +24,9 @@ const recordWebChannel = async (authState, channelName, channelTitle, recordingT
     else
     return    _baseFetch(authState, `api/schedule/${channelName}?channelTitle=${channelTitle}`, 'record web channel ' + channelTitle);
 };
+const getStreamInfo = async (authState, channelName) => {
+    return    _baseFetch(authState, `api/streamInfo/${channelName}`, 'get stream info for ' + channelName);
+};
 const playRecording = async (authState, recordingName) => _baseFetch(authState, `api/play/${recordingName}`, 'play recording: ' + recordingName);
 const streamRecording = async (authState, recordingName) => _baseFetch(authState, `api/stream/${recordingName}`, 'stream recording: ' + recordingName);
 
@@ -35,4 +38,5 @@ export default {
     cancelJob,
     playRecording,
     streamRecording,
+    getStreamInfo,
 }

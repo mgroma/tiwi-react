@@ -16,10 +16,18 @@ const useStyles = makeStyles(styles);
 const HOSTNAME = window.location.protocol + '//' + window.location.hostname + ':8000/';
 
 
+const getPlaylist = params => {
+    const {file, url} = params;
+    if (url) {
+        return decodeURIComponent(url);
+    }
+    return file === ':file' ? "" : `${HOSTNAME}${file}.m3u8`;
+}
+
 export default function Player(props) {
     const classes = useStyles();
     const {match: {params}} = props;
-    const playlist = params.file === ':file' ? "" : `${params.file}.m3u8`
+    const playlist = getPlaylist(params)
     return (
         <GridContainer>
             <GridItem xs={12} sm={12} md={12}>
@@ -32,7 +40,7 @@ export default function Player(props) {
                             // className={classes.iframe}
                         >
                             {playlist !== "" && <ReactHlsPlayer
-                                url={HOSTNAME + playlist}
+                                url={playlist}
                                 // url={HOSTNAME + "/EUROSPORT 2 - 2020-10-01T06:32:26-04:00.ts.m3u8"}
                                 // url='https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8'
                                 autoplay={false}

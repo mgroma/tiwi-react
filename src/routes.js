@@ -73,7 +73,7 @@ const dashboardRoutes = [
         layout: "/admin"
     },
     {
-        path: "/player/:file",
+        path: "/player/:file/:url?",
         name: "Player",
         icon: "list",
         component: PlayerPage,
