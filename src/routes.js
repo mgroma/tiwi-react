@@ -55,7 +55,8 @@ const dashboardRoutes = [
         name: "Web.tv",
         icon: "video_label",
         component: WebPage,
-        layout: "/admin"
+        layout: "/admin",
+        unsecure: true,
     },
     {
         path: "/recordings",

@@ -18,7 +18,7 @@ import {useOktaAuth} from "@okta/okta-react";
 import api from "../../service/api";
 import readableBytes from "../Utils/ReadableBytes";
 import TableHead from "@material-ui/core/TableHead";
-import {PlayArrowOutlined, Refresh} from "@material-ui/icons";
+import {Close, PlayArrowOutlined, Refresh} from "@material-ui/icons";
 
 const useStyles = makeStyles(styles);
 
@@ -46,7 +46,6 @@ export default function RecordingList(props) {
         // startPlayer(fileName);
     }
 
-
     const refresh = () => {
         fetchRecordings();
         return undefined;
@@ -55,7 +54,6 @@ export default function RecordingList(props) {
         window.location.href = `/admin/player/${file}`;
         // props.history.push(`/admin/player/${file}`);
     }
-
 
     const fetchRecordings = () => {
         if (authState.isAuthenticated || true) {
@@ -68,6 +66,11 @@ export default function RecordingList(props) {
         fetchRecordings();
 
     }, [authState, jobLastPLayed]);
+
+    const removeRecording = file => {
+        api.removeRecording(authState, file)
+            .then(json => fetchRecordings())
+    };
 
     return (
         <Table className={classes.table}>
@@ -122,6 +125,24 @@ export default function RecordingList(props) {
                                     onClick={() => playRecording(job.file)}
                                 >
                                     <Play
+                                        className={
+                                            classes.tableActionButtonIcon + " " + classes.play
+                                        }
+                                    />
+                                </IconButton>
+                            </Tooltip>
+                            <Tooltip
+                                id="tooltip-top-start"
+                                title="Remove"
+                                placement="top"
+                                classes={{tooltip: classes.tooltip}}
+                            >
+                                <IconButton
+                                    aria-label="Remove"
+                                    className={classes.tableActionButton}
+                                    onClick={() => removeRecording(job.file)}
+                                >
+                                    <Close
                                         className={
                                             classes.tableActionButtonIcon + " " + classes.play
                                         }

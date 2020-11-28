@@ -80,5 +80,5 @@ module.exports = {
             // Return your customised Webpack Development Server config.
             return config;
         };
-    },
+    }
 };
