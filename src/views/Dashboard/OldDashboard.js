@@ -38,13 +38,11 @@ import {
 } from "variables/charts.js";
 
 import styles from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
-import {useOktaAuth} from "@okta/okta-react";
 
 const useStyles = makeStyles(styles);
 
 
 export default function Dashboard() {
-    const {authState} = useOktaAuth();
     const classes = useStyles();
     return (
         <div>
@@ -124,7 +122,6 @@ export default function Dashboard() {
                     </Card>
                 </GridItem>
             </GridContainer>
-            {authState.isAuthenticated &&
             <span>
             <GridContainer>
                 <GridItem xs={12} sm={12} md={4}>
@@ -265,7 +262,7 @@ export default function Dashboard() {
                     </Card>
                 </GridItem>
             </GridContainer>
-            </span> }
+            </span>
         </div>
     );
 }

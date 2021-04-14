@@ -34,10 +34,10 @@ export default function WebList(props) {
     const tableCellClasses = classnames(classes.tableCell);
     //channels handling
     const [channels, setChannels] = useState(null);
-    const {authState} = useOktaAuth();
+    const { authState } = useOktaAuth();
     useEffect(() => {
 
-        if (authState.isAuthenticated && !channels) {
+        if ((authState.isAuthenticated || true  ) && !channels) {
             api.fetchWebChannels(authState)
                 .then(json => setChannels(getChannels(json, props)));
         }

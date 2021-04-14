@@ -70,7 +70,7 @@ export default function WebPage() {
     const [endDateTime, onChangeEndDateTime] = useState(moment().add(4, 'hours').toDate());
 
     useEffect(() => {
-        if (authState.isAuthenticated) {
+        if (authState.isAuthenticated || true) {
             api.fetchWebChannels(authState)
                 .then(channelList => setChannels(channelList
                     .filter(channel => {

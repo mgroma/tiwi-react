@@ -35,7 +35,7 @@ export default function ScheduleList() {
 
     useEffect(() => {
 
-        if (authState.isAuthenticated) {
+        if (authState.isAuthenticated || true) {
             api.fetchSchedules(authState)
                 .then(json => setJobs(json));
         }

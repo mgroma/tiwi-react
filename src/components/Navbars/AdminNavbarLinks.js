@@ -25,22 +25,22 @@ import {useOktaAuth} from '@okta/okta-react';
 const useStyles = makeStyles(styles);
 
 export default function AdminNavbarLinks() {
-    const {authState, authService} = useOktaAuth();
-    const login = async () => authService.login('/admin/login');
-    const logout = async () => authService.logout('/');
+    const {authState, oktaAuth} = useOktaAuth();
+    const login = async () => oktaAuth.signInWithRedirect('/admin/login');
+    const logout = async () => oktaAuth.signOut({postLogoutRedirectUri: window.location.origin + '/'});
     const [userInfo, setUserInfo] = React.useState(null);
 
 
     React.useEffect (() => {
         const updateUserInfo = async () => {
             if (authState.isAuthenticated && !userInfo) {
-                setUserInfo(await authService.getUser());
+                setUserInfo(await oktaAuth.getUser());
             } else {
                 setUserInfo(null);
             }
         }
         updateUserInfo();
-    }, [authState, authService])
+    }, [authState, oktaAuth])
 
     const classes = useStyles();
     const [openNotification, setOpenNotification] = React.useState(null);

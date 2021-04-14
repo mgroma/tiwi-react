@@ -100,7 +100,7 @@ export default function Dashboard() {
             <GridContainer>
             <GridItem xs={12} sm={12} md={6}>
             <CustomTabs
-                title="What's On Now:"
+                title=""
                 headerColor="success"
                 tabs={[
                     {
@@ -136,6 +136,15 @@ export default function Dashboard() {
                         tabContent: (
                             <WebList
                                 keyword={"hbo"}
+                            />
+                        )
+                    },
+                    {
+                        tabName: "Polsat",
+                        tabIcon: Cloud,
+                        tabContent: (
+                            <WebList
+                                keyword={"polsat"}
                             />
                         )
                     },

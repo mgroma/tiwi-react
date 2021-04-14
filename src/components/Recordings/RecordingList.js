@@ -43,7 +43,7 @@ export default function RecordingList(props) {
     }
     const streamRecording = (fileName) => {
         api.streamRecording(authState, fileName);
-        // startPlayer(fileName);
+        startPlayer(fileName);
     }
 
     const refresh = () => {
