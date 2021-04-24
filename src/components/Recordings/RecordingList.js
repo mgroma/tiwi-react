@@ -19,6 +19,7 @@ import api from "../../service/api";
 import readableBytes from "../Utils/ReadableBytes";
 import TableHead from "@material-ui/core/TableHead";
 import {Close, PlayArrowOutlined, Refresh} from "@material-ui/icons";
+import moment from "moment";
 
 const useStyles = makeStyles(styles);
 
@@ -72,6 +73,16 @@ export default function RecordingList(props) {
             .then(json => fetchRecordings())
     };
 
+    const getRowClass = (job) => {
+        const dateModified = moment(job.modified)
+        const isToday = moment().isSame(dateModified, 'day');
+        const fromLastHour = moment().subtract(1, 'minutes').isBefore(dateModified);
+        if (fromLastHour) return classes.tableRowLastHour;
+        return isToday ?
+        classes.tableRowToday :
+            classes.tableRow
+    }
+
     return (
         <Table className={classes.table}>
             <TableHead className={classes[tableHeaderColor + "TableHeader"]}>
@@ -104,7 +115,7 @@ export default function RecordingList(props) {
                     <TableRow
                         hover
                         key={index}
-                        className={classes.tableRow}>
+                        className={getRowClass(job)}>
                         {[job.file,
                             // new Date(job.created).toLocaleString(),
                             new Date(job.modified).toLocaleString(),

@@ -30,6 +30,7 @@ const getStreamInfo = async (authState, channelName) => {
 const playRecording = async (authState, recordingName) => _baseFetch(authState, `api/play/${recordingName}`, 'play recording: ' + recordingName);
 const removeRecording = async (authState, recordingName) => _baseFetch(authState, `api/remove/${recordingName}`, 'remove recording: ' + recordingName);
 const streamRecording = async (authState, recordingName) => _baseFetch(authState, `api/stream/${recordingName}`, 'stream recording: ' + recordingName);
+const saveStream = async (authState, channelName) => _baseFetch(authState, `api/stream/save/${channelName}`, 'save stream : ' + channelName);
 
 export default {
     fetchWebChannels,
@@ -41,4 +42,5 @@ export default {
     removeRecording,
     streamRecording,
     getStreamInfo,
+    saveStream,
 }

@@ -7,6 +7,7 @@ import api from "../../service/api";
 
 const recordChannel = (channelName, channelTitle, recordingTime, authState) => {
     api.recordWebChannel(authState, channelName, channelTitle, recordingTime)
+    //todo: go-forward API: api.saveStream(authState, channelName)
 }
 
 
