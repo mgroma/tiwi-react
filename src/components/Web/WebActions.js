@@ -7,15 +7,15 @@ import api from "../../service/api";
 
 const recordChannel = (channelName, channelTitle, recordingTime, authState) => {
     api.recordWebChannel(authState, channelName, channelTitle, recordingTime)
-    //todo: go-forward API: api.saveStream(authState, channelName)
+    // todo: go-forward API, saveStream is not needed anymore as separate API, it has been integrated with recordWebChannel
+    //  api.saveStream(authState, channelName)
 }
 
 
 const playChannel = (channelName, authState) => {
     const streamInfo = api.getStreamInfo(authState, channelName);
     streamInfo.then(stream => {
-        const streamHref = '/admin/player/file/' + encodeURIComponent(stream.streamInfo);
-        window.location.href = streamHref;
+        window.location.href = '/admin/player/file/' + encodeURIComponent(stream.streamInfo);
     });
 
 }

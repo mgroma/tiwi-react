@@ -14,13 +14,13 @@ import styles from "assets/jss/material-dashboard-react/components/tasksStyle.js
 import Button from "../CustomButtons/Button";
 import Search from "@material-ui/icons/Search";
 import Input from "@material-ui/core/Input";
-import DateTimePicker from "react-datetime-picker";
 import moment from "moment";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
+import RecordDateTimePicker from "./RecordDateTimePicker";
 
 
 const useStyles = makeStyles(styles);
@@ -45,18 +45,6 @@ const SearchWrapper = (props) => {
         </Button>
     </span>;
 }
-const RecordDateTimePicker = (props) => {
-    return (
-        <span>
-            <DateTimePicker
-                name={props.name}
-                className={props.className}
-                onChange={props.onChange}
-                value={props.value}
-            />
-    </span>
-    );
-}
 
 export default function WebPage() {
     const classes = useStyles();
@@ -66,6 +54,7 @@ export default function WebPage() {
     const handleChannelFilterChange = (e => {
         setChannelFilter(e.target.value);
     });
+    //date picker state...
     const [startDateTime, onChangeStartDateTime] = useState(new Date());
     const [endDateTime, onChangeEndDateTime] = useState(moment().add(4, 'hours').toDate());
 
