@@ -35,7 +35,7 @@ export default function ScheduleList() {
 
     useEffect(() => {
 
-        if (authState.isAuthenticated) {
+        if (authState.isAuthenticated || true) {
             api.fetchSchedules(authState)
                 .then(json => setJobs(json));
         }
@@ -47,9 +47,14 @@ export default function ScheduleList() {
             <TableBody>
                 {jobs && jobs.map((job, index) => (
                     <TableRow key={index} className={classes.tableRow}>
-                        <TableCell className={tableCellClasses}>{job.name}</TableCell>
-                        <TableCell className={tableCellClasses}>{job.status}</TableCell>
-                        <TableCell className={tableCellClasses}>{new Date(job.jobInfo.endTime).toLocaleString()}</TableCell>
+                        {[job.name,
+                            job.status,
+                            new Date(job.jobInfo.startTime).toLocaleString(),
+                            new Date(job.jobInfo.endTime).toLocaleString(),
+                        ]
+                            .map(item =>
+                                <TableCell className={tableCellClasses}>{item}</TableCell>
+                            )}
                         <TableCell className={classes.tableActions}>
                             <Tooltip
                                 id="tooltip-top-start"

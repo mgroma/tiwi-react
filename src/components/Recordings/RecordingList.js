@@ -11,12 +11,15 @@ import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 // @material-ui/icons
 import Play from "@material-ui/icons/PlayArrow";
+import Record from "@material-ui/icons/FiberManualRecord";
 // core components
 import styles from "assets/jss/material-dashboard-react/components/tasksStyle.js";
 import {useOktaAuth} from "@okta/okta-react";
 import api from "../../service/api";
 import readableBytes from "../Utils/ReadableBytes";
 import TableHead from "@material-ui/core/TableHead";
+import {Close, PlayArrowOutlined, Refresh} from "@material-ui/icons";
+import moment from "moment";
 
 const useStyles = makeStyles(styles);
 
@@ -26,7 +29,8 @@ export default function RecordingList(props) {
     const classes = useStyles();
     const tableCellClasses = classnames(classes.tableCell);
     const tableHeaderColor = "primary";
-    const tableHead = ["Name", "Created", "Modified", "Size"];
+    const tableHead = ["Name", "Modified", "Size"];
+    // const tableHead = ["Name", "Created", "Modified", "Size"];
     const {listLength} = props;
 
     //jobs handling
@@ -38,39 +42,87 @@ export default function RecordingList(props) {
         api.playRecording(authState, recordingName);
         jobLastPLayed = new Date(); //todo: force refreshed; figure out how to do it idiomatically with hooks
     }
+    const streamRecording = (fileName) => {
+        api.streamRecording(authState, fileName);
+        startPlayer(fileName);
+    }
 
-    useEffect(() => {
+    const refresh = () => {
+        fetchRecordings();
+        return undefined;
+    }
+    const startPlayer = (file) => {
+        window.location.href = `/admin/player/${file}`;
+        // props.history.push(`/admin/player/${file}`);
+    }
 
-        if (authState.isAuthenticated) {
+    const fetchRecordings = () => {
+        if (authState.isAuthenticated || true) {
             api.fetchRecordings(authState)
                 .then(json => setRecordings(listLength ? json.slice(0, listLength) : json));
         }
+    }
+
+    useEffect(() => {
+        fetchRecordings();
 
     }, [authState, jobLastPLayed]);
 
+    const removeRecording = file => {
+        api.removeRecording(authState, file)
+            .then(json => fetchRecordings())
+    };
+
+    const getRowClass = (job) => {
+        const dateModified = moment(job.modified)
+        const isToday = moment().isSame(dateModified, 'day');
+        const fromLastHour = moment().subtract(1, 'minutes').isBefore(dateModified);
+        if (fromLastHour) return classes.tableRowLastHour;
+        return isToday ?
+        classes.tableRowToday :
+            classes.tableRow
+    }
+
     return (
         <Table className={classes.table}>
-                <TableHead className={classes[tableHeaderColor + "TableHeader"]}>
-                    <TableRow className={classes.tableHeadRow}>
-                        {tableHead.map((prop, key) => {
-                            return (
-                                <TableCell
-                                    className={classes.tableCell + " " + classes.tableHeadCell}
-                                    key={key}
-                                >
-                                    {prop}
-                                </TableCell>
-                            );
-                        })}
-                    </TableRow>
-                </TableHead>
+            <TableHead className={classes[tableHeaderColor + "TableHeader"]}>
+                <TableRow
+                    className={classes.tableHeadRow}
+                >
+                    {tableHead.map((prop, key) => {
+                        return (
+                            <TableCell
+                                className={classes.tableCell + " " + classes.tableHeadCell}
+                                key={key}
+                            >
+                                {prop}
+                            </TableCell>
+                        );
+                    })}
+                    <TableCell
+                        className={classes.tableCell + " " + classes.tableHeadCell}
+                        onClick={() => refresh()}
+                    >
+                        <IconButton>
+                            <Refresh/>
+                        </IconButton>
+                    </TableCell>
+
+                </TableRow>
+            </TableHead>
             <TableBody>
                 {recordings && recordings.map((job, index) => (
-                    <TableRow key={index} className={classes.tableRow}>
-                        <TableCell className={tableCellClasses}>{job.file}</TableCell>
-                        <TableCell className={tableCellClasses}>{new Date(job.created).toLocaleString()}</TableCell>
-                        <TableCell className={tableCellClasses}>{new Date(job.modified).toLocaleString()}</TableCell>
-                        <TableCell className={tableCellClasses}>{readableBytes(job.size)}</TableCell>
+                    <TableRow
+                        hover
+                        key={index}
+                        className={getRowClass(job)}>
+                        {[job.file,
+                            // new Date(job.created).toLocaleString(),
+                            new Date(job.modified).toLocaleString(),
+                            readableBytes(job.size)
+                        ].map((item) => (
+                            <TableCell className={tableCellClasses}>{item}</TableCell>
+                        ))}
                         <TableCell className={classes.tableActions}>
                             <Tooltip
                                 id="tooltip-top-start"
@@ -90,6 +142,64 @@ export default function RecordingList(props) {
                                     />
                                 </IconButton>
                             </Tooltip>
+                            <Tooltip
+                                id="tooltip-top-start"
+                                title="Remove"
+                                placement="top"
+                                classes={{tooltip: classes.tooltip}}
+                            >
+                                <IconButton
+                                    aria-label="Remove"
+                                    className={classes.tableActionButton}
+                                    onClick={() => removeRecording(job.file)}
+                                >
+                                    <Close
+                                        className={
+                                            classes.tableActionButtonIcon + " " + classes.play
+                                        }
+                                    />
+                                </IconButton>
+                            </Tooltip>
+                            {!job.stream &&
+                            <Tooltip
+                                id="tooltip-top-start"
+                                title="Stream"
+                                placement="top"
+                                classes={{tooltip: classes.tooltip}}
+                            >
+                                <IconButton
+                                    aria-label="Stream"
+                                    className={classes.tableActionButton}
+                                    onClick={() => streamRecording(job.file)}
+                                >
+                                    <Record
+                                        className={
+                                            classes.tableActionButtonIcon + " " + classes.play
+                                        }
+                                    />
+                                </IconButton>
+                            </Tooltip>
+                            }
+                            {job.stream &&
+                            <Tooltip
+                                id="tooltip-top-start"
+                                title="Player"
+                                placement="top"
+                                classes={{tooltip: classes.tooltip}}
+                            >
+                                <IconButton
+                                    aria-label="Player"
+                                    className={classes.tableActionButton}
+                                    onClick={() => startPlayer(job.file)}
+                                >
+                                    <PlayArrowOutlined
+                                        className={
+                                            classes.tableActionButtonIcon + " " + classes.play
+                                        }
+                                    />
+                                </IconButton>
+                            </Tooltip>
+                            }
                         </TableCell>
                     </TableRow>
                 ))}

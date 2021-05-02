@@ -20,6 +20,7 @@ import ReactDOM from "react-dom";
 import {createBrowserHistory} from "history";
 import {Router, Route, Switch, Redirect} from "react-router-dom";
 import {Security, LoginCallback} from '@okta/okta-react';
+import { OktaAuth, toRelativeUrl } from '@okta/okta-auth-js';
 import config from './config';
 import Login from './views/Login/Login';
 
@@ -33,13 +34,17 @@ const hist = createBrowserHistory();
 const customAuthHandler = () => {
     hist.push('/login')
 }
+const restoreOriginalUri = async (_oktaAuth, originalUri) => {
+    hist.replace(toRelativeUrl(originalUri, window.location.origin));
+};
 
-
+const oktaAuth = new OktaAuth(config.oidc);
 ReactDOM.render(
     <Router history={hist}>
         <Security
-            {...config.oidc}
             onAuthRequired={customAuthHandler}
+            oktaAuth={oktaAuth}
+            restoreOriginalUri={restoreOriginalUri}
         >
             <Switch>
                 <Route path="/admin" component={Admin}/>

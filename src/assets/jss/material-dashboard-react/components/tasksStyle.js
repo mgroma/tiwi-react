@@ -2,7 +2,7 @@ import {
     defaultFont,
     primaryColor,
     dangerColor,
-    grayColor
+    grayColor, warningColor, successColor
 } from "assets/jss/material-dashboard-react.js";
 import tooltipStyle from "assets/jss/material-dashboard-react/tooltipStyle.js";
 import checkboxAdnRadioStyle from "assets/jss/material-dashboard-react/checkboxAdnRadioStyle.js";
@@ -18,10 +18,21 @@ const tasksStyle = {
         position: "relative",
         borderBottom: "1px solid " + grayColor[5]
     },
+    tableRowToday: {
+        position: "relative",
+        borderLeft: "3px solid " + successColor[3],
+        borderBottom: "1px solid " + grayColor[5]
+    },
+    tableRowLastHour: {
+        position: "relative",
+        borderLeft: "3px solid " + warningColor[3],
+        borderBottom: "1px solid " + grayColor[5]
+    },
     tableActions: {
         display: "flex",
         border: "none",
         padding: "12px 8px !important",
+        width: 60,
         verticalAlign: "middle"
     },
     tableCell: {

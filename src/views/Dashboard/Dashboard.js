@@ -22,19 +22,18 @@ import CardHeader from "components/Card/CardHeader.js";
 import CardIcon from "components/Card/CardIcon.js";
 import CardFooter from "components/Card/CardFooter.js";
 
-import {bugs, website, server} from "variables/general.js";
+import {server} from "variables/general.js";
 
 import styles from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
-import {useOktaAuth} from "@okta/okta-react";
-import WebList from "../../components/Lists/WebList";
+import WebList from "../../components/Web/WebList";
 import ScheduleList from "../../components/Lists/ScheduleList";
 import RecordingList from "../../components/Recordings/RecordingList";
+import {Refresh} from "@material-ui/icons";
 
 const useStyles = makeStyles(styles);
 
 
 export default function Dashboard() {
-    const {authState} = useOktaAuth();
     const classes = useStyles();
     return (
         <div>
@@ -97,75 +96,99 @@ export default function Dashboard() {
                     </Card>
                 </GridItem>
             </GridContainer>
-            {authState.isAuthenticated &&
             <span>
             <GridContainer>
-               <GridItem xs={12} sm={12} md={6}>
-                    <CustomTabs
-                        title="What's On Now:"
-                        headerColor="success"
-                        tabs={[
-                            {
-                                tabName: "Web.tv",
-                                tabIcon: BugReport,
-                                tabContent: (
-                                    <WebList
-                                        tasks={bugs}
-                                    />
-                                )
-                            },
-                            {
-                                tabName: "Teleman.pl",
-                                tabIcon: Cloud,
-                                tabContent: (
-                                    <Tasks
-                                        checkedIndexes={[0]}
-                                        tasksIndexes={[0, 1]}
-                                        tasks={website}
-                                    />
-                                )
-                            },
-                        ]}
-                    />
-                </GridItem>
-                <GridItem xs={12} sm={12} md={6}>
-                    <CustomTabs
-                        title="Recordings:"
-                        headerColor="primary"
-                        tabs={[
-                            {
-                                tabName: "Jobs",
-                                tabIcon: BugReport,
-                                tabContent: (
-                                    <ScheduleList
-                                    />
-                                )
-                            },
-                            {
-                                tabName: "Recordings",
-                                tabIcon: Code,
-                                tabContent: (
-                                    <RecordingList
-                                        listLength={10}
-                                    />
-                                )
-                            },
-                            {
-                                tabName: "Server",
-                                tabIcon: Cloud,
-                                tabContent: (
-                                    <Tasks
-                                        checkedIndexes={[1]}
-                                        tasksIndexes={[0, 1, 2]}
-                                        tasks={server}
-                                    />
-                                )
-                            }
-                        ]}
-                    />
-                </GridItem>
+            <GridItem xs={12} sm={12} md={6}>
+            <CustomTabs
+                title=""
+                headerColor="success"
+                tabs={[
+                    {
+                        tabName: "Sport",
+                        tabIcon: BugReport,
+                        tabContent: (
+                            <WebList
+                                keyword={"sport"}
+                            />
+                        )
+                    },
+                    {
+                        tabName: "Film",
+                        tabIcon: BugReport,
+                        tabContent: (
+                            <WebList
+                                keyword={"film"}
+                            />
+                        )
+                    },
+                    {
+                        tabName: "Canal+",
+                        tabIcon: Cloud,
+                        tabContent: (
+                            <WebList
+                                keyword={"canal"}
+                            />
+                        )
+                    },
+                    {
+                        tabName: "HBO",
+                        tabIcon: Cloud,
+                        tabContent: (
+                            <WebList
+                                keyword={"hbo"}
+                            />
+                        )
+                    },
+                    {
+                        tabName: "Polsat",
+                        tabIcon: Cloud,
+                        tabContent: (
+                            <WebList
+                                keyword={"polsat"}
+                            />
+                        )
+                    },
+                ]}
+            />
+            </GridItem>
+            <GridItem xs={12} sm={12} md={6}>
+            <CustomTabs
+                title="Recordings:"
+                headerColor="primary"
+                tabs={[
+                    {
+                        tabName: "Jobs",
+                        tabIcon: BugReport,
+                        tabContent: (
+                            <ScheduleList
+                            />
+                        )
+                    },
+                    {
+                        tabName: "Recordings",
+                        tabIcon: Code,
+                        tabContent: (
+                            <RecordingList
+                                listLength={10}
+                            />
+                        )
+                    },
+                    {
+                        tabName: "Server",
+                        tabIcon: Refresh,
+                        tabContent: (
+                            <Tasks
+                                checkedIndexes={[1]}
+                                tasksIndexes={[0, 1, 2]}
+                                tasks={server}
+                            />
+                        )
+                    }
+                ]}
+            />
+            </GridItem>
             </GridContainer>
-            </span> }
+            </span>
         </div>
     );
 }

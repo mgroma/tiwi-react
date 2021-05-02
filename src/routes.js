@@ -25,12 +25,13 @@ import Notifications from "@material-ui/icons/Notifications";
 import DashboardPage from "views/Dashboard/Dashboard.js";
 import OldDashboardPage from "views/Dashboard/OldDashboard.js";
 import UserProfile from "views/UserProfile/UserProfile.js";
-import TableList from "views/TableList/TableList.js";
 import Typography from "views/Typography/Typography.js";
 import Icons from "views/Icons/Icons.js";
 import NotificationsPage from "views/Notifications/Notifications.js";
-import WebPage from "./views/TableList/WebPage";
+import WebPage from "./components/Web/WebPage";
 import RecordingsPage from "./components/Recordings/RecordingsPage";
+import TelemanList from "./components/Teleman/TelemanList";
+import PlayerPage from "./components/Player/PlayerPage";
 
 const dashboardRoutes = [
     {
@@ -51,24 +52,34 @@ const dashboardRoutes = [
     },
     {
         path: "/watch",
-        name: "Watch Web.tv",
+        name: "Web.tv",
         icon: "video_label",
         component: WebPage,
-        layout: "/admin"
+        layout: "/admin",
+        unsecure: true,
     },
     {
         path: "/recordings",
         name: "Recordings",
         icon: "video_library",
         component: RecordingsPage,
-        layout: "/admin"
+        layout: "/admin",
+        unsecure: true
     },
     {
         path: "/schedule",
         name: "Teleman List",
         icon: "list",
-        component: TableList,
+        component: TelemanList,
         layout: "/admin"
+    },
+    {
+        path: "/player/:file/:url?",
+        name: "Player",
+        icon: "list",
+        component: PlayerPage,
+        layout: "/admin",
+        unsecure: true
     },
     {
         path: "/user",
