@@ -14,22 +14,7 @@ const _baseFetch = async (authState, apiPath, operationName) => {
     }
     return await response.json();
 }
-//todo remove it - used only for CORS
-const _baseFetchCors = async (authState, apiPath, operationName) => {
-    const {accessToken} = authState;
-    const apiUrl = 'https://d2evsa9wtarfmj.cloudfront.net/js/set-background.js'
-    const response = await fetch(apiUrl, {
-        headers: {
-            Authorization: `Bearer ${accessToken}`,
-        }
-    })
-    if (!response.ok) {
-        throw Error(`error executing ${operationName}: error=[${response.error()}]`);
-    }
-    return await response.json();
-}
 const fetchWebChannels = async (authState) => _baseFetch(authState, 'api/channels', 'fetch web channels');
-// const fetchSchedules = async (authState) => _baseFetchCors(authState, 'api/schedules', 'fetch schedules');
 const fetchSchedules = async (authState) => _baseFetch(authState, 'api/schedules', 'fetch schedules');
 const fetchRecordings = async (authState) => _baseFetch(authState, 'api/recordings', 'fetch recordings');
 const cancelJob = async (authState, jobIndex) => _baseFetch(authState, `api/cancel/${jobIndex}`, 'cancel job');
