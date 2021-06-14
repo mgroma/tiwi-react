@@ -6,12 +6,13 @@
   "dependencies": {
     "@material-ui/core": "4.10.0",
     "@material-ui/icons": "4.9.1",
-    "@okta/okta-react": "5.1.1",
     "@okta/okta-auth-js": "^4.8.0",
+    "@okta/okta-react": "5.1.1",
     "@okta/okta-signin-widget": "5.5.2",
     "chartist": "0.10.1",
     "classnames": "2.2.6",
     "history": "4.10.1",
+    "logger": "0.0.1",
     "moment": "^2.29.1",
     "perfect-scrollbar": "1.5.0",
     "prop-types": "15.7.2",
@@ -24,7 +25,8 @@
     "react-hls-player": "^1.1.0",
     "react-router-dom": "5.2.0",
     "react-scripts": "3.4.1",
-    "react-swipeable-views": "0.13.9"
+    "react-swipeable-views": "0.13.9",
+    "yolo-scraper": "^1.0.1"
   },
   "scripts": {
     "start": "react-app-rewired start",

@@ -71,7 +71,8 @@ const dashboardRoutes = [
         name: "Teleman List",
         icon: "list",
         component: TelemanList,
-        layout: "/admin"
+        layout: "/admin",
+        unsecure: true
     },
     {
         path: "/player/:file/:url?",
@@ -100,7 +101,8 @@ const dashboardRoutes = [
         name: "Icons",
         icon: BubbleChart,
         component: Icons,
-        layout: "/admin"
+        layout: "/admin",
+        unsecure: true
     },
     {
         path: "/notifications",

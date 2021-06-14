@@ -47,6 +47,15 @@ export default function RecordingList(props) {
         startPlayer(fileName);
     }
 
+    const rename = (fileName, index) => {
+        const newFileName = prompt("Enter New Recording", fileName)
+        if (!newFileName) return;
+        api.renameRecording(authState, fileName, newFileName);
+        refresh()
+        console.log(` renaming [${fileName}] to ${newFileName}`)
+    }
+
+
     const refresh = () => {
         fetchRecordings();
         return undefined;
@@ -79,10 +88,13 @@ export default function RecordingList(props) {
         const fromLastHour = moment().subtract(1, 'minutes').isBefore(dateModified);
         if (fromLastHour) return classes.tableRowLastHour;
         return isToday ?
-        classes.tableRowToday :
+            classes.tableRowToday :
             classes.tableRow
     }
 
+    const handleChange = (event) => {
+        console.log(`changing name [${event.target.value}]`);
+    };
     return (
         <Table className={classes.table}>
             <TableHead className={classes[tableHeaderColor + "TableHeader"]}>
@@ -116,7 +128,11 @@ export default function RecordingList(props) {
                         hover
                         key={index}
                         className={getRowClass(job)}>
-                        {[job.file,
+                        <TableCell
+                            onClick={() => rename(job.file, index)}
+                            className={tableCellClasses}
+                        >{job.file}</TableCell>
+                        {[
                             // new Date(job.created).toLocaleString(),
                             new Date(job.modified).toLocaleString(),
                             readableBytes(job.size)

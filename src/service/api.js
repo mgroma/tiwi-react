@@ -1,10 +1,12 @@
-const HOSTNAME = window.location.protocol + '//'+ window.location.hostname + ':3001';
+// const HOSTNAME = window.location.protocol + '//'+ window.location.hostname + ':3001';
+const HOSTNAME = process.env.API_HOSTNAME || (window.location.protocol + '//'+ window.location.hostname + ':3001');
 
 
-const _baseFetch = async (authState, apiPath, operationName) => {
+const _baseFetch = async (authState, apiPath, operationName, method = 'GET') => {
     const {accessToken} = authState;
     const apiUrl = `${HOSTNAME}/${apiPath}`
     const response = await fetch(apiUrl, {
+        method: method,
         headers: {
             Authorization: `Bearer ${accessToken}`,
         }
@@ -14,10 +16,21 @@ const _baseFetch = async (authState, apiPath, operationName) => {
     }
     return await response.json();
 }
+const _baseFetchThirdParty = async (apiUrl, operationName, method = 'GET') => {
+    const response = await fetch(apiUrl, {
+        method: method
+    })
+    if (!response.ok) {
+        throw Error(`error executing ${operationName}: error=[${response.error()}]`);
+    }
+    return await response.text();
+}
+const fetchTeleman = async () => _baseFetchThirdParty('https://teleman.pl', 'Teleman');
 const fetchWebChannels = async (authState) => _baseFetch(authState, 'api/channels', 'fetch web channels');
 const fetchSchedules = async (authState) => _baseFetch(authState, 'api/schedules', 'fetch schedules');
 const fetchRecordings = async (authState) => _baseFetch(authState, 'api/recordings', 'fetch recordings');
 const cancelJob = async (authState, jobIndex) => _baseFetch(authState, `api/cancel/${jobIndex}`, 'cancel job');
+const removeJob = async (authState, jobIndex) => _baseFetch(authState, `api/removeJob/${jobIndex}`, 'remove job');
 const recordWebChannel = async (authState, channelName, channelTitle, recordingTime) => {
     if (recordingTime)
     return    _baseFetch(authState, `api/schedule/${channelName}?channelTitle=${channelTitle}&startTime=${recordingTime.startTime}&endTime=${recordingTime.endTime}`, 'record web channel ' + channelTitle);
@@ -31,6 +44,7 @@ const playRecording = async (authState, recordingName) => _baseFetch(authState, 
 const removeRecording = async (authState, recordingName) => _baseFetch(authState, `api/remove/${recordingName}`, 'remove recording: ' + recordingName);
 const streamRecording = async (authState, recordingName) => _baseFetch(authState, `api/stream/${recordingName}`, 'stream recording: ' + recordingName);
 const saveStream = async (authState, channelName, recordingTime) => _baseFetch(authState, `api/stream/save/${channelName}?startTime=${recordingTime&&recordingTime.startTime}&endTime=${recordingTime&&recordingTime.endTime}`, 'save stream : ' + channelName);
+const renameRecording = async (authState, recordingName, newRecordingName) => _baseFetch(authState, `api/edit/${recordingName}?name=${newRecordingName}`, 'edit recording name : ' + recordingName);
 
 export default {
     fetchWebChannels,
@@ -38,9 +52,12 @@ export default {
     fetchRecordings,
     recordWebChannel,
     cancelJob,
+    removeJob,
     playRecording,
     removeRecording,
     streamRecording,
     getStreamInfo,
     saveStream,
+    fetchTeleman,
+    renameRecording
 }

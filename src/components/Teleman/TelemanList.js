@@ -1,5 +1,5 @@
 /*eslint-disable*/
-import React from "react";
+import React, {useEffect, useState} from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import Hidden from "@material-ui/core/Hidden";
@@ -11,11 +11,28 @@ import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
 
 import styles from "assets/jss/material-dashboard-react/views/iconsStyle.js";
-
+import api from "../../service/api";
+import {useOktaAuth} from "@okta/okta-react";
+import {createLogger} from "logger";
 const useStyles = makeStyles(styles);
+
+const logger = createLogger()
 
 export default function TelemanList() {
     const classes = useStyles();
+    const [channels, setChannels] = useState(null);
+    const {authState} = useOktaAuth();
+
+    useEffect(() => {
+        if ((authState.isAuthenticated || true) && !channels) {
+            api.fetchTeleman()
+                .then(responseHtml => {
+                    setChannels(responseHtml);
+                    debugger
+                    console.log(`teleman response = [${responseHtml}]`)
+                })
+        }
+    }, [authState])
     return (
         <GridContainer>
             <GridItem xs={12} sm={12} md={12}>
@@ -33,6 +50,7 @@ export default function TelemanList() {
                         </p>
                     </CardHeader>
                     <CardBody>
+{/*
                         <Hidden only={["sm", "xs"]}>
                             <iframe
                                 className={classes.iframe}
@@ -42,6 +60,7 @@ export default function TelemanList() {
                                 <p>Your browser does not support iframes.</p>
                             </iframe>
                         </Hidden>
+*/}
                         <Hidden only={["lg", "md"]}>
                             <GridItem xs={12} sm={12} md={6}>
                                 <h5>

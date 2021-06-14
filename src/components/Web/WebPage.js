@@ -21,30 +21,11 @@ import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import RecordDateTimePicker from "./RecordDateTimePicker";
+import SearchWrapper from "../Search/SearchWrapper";
 
 
 const useStyles = makeStyles(styles);
 
-const SearchWrapper = (props) => {
-    const classes = props && props.classes || {};
-    return <span className={classes.searchWrapper}>
-        <Input
-            formControlProps={{
-                className: classes.margin + " " + classes.search
-            }}
-            inputProps={{
-                placeholder: "Search channels name",
-                inputProps: {
-                    "aria-label": "Search"
-                }
-            }}
-            onChange={props.onChange}
-        />
-        <Button color="white" aria-label="edit" justIcon round>
-            <Search/>
-        </Button>
-    </span>;
-}
 
 export default function WebPage() {
     const classes = useStyles();

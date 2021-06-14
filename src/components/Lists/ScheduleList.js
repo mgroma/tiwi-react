@@ -15,6 +15,7 @@ import Close from "@material-ui/icons/Close";
 import styles from "assets/jss/material-dashboard-react/components/tasksStyle.js";
 import {useOktaAuth} from "@okta/okta-react";
 import api from "../../service/api";
+import {Stop} from "@material-ui/icons";
 
 const useStyles = makeStyles(styles);
 
@@ -26,11 +27,15 @@ export default function ScheduleList() {
     //jobs handling
     const [jobs, setJobs] = useState(null);
     const {authState} = useOktaAuth();
-    var jobLastCancelled = null;
+    const [jobLastCancelled, setJobLastCancelled] = useState(null);
 
     const cancelJob = (jobIndex) => {
         api.cancelJob(authState, jobIndex);
-        jobLastCancelled = new Date(); //todo: force refreshed; figure out how to do it idiomatically with hooks
+        setJobLastCancelled(new Date()); //todo: force refreshed; figure out how to do it idiomatically with hooks
+    }
+    const removeJob = (jobIndex) => {
+        api.removeJob(authState, jobIndex);
+        setJobLastCancelled(new Date()); //todo: force refreshed; figure out how to do it idiomatically with hooks
     }
 
     useEffect(() => {
@@ -56,9 +61,9 @@ export default function ScheduleList() {
                                 <TableCell className={tableCellClasses}>{item}</TableCell>
                             )}
                         <TableCell className={classes.tableActions}>
-                            <Tooltip
+                            {job.status !== "KILLED" && <Tooltip
                                 id="tooltip-top-start"
-                                title="Remove"
+                                title="Cancel"
                                 placement="top"
                                 classes={{tooltip: classes.tooltip}}
                             >
@@ -67,9 +72,27 @@ export default function ScheduleList() {
                                     className={classes.tableActionButton}
                                     onClick={() => cancelJob(index)}
                                 >
+                                    <Stop
+                                        className={
+                                            classes.tableActionButtonIcon + " " + classes.play
+                                        }
+                                    />
+                                </IconButton>
+                            </Tooltip>}
+                            <Tooltip
+                                id="tooltip-top-start"
+                                title="Remove"
+                                placement="top"
+                                classes={{tooltip: classes.tooltip}}
+                            >
+                                <IconButton
+                                    aria-label="Remove"
+                                    className={classes.tableActionButton}
+                                    onClick={() => removeJob(index)}
+                                >
                                     <Close
                                         className={
-                                            classes.tableActionButtonIcon + " " + classes.close
+                                            classes.tableActionButtonIcon + " " + classes.play
                                         }
                                     />
                                 </IconButton>

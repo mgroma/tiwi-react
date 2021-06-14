@@ -23,6 +23,7 @@ const env = {};
 
 // List of environment variables made available to the app
 [
+    'API_HOSTNAME',
     'REDIRECT_URI',
     'ISSUER',
     'CLIENT_ID',
