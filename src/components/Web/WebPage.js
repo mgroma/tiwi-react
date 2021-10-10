@@ -11,9 +11,6 @@ import api from "../../service/api";
 import {useOktaAuth} from "@okta/okta-react";
 import WebActions from "./WebActions";
 import styles from "assets/jss/material-dashboard-react/components/tasksStyle.js";
-import Button from "../CustomButtons/Button";
-import Search from "@material-ui/icons/Search";
-import Input from "@material-ui/core/Input";
 import moment from "moment";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -81,7 +78,7 @@ export default function WebPage() {
                             value={endDateTime}
                         />
                         <Table className={classes.table}>
-                            <TableHead className={classes["success" + "TableHeader"]}>
+                            <TableHead className={classes["successTableHeader"]}>
                                 <TableRow className={classes.tableHeadRow}>
                                     {["No", "Name", "Actions", "Description"].map((prop, key) => {
                                         return (

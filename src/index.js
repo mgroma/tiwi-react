@@ -29,6 +29,7 @@ import Login from './views/Login/Login';
 import Admin from "layouts/Admin.js";
 
 import "assets/css/material-dashboard-react.css?v=1.9.0";
+import {RecordingSearchContextProvider} from "./context/RecordingSearchContext";
 
 const hist = createBrowserHistory();
 const customAuthHandler = () => {
@@ -41,6 +42,7 @@ const restoreOriginalUri = async (_oktaAuth, originalUri) => {
 const oktaAuth = new OktaAuth(config.oidc);
 ReactDOM.render(
     <Router history={hist}>
+        <RecordingSearchContextProvider>
         <Security
             onAuthRequired={customAuthHandler}
             oktaAuth={oktaAuth}
@@ -53,6 +55,7 @@ ReactDOM.render(
                 <Redirect from="/" to="/admin/dashboard"/>
             </Switch>
         </Security>
+        </RecordingSearchContextProvider>
     </Router>,
     document.getElementById("root")
 );

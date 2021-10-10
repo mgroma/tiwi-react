@@ -11,8 +11,8 @@ import React from "react";
  }
  */
 export default (props) => {
-    const classes = props && props.classes || {};
-    const placeholder = props && props.placeholder || "Search channels name";
+        const classes = (props && props.classes) || {};
+    const placeholder = (props && props.placeholder) || "Search channels name";
     return <span className={classes.searchWrapper}>
         <Input
             formControlProps={{

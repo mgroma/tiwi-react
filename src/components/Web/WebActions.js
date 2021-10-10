@@ -4,6 +4,7 @@ import Record from "@material-ui/icons/FiberManualRecord";
 import Play from "@material-ui/icons/PlayArrow";
 import React from "react";
 import api from "../../service/api";
+import {useRecordingSearch} from "../../context/RecordingSearchContext";
 
 const recordChannel = (channelName, channelTitle, recordingTime, authState) => {
     api.recordWebChannel(authState, channelName, channelTitle, recordingTime)
@@ -22,6 +23,7 @@ const playChannel = (channelName, authState) => {
 
 export default (props) => {
     const {classes, channel, recordingTime, authState} = props;
+    const {handleChange} = useRecordingSearch();
     return <span>
     <Tooltip
         id="tooltip-top-start"
@@ -32,7 +34,11 @@ export default (props) => {
             <IconButton
                 aria-label="Record"
                 className={classes.tableActionButton}
-                onClick={() => recordChannel(channel.channel_name, channel.channel_title, recordingTime, authState)}
+                onClick={() => {
+                    handleChange(`Recording ${channel.channel_name}`)
+                    recordChannel(channel.channel_name, channel.channel_title, recordingTime, authState)
+                }
+                }
             >
                 <Record
                     className={

@@ -16,6 +16,7 @@ import styles from "assets/jss/material-dashboard-react/components/tasksStyle.js
 import {useOktaAuth} from "@okta/okta-react";
 import api from "../../service/api";
 import {Stop} from "@material-ui/icons";
+import {useRecordingSearch} from "../../context/RecordingSearchContext";
 
 const useStyles = makeStyles(styles);
 
@@ -28,6 +29,8 @@ export default function ScheduleList() {
     const [jobs, setJobs] = useState(null);
     const {authState} = useOktaAuth();
     const [jobLastCancelled, setJobLastCancelled] = useState(null);
+    const {value} = useRecordingSearch();
+
 
     const cancelJob = (jobIndex) => {
         api.cancelJob(authState, jobIndex);
@@ -45,7 +48,7 @@ export default function ScheduleList() {
                 .then(json => setJobs(json));
         }
 
-    }, [authState, jobLastCancelled]);
+    }, [authState, jobLastCancelled, value]);
 
     return (
         <Table className={classes.table}>
@@ -57,8 +60,8 @@ export default function ScheduleList() {
                             new Date(job.jobInfo.startTime).toLocaleString(),
                             new Date(job.jobInfo.endTime).toLocaleString(),
                         ]
-                            .map(item =>
-                                <TableCell className={tableCellClasses}>{item}</TableCell>
+                            .map((item, key) =>
+                                <TableCell key={key} className={tableCellClasses}>{item}</TableCell>
                             )}
                         <TableCell className={classes.tableActions}>
                             {job.status !== "KILLED" && <Tooltip

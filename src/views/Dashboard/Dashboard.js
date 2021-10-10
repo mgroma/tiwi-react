@@ -29,12 +29,15 @@ import WebList from "../../components/Web/WebList";
 import ScheduleList from "../../components/Lists/ScheduleList";
 import RecordingList from "../../components/Recordings/RecordingList";
 import {Refresh} from "@material-ui/icons";
+import {useRecordingSearch} from "../../context/RecordingSearchContext";
 
 const useStyles = makeStyles(styles);
 
 
 export default function Dashboard() {
     const classes = useStyles();
+    const { value } = useRecordingSearch();
+    const recordingStatus = `[${value}]` ;
     return (
         <div>
             <GridContainer>
@@ -73,7 +76,7 @@ export default function Dashboard() {
                         <CardFooter stats>
                             <div className={classes.stats}>
                                 <LocalOffer/>
-                                Tracked from Github
+                                <span>{recordingStatus}</span>
                             </div>
                         </CardFooter>
                     </Card>

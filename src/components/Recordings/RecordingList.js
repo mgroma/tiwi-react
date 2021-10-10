@@ -47,12 +47,21 @@ export default function RecordingList(props) {
         startPlayer(fileName);
     }
 
-    const rename = (fileName, index) => {
-        const newFileName = prompt("Enter New Recording", fileName)
-        if (!newFileName) return;
-        api.renameRecording(authState, fileName, newFileName);
+    const rename = async (fileName, index) => {
+        const extractPrefix = fileName => {
+            const matchGroups = fileName.match(/(?<prefix>.* - \d{4}-\d{2}-\d{2})/gm)
+            if (matchGroups && matchGroups.length > 0)
+                return matchGroups[0] + " - "
+            return "";
+        };
+
+        const extractedPrefix = extractPrefix(fileName)
+        const newSuffix = prompt("Enter New Description", extractedPrefix ? "" : fileName)
+        if (!newSuffix) return;
+        const newFileName = `${extractedPrefix}${newSuffix}.ts`
+        await api.renameRecording(authState, fileName, newFileName);
         refresh()
-        console.log(` renaming [${fileName}] to ${newFileName}`)
+        console.log(` rrenaming [${fileName}] to ${newFileName}`)
     }
 
 
