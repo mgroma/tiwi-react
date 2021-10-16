@@ -16,6 +16,8 @@ import api from "../../service/api";
 import WebActions from "./WebActions";
 import RecordDateTimePicker from "./RecordDateTimePicker";
 import moment from "moment";
+import IconButton from "@material-ui/core/IconButton";
+import {Refresh} from "@material-ui/icons";
 
 const useStyles = makeStyles(styles);
 
@@ -30,24 +32,39 @@ const getChannels = (jsonChannels, props) => {
     else
         return jsonChannels;
 }
+
+const generateEndDateTime = () => moment().add(4, 'hours').toDate();
+const generateStartDateTime = () => new Date();
+
 export default function WebList(props) {
     //page formatting
     const classes = useStyles();
     const tableCellClasses = classnames(classes.tableCell);
     //date picker state...
-    const [startDateTime, onChangeStartDateTime] = useState(new Date());
-    const [endDateTime, onChangeEndDateTime] = useState(moment().add(4, 'hours').toDate());
+    const [startDateTime, onChangeStartDateTime] = useState(generateStartDateTime());
+    const [endDateTime, onChangeEndDateTime] = useState(generateEndDateTime());
     //channels handling
     const [channels, setChannels] = useState(null);
     const {authState} = useOktaAuth();
-    useEffect(() => {
 
+    const refreshChannels = (authState) => {
         if ((authState.isAuthenticated || true) && !channels) {
             api.fetchWebChannels(authState)
                 .then(json => setChannels(getChannels(json, props)));
         }
+    };
+
+    useEffect(() => {
+        refreshChannels(authState);
 
     }, [authState]);
+
+    function refresh() {
+         onChangeStartDateTime(generateStartDateTime());
+        onChangeEndDateTime(generateEndDateTime())
+        refreshChannels(authState)
+        return null
+    }
 
     return (
         <>
@@ -63,6 +80,10 @@ export default function WebList(props) {
                 onChange={onChangeEndDateTime}
                 value={endDateTime}
             />
+            <IconButton onClick={refresh}>
+                <Refresh/>
+            </IconButton>
+
             <Table className={classes.table}>
                 <TableBody>
                     {channels && channels.map((channel, index) => (
