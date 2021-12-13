@@ -1,5 +1,5 @@
 // const HOSTNAME = window.location.protocol + '//'+ window.location.hostname + ':3001';
-const HOSTNAME = process.env.API_HOSTNAME || (window.location.protocol + '//'+ window.location.hostname + ':3001');
+const HOSTNAME = process.env.API_HOSTNAME || (window.location.protocol + '//' + window.location.hostname + ':3001');
 
 
 const _baseFetch = async (authState, apiPath, operationName, method = 'GET') => {
@@ -12,7 +12,7 @@ const _baseFetch = async (authState, apiPath, operationName, method = 'GET') => 
         }
     })
     if (!response.ok) {
-        throw Error(`error executing ${operationName}: error=[${response.error()}]`);
+        throw Error(`error executing ${operationName}: error=[${response.statusText}]`);
     }
     return await response.json();
 }
@@ -33,18 +33,38 @@ const cancelJob = async (authState, jobIndex) => _baseFetch(authState, `api/canc
 const removeJob = async (authState, jobIndex) => _baseFetch(authState, `api/removeJob/${jobIndex}`, 'remove job');
 const recordWebChannel = async (authState, channelName, channelTitle, recordingTime) => {
     if (recordingTime)
-    return    _baseFetch(authState, `api/schedule/${channelName}?channelTitle=${channelTitle}&startTime=${recordingTime.startTime}&endTime=${recordingTime.endTime}`, 'record web channel ' + channelTitle);
+        return _baseFetch(authState, `api/schedule/${channelName}?channelTitle=${channelTitle}&startTime=${recordingTime.startTime}&endTime=${recordingTime.endTime}`, 'record web channel ' + channelTitle);
     else
-    return    _baseFetch(authState, `api/schedule/${channelName}?channelTitle=${channelTitle}`, 'record web channel ' + channelTitle);
+        return _baseFetch(authState, `api/schedule/${channelName}?channelTitle=${channelTitle}`, 'record web channel ' + channelTitle);
 };
 const getStreamInfo = async (authState, channelName) => {
-    return    _baseFetch(authState, `api/streamInfo/${channelName}`, 'get stream info for ' + channelName);
+    return _baseFetch(authState, `api/streamInfo/${channelName}`, 'get stream info for ' + channelName);
 };
 const playRecording = async (authState, recordingName) => _baseFetch(authState, `api/play/${recordingName}`, 'play recording: ' + recordingName);
 const removeRecording = async (authState, recordingName) => _baseFetch(authState, `api/remove/${recordingName}`, 'remove recording: ' + recordingName);
 const streamRecording = async (authState, recordingName) => _baseFetch(authState, `api/stream/${recordingName}`, 'stream recording: ' + recordingName);
-const saveStream = async (authState, channelName, recordingTime) => _baseFetch(authState, `api/stream/save/${channelName}?startTime=${recordingTime&&recordingTime.startTime}&endTime=${recordingTime&&recordingTime.endTime}`, 'save stream : ' + channelName);
-const renameRecording = async (authState, recordingName, newRecordingName) => _baseFetch(authState, `api/edit/${recordingName}?name=${newRecordingName}`, 'edit recording name : ' + recordingName);
+const saveStream = async (authState, channelName, recordingTime) => _baseFetch(authState, `api/stream/save/${channelName}?startTime=${recordingTime && recordingTime.startTime}&endTime=${recordingTime && recordingTime.endTime}`, 'save stream : ' + channelName);
+
+//converts json object to query params, skipping empty fields
+const jsonToQueryParams = (json) => Object
+    .keys(json)
+    .filter(x => json[x] != null)
+    .map(x => `${x}=${encodeURI(json[x])}&`)
+    .reduce((x, s) => x + s, '')
+
+/*
+editParams : {
+     name,
+    startTime,
+    duration
+}
+ */
+const editRecording = async (authState,
+                                recordingName,
+                                editParams
+) => _baseFetch(authState, `api/edit/${recordingName}?${jsonToQueryParams(editParams)}`, `edit recording name : ${recordingName}`);
+
+const getRecordingInfo = async (authState, recordingName) => _baseFetch(authState, `api/recordings/${recordingName}`, 'get recording info : ' + recordingName);
 
 export default {
     fetchWebChannels,
@@ -59,5 +79,6 @@ export default {
     getStreamInfo,
     saveStream,
     fetchTeleman,
-    renameRecording
+    editRecording,
+    getRecordingInfo
 }

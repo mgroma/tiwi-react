@@ -101,7 +101,7 @@ export default function Dashboard() {
             </GridContainer>
             <span>
             <GridContainer>
-            <GridItem xs={12} sm={12} md={6}>
+            <GridItem xs={12} sm={12} md={4}>
             <CustomTabs
                 title=""
                 headerColor="success"
@@ -154,7 +154,7 @@ export default function Dashboard() {
                 ]}
             />
             </GridItem>
-            <GridItem xs={12} sm={12} md={6}>
+            <GridItem xs={12} sm={12} md={8}>
             <CustomTabs
                 title="Recordings:"
                 headerColor="primary"

@@ -16,7 +16,7 @@ const recordChannel = (channelName, channelTitle, recordingTime, authState) => {
 const playChannel = (channelName, authState) => {
     const streamInfo = api.getStreamInfo(authState, channelName);
     streamInfo.then(stream => {
-        window.location.href = '/admin/player/file/' + encodeURIComponent(stream.streamInfo);
+        window.location.href = '/admin/player/file/' + encodeURIComponent(stream.streamInfo.rtmpLink);
     });
 
 }

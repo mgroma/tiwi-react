@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import PropTypes from "prop-types";
 import classnames from "classnames";
 // @material-ui/core components
@@ -18,8 +18,9 @@ import {useOktaAuth} from "@okta/okta-react";
 import api from "../../service/api";
 import readableBytes from "../Utils/ReadableBytes";
 import TableHead from "@material-ui/core/TableHead";
-import {Close, PlayArrowOutlined, Refresh} from "@material-ui/icons";
+import {Close, Edit, PlayArrowOutlined, Refresh} from "@material-ui/icons";
 import moment from "moment";
+import {RecordingEditDialog} from "./RecordingEditDialog";
 
 const useStyles = makeStyles(styles);
 
@@ -34,6 +35,7 @@ export default function RecordingList(props) {
     const {listLength} = props;
 
     //jobs handling
+    const [recordingForEditDialog, setRecordingForEditDialog] = useState(false);
     const [recordings, setRecordings] = useState(null);
     const {authState} = useOktaAuth();
     var jobLastPLayed = null;
@@ -59,7 +61,13 @@ export default function RecordingList(props) {
         const newSuffix = prompt("Enter New Description", extractedPrefix ? "" : fileName)
         if (!newSuffix) return;
         const newFileName = `${extractedPrefix}${newSuffix}.ts`
-        await api.renameRecording(authState, fileName, newFileName);
+        await api.editRecording(
+            authState,
+            fileName,
+            {
+                name: newFileName
+            }
+        );
         refresh()
         console.log(` rrenaming [${fileName}] to ${newFileName}`)
     }
@@ -88,7 +96,7 @@ export default function RecordingList(props) {
 
     const removeRecording = file => {
         api.removeRecording(authState, file)
-            .then(json => fetchRecordings())
+            .then(() => fetchRecordings())
     };
 
     const getRowClass = (job) => {
@@ -101,135 +109,159 @@ export default function RecordingList(props) {
             classes.tableRow
     }
 
-    const handleChange = (event) => {
-        console.log(`changing name [${event.target.value}]`);
-    };
     return (
-        <Table className={classes.table}>
-            <TableHead className={classes[tableHeaderColor + "TableHeader"]}>
-                <TableRow
-                    className={classes.tableHeadRow}
-                >
-                    {tableHead.map((prop, key) => {
-                        return (
-                            <TableCell
-                                className={classes.tableCell + " " + classes.tableHeadCell}
-                                key={key}
-                            >
-                                {prop}
-                            </TableCell>
-                        );
-                    })}
-                    <TableCell
-                        className={classes.tableCell + " " + classes.tableHeadCell}
-                        onClick={() => refresh()}
-                    >
-                        <IconButton>
-                            <Refresh/>
-                        </IconButton>
-                    </TableCell>
-
-                </TableRow>
-            </TableHead>
-            <TableBody>
-                {recordings && recordings.map((job, index) => (
+        <>
+            {
+                recordingForEditDialog &&
+                <RecordingEditDialog
+                    job={recordingForEditDialog}
+                    closeDialog={() => setRecordingForEditDialog(null)}
+                    authState
+                />
+            }
+            <Table className={classes.table}>
+                <TableHead className={classes[tableHeaderColor + "TableHeader"]}>
                     <TableRow
-                        hover
-                        key={index}
-                        className={getRowClass(job)}>
+                        className={classes.tableHeadRow}
+                    >
+                        {tableHead.map((prop, key) => {
+                            return (
+                                <TableCell
+                                    className={classes.tableCell + " " + classes.tableHeadCell}
+                                    key={key}
+                                >
+                                    {prop}
+                                </TableCell>
+                            );
+                        })}
                         <TableCell
-                            onClick={() => rename(job.file, index)}
-                            className={tableCellClasses}
-                        >{job.file}</TableCell>
-                        {[
-                            // new Date(job.created).toLocaleString(),
-                            new Date(job.modified).toLocaleString(),
-                            readableBytes(job.size)
-                        ].map((item) => (
-                            <TableCell className={tableCellClasses}>{item}</TableCell>
-                        ))}
-                        <TableCell className={classes.tableActions}>
-                            <Tooltip
-                                id="tooltip-top-start"
-                                title="Play"
-                                placement="top"
-                                classes={{tooltip: classes.tooltip}}
-                            >
-                                <IconButton
-                                    aria-label="Play"
-                                    className={classes.tableActionButton}
-                                    onClick={() => playRecording(job.file)}
-                                >
-                                    <Play
-                                        className={
-                                            classes.tableActionButtonIcon + " " + classes.play
-                                        }
-                                    />
-                                </IconButton>
-                            </Tooltip>
-                            <Tooltip
-                                id="tooltip-top-start"
-                                title="Remove"
-                                placement="top"
-                                classes={{tooltip: classes.tooltip}}
-                            >
-                                <IconButton
-                                    aria-label="Remove"
-                                    className={classes.tableActionButton}
-                                    onClick={() => removeRecording(job.file)}
-                                >
-                                    <Close
-                                        className={
-                                            classes.tableActionButtonIcon + " " + classes.play
-                                        }
-                                    />
-                                </IconButton>
-                            </Tooltip>
-                            {!job.stream &&
-                            <Tooltip
-                                id="tooltip-top-start"
-                                title="Stream"
-                                placement="top"
-                                classes={{tooltip: classes.tooltip}}
-                            >
-                                <IconButton
-                                    aria-label="Stream"
-                                    className={classes.tableActionButton}
-                                    onClick={() => streamRecording(job.file)}
-                                >
-                                    <Record
-                                        className={
-                                            classes.tableActionButtonIcon + " " + classes.play
-                                        }
-                                    />
-                                </IconButton>
-                            </Tooltip>
-                            }
-                            {job.stream &&
-                            <Tooltip
-                                id="tooltip-top-start"
-                                title="Player"
-                                placement="top"
-                                classes={{tooltip: classes.tooltip}}
-                            >
-                                <IconButton
-                                    aria-label="Player"
-                                    className={classes.tableActionButton}
-                                    onClick={() => startPlayer(job.file)}
-                                >
-                                    <PlayArrowOutlined
-                                        className={
-                                            classes.tableActionButtonIcon + " " + classes.play
-                                        }
-                                    />
-                                </IconButton>
-                            </Tooltip>
-                            }
+                            className={classes.tableCell + " " + classes.tableHeadCell}
+                            onClick={() => refresh()}
+                        >
+                            <IconButton>
+                                <Refresh/>
+                            </IconButton>
                         </TableCell>
                     </TableRow>
-                ))}
-            </TableBody>
-        </Table>
+                </TableHead>
+                <TableBody>
+                    {recordings && recordings.map((job, index) => (
+                        <TableRow
+                            hover
+                            key={index}
+                            className={getRowClass(job)}>
+                            <TableCell
+                                onClick={() => rename(job.file, index)}
+                                className={tableCellClasses}
+                            >{job.file}</TableCell>
+                            {[
+                                // new Date(job.created).toLocaleString(),
+                                new Date(job.modified).toLocaleString(),
+                                readableBytes(job.size)
+                            ].map((item,index) => (
+                                <TableCell key={index} className={tableCellClasses}>{item}</TableCell>
+                            ))}
+                            <TableCell className={classes.tableActions}>
+                                <Tooltip
+                                    id="tooltip-top-start"
+                                    title="Play"
+                                    placement="top"
+                                    classes={{tooltip: classes.tooltip}}
+                                >
+                                    <IconButton
+                                        aria-label="Play"
+                                        className={classes.tableActionButton}
+                                        onClick={() => playRecording(job.file)}
+                                    >
+                                        <Play
+                                            className={
+                                                classes.tableActionButtonIcon + " " + classes.play
+                                            }
+                                        />
+                                    </IconButton>
+                                </Tooltip>
+                                <Tooltip
+                                    id="tooltip-top-start"
+                                    title="Remove"
+                                    placement="top"
+                                    classes={{tooltip: classes.tooltip}}
+                                >
+                                    <IconButton
+                                        aria-label="Remove"
+                                        className={classes.tableActionButton}
+                                        onClick={() => removeRecording(job.file)}
+                                    >
+                                        <Close
+                                            className={
+                                                classes.tableActionButtonIcon + " " + classes.play
+                                            }
+                                        />
+                                    </IconButton>
+                                </Tooltip>
+                                <Tooltip
+                                    id="tooltip-top-start"
+                                    title="Edit"
+                                    placement="top"
+                                    classes={{tooltip: classes.tooltip}}
+                                >
+                                    <IconButton
+                                        aria-label="Edit"
+                                        className={classes.tableActionButton}
+                                        onClick={() => setRecordingForEditDialog(job)}
+                                    >
+                                        <Edit
+                                            className={
+                                                classes.tableActionButtonIcon + " " + classes.play
+                                            }
+                                        />
+                                    </IconButton>
+                                </Tooltip>
+                                {!job.stream &&
+                                <Tooltip
+                                    id="tooltip-top-start"
+                                    title="Stream"
+                                    placement="top"
+                                    classes={{tooltip: classes.tooltip}}
+                                >
+                                    <IconButton
+                                        aria-label="Stream"
+                                        className={classes.tableActionButton}
+                                        onClick={() => streamRecording(job.file)}
+                                    >
+                                        <Record
+                                            className={
+                                                classes.tableActionButtonIcon + " " + classes.play
+                                            }
+                                        />
+                                    </IconButton>
+                                </Tooltip>
+                                }
+                                {job.stream &&
+                                <Tooltip
+                                    id="tooltip-top-start"
+                                    title="Player"
+                                    placement="top"
+                                    classes={{tooltip: classes.tooltip}}
+                                >
+                                    <IconButton
+                                        aria-label="Player"
+                                        className={classes.tableActionButton}
+                                        onClick={() => startPlayer(job.file)}
+                                    >
+                                        <PlayArrowOutlined
+                                            className={
+                                                classes.tableActionButtonIcon + " " + classes.play
+                                            }
+                                        />
+                                    </IconButton>
+                                </Tooltip>
+                                }
+                            </TableCell>
+                        </TableRow>
+                    ))}
+                </TableBody>
+            </Table>
+        </>
     );
 }
 

@@ -32,7 +32,7 @@ const tasksStyle = {
         display: "flex",
         border: "none",
         padding: "12px 8px !important",
-        width: 60,
+        width: 80,
         verticalAlign: "middle"
     },
     tableCell: {
