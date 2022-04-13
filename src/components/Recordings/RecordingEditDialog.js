@@ -21,14 +21,18 @@ export default function RangeSlider({min, max, setNewLengthAndDuration}) {
         setNewLengthAndDuration(newValue)
     };
 
+    function toDuration(seconds) {
+        return moment.utc(moment.duration(seconds, "seconds").asMilliseconds()).format("HH:mm:ss");
+    }
+
     return (
         <>
-            <Box>Start Time: {value[0]} sec Duration: {value[1]} sec</Box>
+            <Box>Start Time: {toDuration(value[0])}  End Time: {toDuration(value[1])} </Box>
             <Slider
                 value={value}
                 size="medium"
                 onChange={handleChange}
-                valueLabelDisplay="auto"
+                // valueLabelDisplay="auto"
                 min={min}
                 max={max}
             />

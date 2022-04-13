@@ -55,14 +55,14 @@ export default function WebList(props) {
     };
 
     useEffect(() => {
-        refreshChannels(authState);
 
-    }, [authState]);
+        refreshChannels(authState);
+    }, [authState, channels]);
 
     function refresh() {
+        setChannels(null)
          onChangeStartDateTime(generateStartDateTime());
         onChangeEndDateTime(generateEndDateTime())
-        refreshChannels(authState)
         return null
     }
 

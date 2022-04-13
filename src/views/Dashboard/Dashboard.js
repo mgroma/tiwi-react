@@ -93,7 +93,6 @@ export default function Dashboard() {
                         <CardFooter stats>
                             <div className={classes.stats}>
                                 <Update/>
-                                Just Updated
                             </div>
                         </CardFooter>
                     </Card>
@@ -101,7 +100,7 @@ export default function Dashboard() {
             </GridContainer>
             <span>
             <GridContainer>
-            <GridItem xs={12} sm={12} md={4}>
+            <GridItem xs={12} sm={12} md={5}>
             <CustomTabs
                 title=""
                 headerColor="success"
@@ -154,7 +153,7 @@ export default function Dashboard() {
                 ]}
             />
             </GridItem>
-            <GridItem xs={12} sm={12} md={8}>
+            <GridItem xs={12} sm={12} md={7}>
             <CustomTabs
                 title="Recordings:"
                 headerColor="primary"

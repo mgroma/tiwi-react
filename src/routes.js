@@ -87,7 +87,8 @@ const dashboardRoutes = [
         name: "User Profile",
         icon: Person,
         component: UserProfile,
-        layout: "/admin"
+        layout: "/admin",
+        unsecure: true
     },
     {
         path: "/typography",
@@ -109,7 +110,8 @@ const dashboardRoutes = [
         name: "Notifications",
         icon: Notifications,
         component: NotificationsPage,
-        layout: "/admin"
+        layout: "/admin",
+        unsecure: true
     },
 ];
 
