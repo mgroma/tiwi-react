@@ -19,7 +19,7 @@ export const MyFacebook = (props) => {
         });
     }, []);
     useEffect(() => {
-        if (authResponse) {
+        if (authResponse && authResponse.authResponse) {
             /* eslint-disable no-undef */
             FB.api(`/${authResponse.authResponse.userID}/posts?access_token=${authResponse.authResponse.accessToken}`, function(response) {
                 // console.log('Successful login for: ' + response.name);
