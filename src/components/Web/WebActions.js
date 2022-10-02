@@ -13,17 +13,19 @@ const recordChannel = (channelName, channelTitle, recordingTime, authState) => {
 }
 
 
-const playChannel = (channelName, authState) => {
+const playChannel = (channelName, changePlayerUrl, event, authState) => {
     const streamInfo = api.getStreamInfo(authState, channelName);
     streamInfo.then(stream => {
-        window.location.href = '/admin/player/file/' + encodeURIComponent(stream.streamInfo.rtmpLink);
+        //todo: re-enable it later
+        changePlayerUrl(encodeURIComponent(stream.streamInfo.rtmpLink), event)
+        // window.location.href = '/admin/player/file/' + encodeURIComponent(stream.streamInfo.rtmpLink);
     });
 
 }
 
 export default (props) => {
     const {classes, channel, recordingTime, authState} = props;
-    const {handleChange} = useRecordingSearch();
+    const {handleChange, changePlayerUrl} = useRecordingSearch();
     return <span>
     <Tooltip
         id="tooltip-top-start"
@@ -56,7 +58,7 @@ export default (props) => {
             <IconButton
                 aria-label="Play"
                 className={classes.tableActionButton}
-                onClick={() => playChannel(channel.channel_name, authState)}
+                onClick={(event) => playChannel(channel.channel_name, changePlayerUrl, event, authState)}
             >
                 <Play
                     className={

@@ -14,7 +14,6 @@ import Cloud from "@material-ui/icons/Cloud";
 // core components
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
-import Tasks from "components/Tasks/Tasks.js";
 import CustomTabs from "components/CustomTabs/CustomTabs.js";
 import Danger from "components/Typography/Danger.js";
 import Card from "components/Card/Card.js";
@@ -22,13 +21,11 @@ import CardHeader from "components/Card/CardHeader.js";
 import CardIcon from "components/Card/CardIcon.js";
 import CardFooter from "components/Card/CardFooter.js";
 
-import {server} from "variables/general.js";
 
 import styles from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
 import WebList from "../../components/Web/WebList";
 import ScheduleList from "../../components/Lists/ScheduleList";
 import RecordingList from "../../components/Recordings/RecordingList";
-import {Refresh} from "@material-ui/icons";
 import {useRecordingSearch} from "../../context/RecordingSearchContext";
 
 const useStyles = makeStyles(styles);
@@ -175,17 +172,18 @@ export default function Dashboard() {
                             />
                         )
                     },
+/*
+not really needed anymore PlayerPopup takes it's place
                     {
-                        tabName: "Server",
-                        tabIcon: Refresh,
+                        tabName: "Player",
+                        tabIcon: Play,
                         tabContent: (
-                            <Tasks
-                                checkedIndexes={[1]}
-                                tasksIndexes={[0, 1, 2]}
-                                tasks={server}
+                            <Player
+                            url={playerUrl}
                             />
                         )
                     }
+*/
                 ]}
             />
             </GridItem>

@@ -4,19 +4,31 @@ const RecordingSearchContext = React.createContext()
 
 const RecordingSearchContextProvider = ({children}) => {
     const [searchCriteria, setSearchCriteria] = React.useState("No Recording");
+    const [playerUrl, setPlayerUrl] = React.useState(null);
+    const [anchorElement, setAnchorElement] = React.useState(null);
     return (
-        <RecordingSearchContext.Provider value={[searchCriteria, setSearchCriteria]} >
+        <RecordingSearchContext.Provider value={[searchCriteria, setSearchCriteria, playerUrl, setPlayerUrl,
+            anchorElement, setAnchorElement]} >
             {children}
         </RecordingSearchContext.Provider>
     )
 }
 const useRecordingSearch = () => {
-    const [searchCriteria, setSearchCriteria] = React.useContext(RecordingSearchContext);
+    const [searchCriteria, setSearchCriteria, playerUrl, setPlayerUrl,
+        anchorElement, setAnchorElement] = React.useContext(RecordingSearchContext);
 
     const handleChange = (newValue) => {
         setSearchCriteria(newValue)
     };
-    return {value: searchCriteria, handleChange}
+    const changePlayerUrl = (newUrl, event) => {
+        setPlayerUrl(newUrl)
+        if (event) {
+        setAnchorElement(event.target)
+        }
+    }
+    const closePlayer = () => setAnchorElement(null)
+
+    return {value: searchCriteria, handleChange, playerUrl, changePlayerUrl, closePlayer, anchorElement}
 
 };
 

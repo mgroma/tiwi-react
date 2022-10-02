@@ -9,6 +9,7 @@ import {makeStyles} from "@material-ui/core/styles";
 import Navbar from "components/Navbars/Navbar.js";
 import Footer from "components/Footer/Footer.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
+import PlayerPopup from "components/Player/PlayerPopup";
 import {SecureRoute} from '@okta/okta-react';
 
 
@@ -105,6 +106,7 @@ export default function Admin({...rest}) {
                     handleDrawerToggle={handleDrawerToggle}
                     {...rest}
                 />
+                <PlayerPopup />
                 {/* On the /maps route we want the map to be on full screen - this is not possible if the content and container classes are present because they have some paddings which would make the map smaller */}
                 {getRoute() ? (
                     <div className={classes.content}>
