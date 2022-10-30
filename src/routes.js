@@ -24,7 +24,6 @@ import Notifications from "@material-ui/icons/Notifications";
 // core components/views for Admin layout
 import DashboardPage from "views/Dashboard/Dashboard.js";
 import OldDashboardPage from "views/Dashboard/OldDashboard.js";
-import UserProfile from "views/UserProfile/UserProfile.js";
 import Typography from "views/Typography/Typography.js";
 import Icons from "views/Icons/Icons.js";
 import NotificationsPage from "views/Notifications/Notifications.js";
@@ -32,6 +31,7 @@ import WebPage from "./components/Web/WebPage";
 import RecordingsPage from "./components/Recordings/RecordingsPage";
 import TelemanList from "./components/Teleman/TelemanList";
 import PlayerPage from "./components/Player/PlayerPage";
+import EPG from "./components/Teleman/EPG";
 
 const dashboardRoutes = [
     {
@@ -83,10 +83,10 @@ const dashboardRoutes = [
         unsecure: true
     },
     {
-        path: "/user",
-        name: "User Profile",
+        path: "/epgList",
+        name: "EPG List",
         icon: Person,
-        component: UserProfile,
+        component: EPG,
         layout: "/admin",
         unsecure: true
     },

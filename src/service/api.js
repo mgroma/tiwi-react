@@ -17,15 +17,15 @@ const _baseFetch = async (authState, apiPath, operationName, method = 'GET') => 
     return await response.json();
 }
 const _baseFetchThirdParty = async (apiUrl, operationName, method = 'GET') => {
-    const response = await fetch(apiUrl, {
+    const response = await fetch(`${HOSTNAME}/${apiUrl}`, {
         method: method
     })
     if (!response.ok) {
         throw Error(`error executing ${operationName}: error=[${response.error()}]`);
     }
-    return await response.text();
+    return response.json();
 }
-const fetchTeleman = async () => _baseFetchThirdParty('https://teleman.pl', 'Teleman');
+const fetchTvGuide = async () => _baseFetchThirdParty( 'api/tvguide', 'fetch tv guide');
 const fetchWebChannels = async (authState) => _baseFetch(authState, 'api/channels', 'fetch web channels');
 const fetchSchedules = async (authState) => _baseFetch(authState, 'api/schedules', 'fetch schedules');
 const fetchRecordings = async (authState) => _baseFetch(authState, 'api/recordings', 'fetch recordings');
@@ -78,7 +78,7 @@ export default {
     streamRecording,
     getStreamInfo,
     saveStream,
-    fetchTeleman,
+    fetchTvGuide,
     editRecording,
     getRecordingInfo
 }

@@ -182,24 +182,6 @@ export default function RecordingList(props) {
                                 </Tooltip>
                                 <Tooltip
                                     id="tooltip-top-start"
-                                    title="Remove"
-                                    placement="top"
-                                    classes={{tooltip: classes.tooltip}}
-                                >
-                                    <IconButton
-                                        aria-label="Remove"
-                                        className={classes.tableActionButton}
-                                        onClick={() => removeRecording(job.file)}
-                                    >
-                                        <Close
-                                            className={
-                                                classes.tableActionButtonIcon + " " + classes.play
-                                            }
-                                        />
-                                    </IconButton>
-                                </Tooltip>
-                                <Tooltip
-                                    id="tooltip-top-start"
                                     title="Edit"
                                     placement="top"
                                     classes={{tooltip: classes.tooltip}}
@@ -216,6 +198,25 @@ export default function RecordingList(props) {
                                         />
                                     </IconButton>
                                 </Tooltip>
+                                <Tooltip
+                                    id="tooltip-top-start"
+                                    title="Remove"
+                                    placement="top"
+                                    classes={{tooltip: classes.tooltip}}
+                                >
+                                    <IconButton
+                                        aria-label="Remove"
+                                        className={classes.tableActionButton}
+                                        onClick={() => removeRecording(job.file)}
+                                    >
+                                        <Close
+                                            className={
+                                                classes.tableActionButtonIcon + " " + classes.play
+                                            }
+                                        />
+                                    </IconButton>
+                                </Tooltip>
+
                                 {!job.stream &&
                                 <Tooltip
                                     id="tooltip-top-start"

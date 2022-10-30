@@ -16,7 +16,7 @@
 
 */
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from 'react-dom/client';
 import {createBrowserHistory} from "history";
 import {Router, Route, Switch, Redirect} from "react-router-dom";
 import {Security, LoginCallback} from '@okta/okta-react';
@@ -30,18 +30,22 @@ import Admin from "layouts/Admin.js";
 
 import "assets/css/material-dashboard-react.css?v=1.9.0";
 import {RecordingSearchContextProvider} from "./context/RecordingSearchContext";
-
+import { QueryClient, QueryClientProvider } from 'react-query'
 const hist = createBrowserHistory();
 const customAuthHandler = () => {
     hist.push('/login')
 }
+const queryClient = new QueryClient()
 const restoreOriginalUri = async (_oktaAuth, originalUri) => {
     hist.replace(toRelativeUrl(originalUri, window.location.origin));
 };
 
 const oktaAuth = new OktaAuth(config.oidc);
-ReactDOM.render(
+const container = document.getElementById('root');
+const root = createRoot(container); // createRoot(container!) if you use TypeScript
+root.render(
     <Router history={hist}>
+        <QueryClientProvider client={queryClient}>
         <RecordingSearchContextProvider>
         <Security
             onAuthRequired={customAuthHandler}
@@ -56,6 +60,6 @@ ReactDOM.render(
             </Switch>
         </Security>
         </RecordingSearchContextProvider>
-    </Router>,
-    document.getElementById("root")
+        </QueryClientProvider>
+    </Router>
 );
