@@ -15,11 +15,27 @@ import Close from "@material-ui/icons/Close";
 import styles from "assets/jss/material-dashboard-react/components/tasksStyle.js";
 import {useOktaAuth} from "@okta/okta-react";
 import api from "../../service/api";
-import {Stop} from "@material-ui/icons";
+import {Done, Stop, Timer} from "@material-ui/icons";
 import {useRecordingSearch} from "../../context/RecordingSearchContext";
+import {LinearProgress} from "@material-ui/core";
 
 const useStyles = makeStyles(styles);
 
+const JobStatusMap = {
+    'NOT_SCHEDULED': 'NOT_SCHEDULED',
+    'SCHEDULED' : <Timer />,
+    'EXECUTING': <LinearProgress style={{minWidth:50}} />,
+    //later  'EXECUTING': <LinearProgress value={50} variant="determinate"/>,
+    'COMPLETED': <Done style={{color: "green"}}/>,
+    'ERROR': 'ERROR',
+    'KILLED': 'KILLED'
+}
+function JobStatus(job) {
+    const status = JobStatusMap[job.status];
+    return <div>
+        {status || job.status}
+    </div>;
+}
 
 export default function ScheduleList() {
     //page formatting
@@ -56,7 +72,7 @@ export default function ScheduleList() {
                 {jobs && jobs.map((job, index) => (
                     <TableRow key={index} className={classes.tableRow}>
                         {[job.name,
-                            job.status,
+                            JobStatus(job),
                             new Date(job.jobInfo.startTime).toLocaleString(),
                             new Date(job.jobInfo.endTime).toLocaleString(),
                         ]

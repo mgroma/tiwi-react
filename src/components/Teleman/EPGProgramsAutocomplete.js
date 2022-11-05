@@ -7,7 +7,7 @@ import {makeStyles} from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import {grayColor} from "../../assets/jss/material-dashboard-react";
-import {red, green, purple} from "@material-ui/core/colors";
+import {red, green} from "@material-ui/core/colors";
 
 export const styles = {
     container: {
@@ -33,7 +33,7 @@ export const styles = {
 const useStyles = makeStyles(styles);
 
 function getChannel(channels, channelId) {
-    return channels.find(item => item.id == channelId)
+    return channels.find(item => item.id === channelId)
 }
 
 const Item = ({backgroundColor = "#eee", textAlign = 'right'}) => styled(Paper)(({theme}) => ({
@@ -54,8 +54,18 @@ function getBackgroundColorFor(deltaTime) {
     else if (4 > deltaHours) color = green[300];
     else if (8 > deltaHours) color = green[200];
     else if (16 > deltaHours) color = green[100];
-    console.log(`getBackgroundColorFor=${deltaHours}, color=${color}`)
     return color
+}
+
+const ItemColored = props => {
+    const {deltaTime} = props
+    const deltaHours = deltaTime && deltaTime.asHours()
+    const message = deltaHours > 0 ? `in ${deltaTime.humanize()}` : `${deltaTime && deltaTime.humanize()} ago`
+    const RenderItem = Item({backgroundColor: getBackgroundColorFor(deltaTime)})
+    return (<RenderItem>
+            {message}
+        </RenderItem>
+    )
 }
 
 export function EPGProgramHeader({classes, authState, channels, item}) {
@@ -84,7 +94,7 @@ export default function EPGProgramsAutocomplete({channels, programs}) {
     const classes = useStyles()
     const {authState} = useOktaAuth();
     const calculateDeltaTimeHO = calculateDeltaTime()
-    const programsSorted = programs.sort((a, b) => a.start - b.start)
+    const programsSorted = programs ? programs.sort((a, b) => a.start - b.start) : []
     const defaultProps = {
         options: programsSorted,
         getOptionLabel: item => item && item.titles ? `[${toDate(item.start)} ${toTime(item.start)}-${toTime(item.stop)}] ${item.channel}: ${fromlist(item.titles)}` : ''
@@ -98,10 +108,9 @@ export default function EPGProgramsAutocomplete({channels, programs}) {
                 {...defaultProps}
                 autoComplete
                 filterOptions={filterOptions}
-                renderInput={(params) => <TextField {...params}  />}
+                renderInput={(params) => <TextField {...params} label={'Enter program or channel name...'}/>}
                 renderOption={(props, item) => {
                     const deltaTime = calculateDeltaTimeHO(item);
-                    const ItemColored = Item({backgroundColor: getBackgroundColorFor(deltaTime)})
                     const ItemDetails = Item({textAlign: 'left'})
                     return (
                         <div
@@ -113,10 +122,7 @@ export default function EPGProgramsAutocomplete({channels, programs}) {
                                 </Grid>
                                 <Grid item xs={2}
                                 >
-                                    <ItemColored>
-                                        {deltaTime.humanize()
-                                        }
-                                    </ItemColored>
+                                    <ItemColored deltaTime={deltaTime}/>
                                 </Grid>
                                 <Grid item xs={12}>
                                     {EPGProgramFooter(classes, item)}

@@ -22,7 +22,7 @@ const onlyWebTvEpg = (webTvData, epgData, allChannels = false) => {
                 .map(webTvChannel => {
                     const matchScore = stringSimilarity(removeWhiteSpaces(webTvChannel.channel_title), cleanedChannelName);
                     if (matchScore > 0.4) {
-                        console.debug(`find epg[${channel.name}] - webtv[${webTvChannel.channel_title}] ismatch[${matchScore}]`)
+                        console.debug(`find epg[${channel.name}] - webtv[${webTvChannel.channel_title}]-[${webTvChannel.channel_name}] ismatch[${matchScore}]`)
                         return {
                             matchScore,
                             webtv: {name: webTvChannel.channel_name, title: webTvChannel.channel_title}
@@ -34,7 +34,7 @@ const onlyWebTvEpg = (webTvData, epgData, allChannels = false) => {
                 .reduce((prev, curr) => {
                     if (curr
                         && ((!prev)
-                            || prev.matchScore < curr.matchScore)
+                            || prev.matchScore <= curr.matchScore)
                     ) {
                         return curr
                     }

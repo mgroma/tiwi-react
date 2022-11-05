@@ -2,12 +2,8 @@ import React from "react";
 // react plugin for creating charts
 // @material-ui/core
 import {makeStyles} from "@material-ui/core/styles";
-import Icon from "@material-ui/core/Icon";
 // @material-ui/icons
-import Warning from "@material-ui/icons/Warning";
-import LocalOffer from "@material-ui/icons/LocalOffer";
 import Update from "@material-ui/icons/Update";
-import Accessibility from "@material-ui/icons/Accessibility";
 import BugReport from "@material-ui/icons/BugReport";
 import Code from "@material-ui/icons/Code";
 import Cloud from "@material-ui/icons/Cloud";
@@ -15,7 +11,6 @@ import Cloud from "@material-ui/icons/Cloud";
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
 import CustomTabs from "components/CustomTabs/CustomTabs.js";
-import Danger from "components/Typography/Danger.js";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardIcon from "components/Card/CardIcon.js";
@@ -27,66 +22,37 @@ import WebList from "../../components/Web/WebList";
 import ScheduleList from "../../components/Lists/ScheduleList";
 import RecordingList from "../../components/Recordings/RecordingList";
 import {useRecordingSearch} from "../../context/RecordingSearchContext";
+import EPGProgramsAutocomplete from "../../components/Teleman/EPGProgramsAutocomplete";
+import {useSelectedEPGChannel} from "../../components/Teleman/useEPGData";
+import {LiveTv} from "@material-ui/icons";
+import CardBody from "../../components/Card/CardBody";
 
 const useStyles = makeStyles(styles);
 
 
 export default function Dashboard() {
     const classes = useStyles();
-    const { value } = useRecordingSearch();
-    const recordingStatus = `[${value}]` ;
+    const {value} = useRecordingSearch();
+    const {selectedChannels} = useSelectedEPGChannel();
+    const channels = selectedChannels.data && selectedChannels.data.channels
+    const programs = selectedChannels.data && selectedChannels.data.programs
+
+    const recordingStatus = `[${value}]`;
     return (
         <div>
             <GridContainer>
-                <GridItem xs={12} sm={6} md={4}>
-                    <Card>
-                        <CardHeader color="warning" stats icon>
-                            <CardIcon color="warning">
-                                <Icon>content_copy</Icon>
-                            </CardIcon>
-                            <p className={classes.cardCategory}>Interestings</p>
-                            <h3 className={classes.cardTitle}>
-                                49/50 <small>GB</small>
-                            </h3>
-                        </CardHeader>
-                        <CardFooter stats>
-                            <div className={classes.stats}>
-                                <Danger>
-                                    <Warning/>
-                                </Danger>
-                                <a href="#pablo" onClick={e => e.preventDefault()}>
-                                    Get more space
-                                </a>
-                            </div>
-                        </CardFooter>
-                    </Card>
-                </GridItem>
-                <GridItem xs={12} sm={6} md={4}>
-                    <Card>
-                        <CardHeader color="primary" stats icon>
-                            <CardIcon color="primary">
-                                <Icon>info_outline</Icon>
-                            </CardIcon>
-                            <p className={classes.cardCategory}>Recordings</p>
-                            <h3 className={classes.cardTitle}>75</h3>
-                        </CardHeader>
-                        <CardFooter stats>
-                            <div className={classes.stats}>
-                                <LocalOffer/>
-                                <span>{recordingStatus}</span>
-                            </div>
-                        </CardFooter>
-                    </Card>
-                </GridItem>
-                <GridItem xs={12} sm={6} md={4}>
+                <GridItem xs={12} sm={12} md={12}>
                     <Card>
                         <CardHeader color="success" stats icon>
                             <CardIcon color="success">
-                                <Accessibility/>
+                                <LiveTv/>
                             </CardIcon>
                             <p className={classes.cardCategory}>What's On Now</p>
-                            <h3 className={classes.cardTitle}>+245</h3>
+                            <h3 className={classes.cardTitle}>{channels ? channels.length : 'fetching...'}</h3>
                         </CardHeader>
+                        <CardBody>
+                            <EPGProgramsAutocomplete channels={channels} programs={programs}/>
+                        </CardBody>
                         <CardFooter stats>
                             <div className={classes.stats}>
                                 <Update/>
@@ -172,18 +138,6 @@ export default function Dashboard() {
                             />
                         )
                     },
-/*
-not really needed anymore PlayerPopup takes it's place
-                    {
-                        tabName: "Player",
-                        tabIcon: Play,
-                        tabContent: (
-                            <Player
-                            url={playerUrl}
-                            />
-                        )
-                    }
-*/
                 ]}
             />
             </GridItem>

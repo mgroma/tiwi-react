@@ -51,9 +51,9 @@ function EPGChannels(channels, programs, selectedChannel, setSelectedChannel) {
 
 const EPGMain = (props) => {
     const {setChannelFilter, selectedChannels} = useSelectedEPGChannel();
-    const [selectedChannel, setSelectedChannel] = useState(null);
     const channels = selectedChannels.data && selectedChannels.data.channels
     const programs = selectedChannels.data && selectedChannels.data.programs
+    const [selectedChannel, setSelectedChannel] = useState(null);
     return (
         <>
             <CustomInput
