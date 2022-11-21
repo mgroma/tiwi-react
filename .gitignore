@@ -25,3 +25,5 @@ yarn-error.log*
 # SSL files
 *.crt
 *.key
+localhost.crt
+localhost.key

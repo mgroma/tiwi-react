@@ -21,7 +21,8 @@ function EPGChannels(channels, programs, selectedChannel, setSelectedChannel) {
                 <TableRow>
                     <TableCell>Channel</TableCell>
                     <TableCell>Name</TableCell>
-                    <TableCell>Id</TableCell>
+                    <TableCell>Web.Name</TableCell>
+                    <TableCell>Web.Title</TableCell>
                 </TableRow>
             </TableHead>
             <TableBody>
@@ -38,7 +39,8 @@ function EPGChannels(channels, programs, selectedChannel, setSelectedChannel) {
                                 />
                                 </TableCell>
                                 <TableCell>{channel.name}</TableCell>
-                                <TableCell>{JSON.stringify(channel.webtv)}</TableCell>
+                                <TableCell>{channel.webtv.name}</TableCell>
+                                <TableCell>{channel.webtv.title}</TableCell>
                             </TableRow>
                         )
                     })

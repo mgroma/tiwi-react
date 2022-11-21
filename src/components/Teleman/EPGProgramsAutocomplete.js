@@ -97,7 +97,7 @@ export default function EPGProgramsAutocomplete({channels, programs}) {
     const programsSorted = programs ? programs.sort((a, b) => a.start - b.start) : []
     const defaultProps = {
         options: programsSorted,
-        getOptionLabel: item => item && item.titles ? `[${toDate(item.start)} ${toTime(item.start)}-${toTime(item.stop)}] ${item.channel}: ${fromlist(item.titles)}` : ''
+        getOptionLabel: item => item && item.titles ? `[${toDate(item.start)} ${toTime(item.start)}-${toTime(item.stop)}] ${item.channel}: ${fromlist(item.titles)} ${fromlist(item.descriptions)}` : ''
     }
     const filterOptions = createFilterOptions({
         limit: 45,
@@ -111,7 +111,6 @@ export default function EPGProgramsAutocomplete({channels, programs}) {
                 renderInput={(params) => <TextField {...params} label={'Enter program or channel name...'}/>}
                 renderOption={(props, item) => {
                     const deltaTime = calculateDeltaTimeHO(item);
-                    const ItemDetails = Item({textAlign: 'left'})
                     return (
                         <div
                             className={classes.container}

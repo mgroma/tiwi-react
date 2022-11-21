@@ -18,23 +18,42 @@ import api from "../../service/api";
 import {Done, Stop, Timer} from "@material-ui/icons";
 import {useRecordingSearch} from "../../context/RecordingSearchContext";
 import {LinearProgress} from "@material-ui/core";
+import moment from "moment/moment";
 
 const useStyles = makeStyles(styles);
 
 const JobStatusMap = {
     'NOT_SCHEDULED': 'NOT_SCHEDULED',
-    'SCHEDULED' : <Timer />,
-    'EXECUTING': <LinearProgress style={{minWidth:50}} />,
+    'SCHEDULED': <Timer/>,
+    'EXECUTING': <LinearProgress style={{minWidth: 50}}/>,
     //later  'EXECUTING': <LinearProgress value={50} variant="determinate"/>,
     'COMPLETED': <Done style={{color: "green"}}/>,
     'ERROR': 'ERROR',
     'KILLED': 'KILLED'
 }
+
+function getJobTitle(job) {
+        if (job.status === 'EXECUTING') {
+            const now = moment()
+            const end = moment(job.jobInfo.endTime)
+            const start = moment(job.jobInfo.startTime)
+            return `${Math.round(((now - start) / (end - start)) * 100)} %`
+        }
+        return job.status
+}
+
 function JobStatus(job) {
     const status = JobStatusMap[job.status];
-    return <div>
-        {status || job.status}
-    </div>;
+    const title = getJobTitle(job)
+    return <Tooltip
+        id="tooltip-top"
+        title={title}
+        placement="top"
+    >
+        <div>
+            {status || job.status}
+        </div>
+    </Tooltip>;
 }
 
 export default function ScheduleList() {

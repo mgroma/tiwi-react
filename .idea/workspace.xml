@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a1de97b9-a8dc-4257-b4a5-5979430f6cf3" name="Changes" comment="Dashboard.js: added EPGAutocomplete&#10;JobStatus: use mui icons for job status&#10;AdminNavbarLinks.js: remove unnecessary menu items&#10;ItemColored: add &quot;ago&quot; and &quot;in&quot; for better understanding what happened in the past / will happen in future&#10;useEPGData.js : slight modification of the match algorithm: if match if equal, pick the last matching item, instead of the first">
+    <list default="true" id="a1de97b9-a8dc-4257-b4a5-5979430f6cf3" name="Changes" comment="ScheduleList.js: new schedule status icons&#10;useEPGData.js: reverse the web/epg mapping: return all web items with or without corresponding epg items (allWebTvWithOptionalEpg())&#10;EPGProgramsAutocomplete.js: add descriptions to the autocomplete search scope">
       <change afterPath="$PROJECT_DIR$/localhost.crt" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/localhost.key" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/mareks-mbp.crt" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/mareks-mbp.key" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/msx/menu.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/msx/start.json" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Lists/ScheduleList.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Lists/ScheduleList.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Navbars/AdminNavbarLinks.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Navbars/AdminNavbarLinks.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Teleman/EPGChannels.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Teleman/EPGChannels.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Teleman/EPGProgramsAutocomplete.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Teleman/EPGProgramsAutocomplete.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Teleman/useEPGData.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Teleman/useEPGData.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/Dashboard/Dashboard.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/Dashboard/Dashboard.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -104,7 +105,7 @@
       <workItem from="1665374047005" duration="108000" />
       <workItem from="1665374197875" duration="92391000" />
       <workItem from="1666831007938" duration="7460000" />
-      <workItem from="1667171222536" duration="14501000" />
+      <workItem from="1667171222536" duration="44661000" />
     </task>
     <task id="LOCAL-00001" summary="added inline video player to play live channels">
       <created>1664745124952</created>
@@ -127,7 +128,14 @@
       <option name="project" value="LOCAL" />
       <updated>1667171935001</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Dashboard.js: added EPGAutocomplete&#10;JobStatus: use mui icons for job status&#10;AdminNavbarLinks.js: remove unnecessary menu items&#10;ItemColored: add &quot;ago&quot; and &quot;in&quot; for better understanding what happened in the past / will happen in future&#10;useEPGData.js : slight modification of the match algorithm: if match if equal, pick the last matching item, instead of the first">
+      <created>1667687185800</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1667687185800</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -139,7 +147,8 @@
     <MESSAGE value="integrated EPG" />
     <MESSAGE value="integrated EPG - initial version &#10;Teleman &#10;- list channels that match weeb list&#10;- full text autocomplete search for a program&#10;EPG&#10;- fetch channels and programs from https://iptv-org.github.io/&#10;- merge with weeb list and filter out past programs" />
     <MESSAGE value="Dashboard.js: added EPGAutocomplete&#10;JobStatus: use mui icons for job status&#10;AdminNavbarLinks.js: remove unnecessary menu items&#10;ItemColored: add &quot;ago&quot; and &quot;in&quot; for better understanding what happened in the past / will happen in future&#10;useEPGData.js : slight modification of the match algorithm: if match if equal, pick the last matching item, instead of the first" />
-    <option name="LAST_COMMIT_MESSAGE" value="Dashboard.js: added EPGAutocomplete&#10;JobStatus: use mui icons for job status&#10;AdminNavbarLinks.js: remove unnecessary menu items&#10;ItemColored: add &quot;ago&quot; and &quot;in&quot; for better understanding what happened in the past / will happen in future&#10;useEPGData.js : slight modification of the match algorithm: if match if equal, pick the last matching item, instead of the first" />
+    <MESSAGE value="ScheduleList.js: new schedule status icons&#10;useEPGData.js: reverse the web/epg mapping: return all web items with or without corresponding epg items (allWebTvWithOptionalEpg())&#10;EPGProgramsAutocomplete.js: add descriptions to the autocomplete search scope" />
+    <option name="LAST_COMMIT_MESSAGE" value="ScheduleList.js: new schedule status icons&#10;useEPGData.js: reverse the web/epg mapping: return all web items with or without corresponding epg items (allWebTvWithOptionalEpg())&#10;EPGProgramsAutocomplete.js: add descriptions to the autocomplete search scope" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
