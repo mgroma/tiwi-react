@@ -5,8 +5,11 @@ import {EPGPrograms} from "./EPGPrograms";
 import EPGProgramsAutocomplete from "./EPGProgramsAutocomplete";
 import {useSelectedEPGChannel} from "./useEPGData";
 import CustomInput from "../CustomInput/CustomInput";
+import {getChannelForName} from "./EPGDataUtils";
+import {useHistory} from "react-router-dom";
 
-function EPGChannels(channels, programs, selectedChannel, setSelectedChannel) {
+function EPGChannels(channels, programs) {
+    const history = useHistory()
     return <>
         {channels &&
         <Table>
@@ -35,7 +38,7 @@ function EPGChannels(channels, programs, selectedChannel, setSelectedChannel) {
                                     alt={channel.name}
                                     style={{maxWidth: '6rem', maxHeight: '3rem'}}
                                     loading={"lazy"}
-                                    onClick={(event) => setSelectedChannel(channel)}
+                                    onClick={(event) => history.push('/admin/epgProgram/' + channel.id)}
                                 />
                                 </TableCell>
                                 <TableCell>{channel.name}</TableCell>
@@ -51,11 +54,10 @@ function EPGChannels(channels, programs, selectedChannel, setSelectedChannel) {
     </>;
 }
 
-const EPGMain = (props) => {
+const EPGMain = () => {
     const {setChannelFilter, selectedChannels} = useSelectedEPGChannel();
     const channels = selectedChannels.data && selectedChannels.data.channels
     const programs = selectedChannels.data && selectedChannels.data.programs
-    const [selectedChannel, setSelectedChannel] = useState(null);
     return (
         <>
             <CustomInput
@@ -71,10 +73,7 @@ const EPGMain = (props) => {
             {channels
             && programs
             && <div>
-                {(!selectedChannel) && EPGChannels(channels, programs, selectedChannel, setSelectedChannel)}
-                {selectedChannel &&
-                <EPGPrograms selectedChannel={selectedChannel} setSelectedChannel={setSelectedChannel}
-                             programs={programs}/>}
+                {EPGChannels(channels, programs)}
             </div>}
         </>
     )

@@ -26,7 +26,12 @@ const _baseFetchThirdParty = async (apiUrl, operationName, method = 'GET') => {
     return response.json();
 }
 const fetchTvGuide = async () => _baseFetchThirdParty( 'api/tvguide', 'fetch tv guide');
-const fetchWebChannels = async (authState) => _baseFetch(authState, 'api/channels', 'fetch web channels');
+// const fetchWebChannels = async (authState) => _baseFetch(authState, 'api/channels', 'fetch web channels')
+const fetchWebChannels = async (authState) => {
+    const channelList = await _baseFetch(authState, 'api/channels', 'fetch web channels')
+        return channelList;
+        // return channelList.filter(item => item.channel_name != 'canalplusssport');
+}
 const fetchSchedules = async (authState) => _baseFetch(authState, 'api/schedules', 'fetch schedules');
 const fetchRecordings = async (authState) => _baseFetch(authState, 'api/recordings', 'fetch recordings');
 const cancelJob = async (authState, jobIndex) => _baseFetch(authState, `api/cancel/${jobIndex}`, 'cancel job');

@@ -1,13 +1,14 @@
 import {useOktaAuth} from "@okta/okta-react";
 import React from "react";
-import {calculateDeltaTime, fromlist, recordProgrom, toDate, toTime} from "./EPGDataUtils";
-import {Autocomplete, createFilterOptions} from "@mui/material";
+import {calculateDeltaTime, fromlist, fromlist2, recordProgrom, toDate, toTime} from "./EPGDataUtils";
+import {Autocomplete, createFilterOptions, Tooltip} from "@mui/material";
 import {Link, styled, TextField} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import {grayColor} from "../../assets/jss/material-dashboard-react";
 import {red, green} from "@material-ui/core/colors";
+import {useHistory} from "react-router-dom";
 
 export const styles = {
     container: {
@@ -68,15 +69,38 @@ const ItemColored = props => {
     )
 }
 
+function getDescription(itemDescription, actors, directors, ratings) {
+    const actorsContent = actors ? `actors: [${actors}]` : ''
+    const directorsContent = directors ? `director: [${directors}]` : ''
+    const ratingsContent = ratings ? `ratings: [${ratings}]` : ''
+    return <>
+        {itemDescription}
+        {actorsContent}
+        {directorsContent}
+        {ratingsContent}
+    </>;
+}
+
 export function EPGProgramHeader({classes, authState, channels, item}) {
+    const itemDescription = fromlist(item.descriptions);
+    const itemTitle = fromlist(item.titles);
+    const directors = fromlist(item.directors);
+    const actors = fromlist(item.actors);
+    const ratings = fromlist2(item.ratings);
+    const ratingsContent = ratings ? `ratings: ${ratings}` : ''
+    const actorsContent = actors ? `actors: ${actors};` : ''
+    const directorsContent = directors ? `director: ${directors};` : '';
     return <>
         <Link
             className={classes.title}
             onClick={(event) => recordProgrom(authState, getChannel(channels, item.channel), item)}
-        >{fromlist(item.titles)}</Link>
-        <div className={classes.description}>
-            {fromlist(item.descriptions)}
-        </div>
+        >{itemTitle}</Link>
+        <Tooltip
+            title={`${itemTitle} \n desc: ${itemDescription} \n${actorsContent}${directorsContent}${ratingsContent}`}>
+            <div className={classes.description}>
+                {getDescription(itemDescription, actors, directors, ratings)}
+            </div>
+        </Tooltip>
     </>;
 }
 
@@ -84,8 +108,13 @@ export function EPGProgramTimes(item) {
     return <span>{` [${toDate(item.start)} ${toTime(item.start)}-${toTime(item.stop)}]`}</span>;
 }
 
-export function EPGProgramFooter(classes, item) {
-    return <div className={classes.details}>{item.channel} -
+export function EPGProgramFooter(classes, item, history) {
+    return <div className={classes.details}>
+        <span
+            onClick={() =>
+                history.push('/admin/epgProgram/' + item.channel)
+            }
+        >{item.channel}</span> -
         {EPGProgramTimes(item)}
     </div>;
 }
@@ -93,11 +122,12 @@ export function EPGProgramFooter(classes, item) {
 export default function EPGProgramsAutocomplete({channels, programs}) {
     const classes = useStyles()
     const {authState} = useOktaAuth();
+    const history = useHistory()
     const calculateDeltaTimeHO = calculateDeltaTime()
     const programsSorted = programs ? programs.sort((a, b) => a.start - b.start) : []
     const defaultProps = {
         options: programsSorted,
-        getOptionLabel: item => item && item.titles ? `[${toDate(item.start)} ${toTime(item.start)}-${toTime(item.stop)}] ${item.channel}: ${fromlist(item.titles)} ${fromlist(item.descriptions)}` : ''
+        getOptionLabel: item => item && item.titles ? `[${toDate(item.start)} ${toTime(item.start)}-${toTime(item.stop)}] ${item.channel}: ${fromlist(item.titles)} - ${fromlist(item.descriptions)} - ${fromlist(item.actors)} - ${fromlist(item.directors)}` : ''
     }
     const filterOptions = createFilterOptions({
         limit: 45,
@@ -124,7 +154,7 @@ export default function EPGProgramsAutocomplete({channels, programs}) {
                                     <ItemColored deltaTime={deltaTime}/>
                                 </Grid>
                                 <Grid item xs={12}>
-                                    {EPGProgramFooter(classes, item)}
+                                    {EPGProgramFooter(classes, item, history)}
                                 </Grid>
                             </Grid>
                         </div>

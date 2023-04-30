@@ -15,6 +15,10 @@ import {toTime} from "./EPGDataUtils";
 import {EPGProgramHeader} from "./EPGProgramsAutocomplete";
 import {grayColor} from "../../assets/jss/material-dashboard-react";
 import {useOktaAuth} from "@okta/okta-react";
+import {playChannel} from "../Player/PlayerUtils";
+import {useRecordingSearch} from "../../context/RecordingSearchContext";
+import {useHistory} from "react-router-dom";
+import {ratingFromList} from "./EPGRatingFromList";
 
 const styles = {
     cardCategoryWhite: {
@@ -41,7 +45,6 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-
 const Item = styled('div')(({theme}) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
     ...theme.typography.body2,
@@ -54,24 +57,38 @@ const Item = styled('div')(({theme}) => ({
     minHeight: '4rem',
 }));
 
-const EpgChannel = ({channel}) => {
-    return (<Grid item xs={12} md={1}><Item>
-        <Tooltip title={channel.name}>
+const EpgChannel = ({channel, changePlayerUrl, authState}) => {
+    const history = useHistory()
+    return (<Grid item xs={12} md={1}><Item
+    >
+        <Tooltip title={channel.name ? channel.name + ' - ' + channel.webtv.title : ''}>
             <img
                 src={channel.logo}
                 style={{maxWidth: '5rem', maxHeight: '3rem'}}
                 loading={"lazy"}
-                onClick={(event) => alert(JSON.stringify(channel))}
-            /></Tooltip></Item></Grid>);
+                onClick={(event) => playChannel(channel.webtv.name, changePlayerUrl, event, authState)}
+            />
+        </Tooltip>
+        {<div
+            style={{fontSize: '10px'}}
+            onClick={(event) => {
+                // alert('clicked!' + JSON.stringify(channel) + "event.shift=" + event.shiftKey)
+                history.push((event.shiftKey ? '/admin/jobs/' : '/admin/epgProgram/') + channel.id)
+
+            } }
+        >
+            {channel.webtv.title}
+        </div>}
+    </Item></Grid>);
 }
 const EpgItem = ({children, width, item}) => {
-    let duration = (item.stop-item.start)/(1000*60);
-    return (<div style={{width: width*110}}><Item><Typography
+    let duration = (item.stop - item.start) / (1000 * 60);
+    return (<div style={{width: width * 110}}><Item><Typography
         noWrap>{children}</Typography></Item></div>);
-/*
-    return (<Grid item xs={width}><Item><Typography
-        noWrap>{children}</Typography></Item></Grid>);
-*/
+    /*
+        return (<Grid item xs={width}><Item><Typography
+            noWrap>{children}</Typography></Item></Grid>);
+    */
 }
 
 /*
@@ -103,6 +120,7 @@ function EPGProgramDetails({programs, classes, authState, channels}) {
                             authState={authState}
                             channels={channels}
                         />
+                        <span className={classes.description}>{ratingFromList(program.ratings)}</span>
                         <div className={classes.description}>
                             {toTime(program.start)}-{toTime(program.stop)}
                         </div>
@@ -133,7 +151,9 @@ for a given program
 export default function EPG() {
     const classes = useStyles();
     const {authState} = useOktaAuth();
-    const {setChannelFilter, selectedChannels} = useSelectedEPGChannel('canal');
+    const {changePlayerUrl} = useRecordingSearch();
+    const {setChannelFilter, selectedChannels} = useSelectedEPGChannel('');
+    // const {setChannelFilter, selectedChannels} = useSelectedEPGChannel('canal');
     const channel2ProgramMap = toChannel2ProgramMap(selectedChannels.data)
 
     return (
@@ -149,6 +169,7 @@ export default function EPG() {
                             <Grid container>
                                 <GridItem xs={6}>
                                     <CustomInput
+                                        autoFocus
                                         labelText="Enter Channel Name..."
                                         id="selected-channel"
                                         onChange={e => {
@@ -166,10 +187,15 @@ export default function EPG() {
                                         {
                                             selectedChannels.data
                                             && selectedChannels.data.channels
-                                            && selectedChannels.data.channels.map((channel, key) => {
+                                            && selectedChannels.data.channels
+                                                // .filter((item, index) => index < 15)
+                                                .map((channel, key) => {
                                                 return (
                                                     <Grid container key={key}>
-                                                        <EpgChannel channel={channel}/>
+                                                        <EpgChannel channel={channel}
+                                                                    changePlayerUrl={changePlayerUrl}
+                                                                    authState={authState}
+                                                        />
 
 
                                                         <EPGProgramDetails

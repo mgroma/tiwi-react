@@ -19,6 +19,12 @@ import styles from "assets/jss/material-dashboard-react/components/sidebarStyle.
 
 const useStyles = makeStyles(styles);
 
+function getPath(prop) {
+    const index = prop.path.indexOf(':');
+    if (index === -1) return prop.path
+    return prop.path.slice(0, index)
+}
+
 export default function Sidebar(props) {
   const classes = useStyles();
   // verifies if routeName is the one active (in browser input)
@@ -28,7 +34,9 @@ export default function Sidebar(props) {
   const { color, logo, image, logoText, routes } = props;
   var links = (
     <List className={classes.list}>
-      {routes.map((prop, key) => {
+      {routes
+          .filter(item => !item.skipFromDisplay)
+          .map((prop, key) => {
         var activePro = " ";
         var listItemClasses;
         if (prop.path === "/upgrade-to-pro") {
@@ -46,7 +54,7 @@ export default function Sidebar(props) {
         });
         return (
           <NavLink
-            to={prop.layout + prop.path}
+            to={prop.layout + getPath(prop)}
             className={activePro + classes.item}
             activeClassName="active"
             key={key}

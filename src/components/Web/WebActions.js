@@ -5,22 +5,12 @@ import Play from "@material-ui/icons/PlayArrow";
 import React from "react";
 import api from "../../service/api";
 import {useRecordingSearch} from "../../context/RecordingSearchContext";
+import {playChannel} from "../Player/PlayerUtils";
 
 const recordChannel = (channelName, channelTitle, recordingTime, authState) => {
     api.recordWebChannel(authState, channelName, channelTitle, recordingTime)
     // todo: go-forward API, saveStream is not needed anymore as separate API, it has been integrated with recordWebChannel
     //  api.saveStream(authState, channelName)
-}
-
-
-const playChannel = (channelName, changePlayerUrl, event, authState) => {
-    const streamInfo = api.getStreamInfo(authState, channelName);
-    streamInfo.then(stream => {
-        //todo: re-enable it later
-        changePlayerUrl(encodeURIComponent(stream.streamInfo.rtmpLink), event)
-        // window.location.href = '/admin/player/file/' + encodeURIComponent(stream.streamInfo.rtmpLink);
-    });
-
 }
 
 export default (props) => {
@@ -58,7 +48,7 @@ export default (props) => {
             <IconButton
                 aria-label="Play"
                 className={classes.tableActionButton}
-                onClick={(event) => playChannel(channel.channel_name, changePlayerUrl, event, authState)}
+                onClick={(event) => playChannel (channel.channel_name, changePlayerUrl, event, authState)}
             >
                 <Play
                     className={

@@ -7,11 +7,12 @@ import {useState} from "react";
 function removeWhiteSpaces(title) {
     return title
         .replace('Polska', '')
+        .replace('Poland', '')
         .replace('HD', '')
         .replaceAll(' ', '');
 }
 
-const filterOutPastPrograms = (now = Date.now()) => (program) => program.stop >= now
+export const filterOutPastPrograms = (now = Date.now()) => (program) => program.stop >= now
 
 const reduceToLastBestMatch = (prev, curr) => {
     if (curr
@@ -26,7 +27,7 @@ const reduceToLastBestMatch = (prev, curr) => {
 const getProgramsFor = (programs, webTvChannels) => programs
     .filter(program => webTvChannels
         .find(channel => program.channel === channel.id))
-    .filter(filterOutPastPrograms());
+    // .filter(filterOutPastPrograms());
 
 // return only those epg channels that have web tv equivalents
 /*
@@ -74,8 +75,8 @@ const allWebTvWithOptionalEpg = (webTvData, epgData) => {
                 .map(channel => {
                     const inputChannelName = channel.name;
                     const matchScore = stringSimilarity(removeWhiteSpaces(inputChannelName), targetChannelName);
-                    if (matchScore > 0.4) {
-                        console.debug(`find webtv[${webTvChannel.channel_name}/${targetChannelName}] - epg[${inputChannelName}]-[${channel.channel_name}] ismatch[${matchScore}]`)
+                    if (matchScore > 0.23) {
+                        //todo: uncomment if extra debugging is needed console.debug(`find webtv[${webTvChannel.channel_name}/${targetChannelName}] - epg[${inputChannelName}]-[${channel.channel_name}] ismatch[${matchScore}]`)
                         return {
                             matchScore,
                             ...channel
@@ -96,6 +97,8 @@ const allWebTvWithOptionalEpg = (webTvData, epgData) => {
         })
         .filter(item => item)
     const webTvPrograms = getProgramsFor(programs, webTvChannels);
+    //convert ratings from string to object
+    // debugger;
     return {channels: webTvChannels, programs: webTvPrograms}
 }
 
@@ -103,30 +106,30 @@ function useWebAndEpgData(authState) {
     const webTvQuery = useQuery(['webTvData'], () =>
             api.fetchWebChannels(authState),
         {
-            staleTime: 1000 * 60 * 3,
-            cacheTime: 1000 * 60 * 3
+            staleTime: 1000 * 60 * 6,
+            cacheTime: 1000 * 60 * 6
         }
     )
     const epgDataQuery = useQuery(['epgData'], () =>
             api.fetchTvGuide(),
         {
             enabled: !!webTvQuery.data,
-            staleTime: 1000 * 60 * 3,
-            cacheTime: 1000 * 60 * 3
+            staleTime: 1000 * 60 * 6,
+            cacheTime: 1000 * 60 * 6
         }
     )
     return {webTvQuery, epgDataQuery};
 }
 
-export function useEPGData(authState) {
+function useEPGData(authState) {
     const {webTvQuery, epgDataQuery} = useWebAndEpgData(authState);
     return useQuery(['epgCombinedData'], () =>
             allWebTvWithOptionalEpg(webTvQuery.data,
                 epgDataQuery.data),
         {
             enabled: !!epgDataQuery.data,
-            staleTime: 1000 * 60 * 1,
-            cacheTime: 1000 * 60 * 1
+            staleTime: 1000 * 60 * 6,
+            cacheTime: 1000 * 60 * 6
         }
     );
 }
@@ -136,6 +139,7 @@ export function useSelectedEPGChannel(preSelectedChannelFilter) {
     const [channelFilter, setChannelFilter] = useState(preSelectedChannelFilter);
     const {data: allChannels} = useEPGData(authState);
     const selectedChannels = useQuery(['epgFilteredChannels', channelFilter], () => {
+         allChannels.programs = allChannels?.programs?.filter(filterOutPastPrograms());
             return (!channelFilter) ? allChannels : {
                 channels: allChannels.channels
                     .filter(channel => channel.name && channel.name.toUpperCase().match(channelFilter.toUpperCase())),

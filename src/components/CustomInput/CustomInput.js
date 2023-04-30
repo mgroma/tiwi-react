@@ -24,8 +24,22 @@ export default function CustomInput(props) {
         inputProps,
         error,
         success,
-        onChange
+        onChange,
+        autoFocus
     } = props;
+
+    const inputRef = React.useRef();
+    React.useEffect(() => {
+        const timeout = setTimeout(() => {
+            if (autoFocus) {
+                inputRef.current.focus();
+            }
+        }, 100);
+
+        return () => {
+            clearTimeout(timeout);
+        };
+    }, []);
 
     const labelClasses = classNames({
         [" " + classes.labelRootError]: error,
@@ -62,6 +76,7 @@ export default function CustomInput(props) {
                 id={id}
                 {...inputProps}
                 onChange={onChange}
+                inputRef={inputRef}
             />
             {error ? (
                 <Clear className={classes.feedback + " " + classes.labelRootError}/>

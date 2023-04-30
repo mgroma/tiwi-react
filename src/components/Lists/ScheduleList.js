@@ -33,13 +33,13 @@ const JobStatusMap = {
 }
 
 function getJobTitle(job) {
-        if (job.status === 'EXECUTING') {
-            const now = moment()
-            const end = moment(job.jobInfo.endTime)
-            const start = moment(job.jobInfo.startTime)
-            return `${Math.round(((now - start) / (end - start)) * 100)} %`
-        }
-        return job.status
+    if (job.status === 'EXECUTING') {
+        const now = moment()
+        const end = moment(job.jobInfo.endTime)
+        const start = moment(job.jobInfo.startTime)
+        return `${Math.round(((now - start) / (end - start)) * 100)} %`
+    }
+    return job.status
 }
 
 function JobStatus(job) {
@@ -56,6 +56,36 @@ function JobStatus(job) {
     </Tooltip>;
 }
 
+const isCronFormat = str => {
+    // A cron expression should have either 5 or 6 space-separated fields
+    const parts = str.trim().split(' ');
+    if (parts.length < 5
+        || parts.length > 7
+        || str.includes('GMT')
+    ) {
+        return false;
+    }
+    // Check that each field is a valid cron value
+    /*
+        const validCronRegex = /((((\d+,)+\d+|(\d+(\/|-)\d+)|\d+|\*|.) ?){5,7})/;
+        for (const part of parts) {
+            if (!validCronRegex.test(part)) {
+                return false;
+            }
+        }
+    */
+    return true;
+}
+
+function getStartDate(job) {
+    const startTime = job.jobInfo.startTime;
+    return isCronFormat(startTime)? startTime : new Date(startTime).toLocaleString();
+}
+
+function getEndDate(job) {
+    return isCronFormat(job.jobInfo.startTime)? "" : new Date(job.jobInfo.endTime).toLocaleString();
+}
+
 export default function ScheduleList() {
     //page formatting
     const classes = useStyles();
@@ -69,10 +99,12 @@ export default function ScheduleList() {
 
     const cancelJob = (jobIndex) => {
         api.cancelJob(authState, jobIndex);
+        setJobs([])
         setJobLastCancelled(new Date()); //todo: force refreshed; figure out how to do it idiomatically with hooks
     }
     const removeJob = (jobIndex) => {
         api.removeJob(authState, jobIndex);
+        setJobs([])
         setJobLastCancelled(new Date()); //todo: force refreshed; figure out how to do it idiomatically with hooks
     }
 
@@ -92,11 +124,26 @@ export default function ScheduleList() {
                     <TableRow key={index} className={classes.tableRow}>
                         {[job.name,
                             JobStatus(job),
-                            new Date(job.jobInfo.startTime).toLocaleString(),
-                            new Date(job.jobInfo.endTime).toLocaleString(),
+                            getStartDate(job),
+                            getEndDate(job),
                         ]
                             .map((item, key) =>
-                                <TableCell key={key} className={tableCellClasses}>{item}</TableCell>
+                                key === 0 ?
+                                    <TableCell key={key}
+                                               className={tableCellClasses}
+                                               onClick={() => {
+                                                   api.playRecording(authState, job?.scheduledJob?.name);
+                                               }}
+                                    >
+                                        <Tooltip title={job?.scheduledJob?.name}>
+                                            {/*<Tooltip title={JSON.stringify(job)}>*/}
+                                            <span className={'no name '}>
+                                            {item}
+                                                </span>
+                                        </Tooltip>
+                                    </TableCell>
+                                    :
+                                    <TableCell key={key} className={tableCellClasses}>{item}</TableCell>
                             )}
                         <TableCell className={classes.tableActions}>
                             {job.status !== "KILLED" && <Tooltip

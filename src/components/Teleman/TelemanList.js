@@ -12,12 +12,14 @@ import CardBody from "components/Card/CardBody.js";
 import styles from "assets/jss/material-dashboard-react/views/iconsStyle.js";
 import {createLogger} from "logger";
 import EPGList from "./EPGChannels";
+import {useParams} from "react-router-dom";
 
 const useStyles = makeStyles(styles);
 
 const logger = createLogger()
 
-function TelemanList() {
+function TelemanList(props) {
+    const params = useParams()
     const classes = useStyles();
     return (
         <GridContainer>
@@ -30,7 +32,7 @@ function TelemanList() {
                         </p>
                     </CardHeader>
                     <CardBody>
-                        <EPGList/>
+                        <EPGList {...params}/>
                     </CardBody>
                 </Card>
             </GridItem>

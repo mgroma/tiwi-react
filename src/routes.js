@@ -32,6 +32,8 @@ import RecordingsPage from "./components/Recordings/RecordingsPage";
 import TelemanList from "./components/Teleman/TelemanList";
 import PlayerPage from "./components/Player/PlayerPage";
 import EPG from "./components/Teleman/EPG";
+import JobsPage from "./components/Jobs/JobsPage";
+import {EPGPrograms} from "./components/Teleman/EPGPrograms";
 
 const dashboardRoutes = [
     {
@@ -51,6 +53,14 @@ const dashboardRoutes = [
         unsecure: true
     },
     {
+        path: "/jobs/:program?",
+        name: "Jobs",
+        icon: "video_label",
+        component: JobsPage,
+        layout: "/admin",
+        unsecure: true,
+    },
+    {
         path: "/watch",
         name: "Web.tv",
         icon: "video_label",
@@ -67,7 +77,7 @@ const dashboardRoutes = [
         unsecure: true
     },
     {
-        path: "/schedule",
+        path: "/schedule/:program?",
         name: "Teleman List",
         icon: "list",
         component: TelemanList,
@@ -89,6 +99,15 @@ const dashboardRoutes = [
         component: EPG,
         layout: "/admin",
         unsecure: true
+    },
+    {
+        path: "/epgProgram/:program?",
+        name: "EPG Program",
+        icon: "program",
+        component: EPGPrograms,
+        layout: "/admin",
+        unsecure: true,
+        skipFromDisplay : true
     },
     {
         path: "/typography",
