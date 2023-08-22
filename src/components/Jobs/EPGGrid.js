@@ -9,6 +9,12 @@ import {EPGProgramTimes} from "../Teleman/EPGProgramsAutocomplete";
 import {fromlist} from "../Teleman/EPGDataUtils";
 import {useHistory, useParams} from "react-router-dom";
 import {Button} from "@material-ui/core";
+import ThreadProgressBar from "../Teleman/ThreadPool";
+import SREGrid from "./SREGrid";
+import BardList from "./BardList";
+import Chatgptlist from "./Chatgptlist";
+import {DependencyGraph, DependencyGraphGpt} from "./TreeGraph";
+import * as os from 'os';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -60,6 +66,7 @@ const channels = [{
     },
 ];
 
+
 export default function EPGGrid() {
     const {program} = useParams()
     const classes = useStyles();
@@ -87,11 +94,20 @@ export default function EPGGrid() {
 
     return (
         <div className={classes.root}>
-            {
-            <Graph/>
- /*           <GPTGrid />
+            storage available =[{getComputerAvailableDiskSpace()}]
+            {/*
+            <Chatgptlist />
+            <BardList />
 */}
-            <Timeline program={program}/>
+            {/*<SREGrid/>*/}
+            {/*<DependencyGraphGpt/>*/}
+            <ThreadProgressBar/>
+            {
+                /*           <Graph/>
+                           <GPTGrid />
+                           <Timeline program={program}/>
+               */}
+
         </div>)
 }
 
@@ -102,7 +118,7 @@ function getEventsFor(channelName, programs) {
         .filter(filterOutPastPrograms())
 }
 
-function Timeline({program }) {
+function Timeline({program}) {
     const history = useHistory()
     const {selectedChannels} = useSelectedEPGChannel();
     const programs = selectedChannels.data && selectedChannels.data.programs
@@ -183,4 +199,10 @@ function getTimeDelta(start1, start2) {
     const delta = Math.abs(time2 - time1);
     return Math.floor(delta / (1000 * 60));
 }
+// return local computer available disk space in MB
+export const getComputerAvailableDiskSpace = () => {
+    const freeSpaceInBytes = os.freemem();
+    const freeSpaceInGB = (freeSpaceInBytes / (1024 ** 11)).toFixed(2);
+    return freeSpaceInGB;
 
+}

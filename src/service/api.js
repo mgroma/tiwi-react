@@ -36,9 +36,9 @@ const fetchSchedules = async (authState) => _baseFetch(authState, 'api/schedules
 const fetchRecordings = async (authState) => _baseFetch(authState, 'api/recordings', 'fetch recordings');
 const cancelJob = async (authState, jobIndex) => _baseFetch(authState, `api/cancel/${jobIndex}`, 'cancel job');
 const removeJob = async (authState, jobIndex) => _baseFetch(authState, `api/removeJob/${jobIndex}`, 'remove job');
-const recordWebChannel = async (authState, channelName, channelTitle, recordingTime) => {
+const recordWebChannel = async (authState, channelName, channelTitle, recordingTime, programKey) => {
     if (recordingTime)
-        return _baseFetch(authState, `api/schedule/${channelName}?channelTitle=${channelTitle}&startTime=${recordingTime.startTime}&endTime=${recordingTime.endTime}`, 'record web channel ' + channelTitle);
+        return _baseFetch(authState, `api/schedule/${channelName}?channelTitle=${channelTitle}&startTime=${recordingTime.startTime}&endTime=${recordingTime.endTime}&programKey=${programKey}`, 'record web channel ' + channelTitle);
     else
         return _baseFetch(authState, `api/schedule/${channelName}?channelTitle=${channelTitle}`, 'record web channel ' + channelTitle);
 };

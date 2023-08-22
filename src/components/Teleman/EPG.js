@@ -123,6 +123,7 @@ function EPGProgramDetails({programs, classes, authState, channels}) {
                         <span className={classes.description}>{ratingFromList(program.ratings)}</span>
                         <div className={classes.description}>
                             {toTime(program.start)}-{toTime(program.stop)}
+                            {program.isScheduled && <span style={{color: 'red'}}> (scheduled)</span>}
                         </div>
                     </EpgItem>
                 ))

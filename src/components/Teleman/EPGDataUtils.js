@@ -62,11 +62,23 @@ export function toDate(rawDate) {
 export function toTime(rawDate) {
     return moment(rawDate).format("hh:mm A");
 }
+//get composite key for a program - channel + start time
+export function getProgramKey(program) {
+    return `${program.channel}||${program.start}`
+}
+//get channel and start time from composite key
+export function getProgramKeyParts(key) {
+    if (!key) {
+        return null
+    }
+    const parts = key.split('||')
+    return {channel: parts[0], start: parts[1]}
+}
 
 export function recordProgrom(authState, channel, program) {
         api.recordWebChannel(authState, channel.webtv.name, channel.webtv.title + ' - ' + fromlist(program.titles), {
             startTime: moment(program.start), endTime: moment(program.stop)
-        })
+        }, getProgramKey(program))
         // alert(`SCHEDULED web tv Channel = [${channel.webtv.name + "/" + channel.webtv.title}] [${fromlist(program.titles)}] start = ${moment(program.start)}, stop=[${moment(program.stop)}]`)
 }
 /*

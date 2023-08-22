@@ -3,10 +3,10 @@ import {useQuery} from "react-query";
 import api from "../../service/api";
 import {useOktaAuth} from "@okta/okta-react";
 import {useState} from "react";
+import {getProgramKeyParts} from "./EPGDataUtils";
 
 function removeWhiteSpaces(title) {
-    return title
-        .replace('Polska', '')
+    return title?.replace('Polska', '')
         .replace('Poland', '')
         .replace('HD', '')
         .replaceAll(' ', '');
@@ -27,7 +27,7 @@ const reduceToLastBestMatch = (prev, curr) => {
 const getProgramsFor = (programs, webTvChannels) => programs
     .filter(program => webTvChannels
         .find(channel => program.channel === channel.id))
-    // .filter(filterOutPastPrograms());
+// .filter(filterOutPastPrograms());
 
 // return only those epg channels that have web tv equivalents
 /*
@@ -65,6 +65,13 @@ const onlyWebTvEpg = (webTvData, epgData, allChannels = false) => {
     const webTvPrograms = getProgramsFor(programs, webTvChannels);
     return {channels: webTvChannels, programs: webTvPrograms}
 }
+//document parameters of  allWebTvWithOptionalEpg function, including types
+/**
+ * @param {Array<{channel_name: string, channel_title: string}>} webTvData
+ * @param {Array<{id: number, name: string}>} epgData
+ * @returns {{channels: Array<{id: number, name: string, webtv: {name: string, title: string}}>, programs: Array<{channel: number, start: number, stop: number, title: string}>}}
+ */
+
 const allWebTvWithOptionalEpg = (webTvData, epgData) => {
     if (!(webTvData && epgData)) return {channels: [], programs: []} //data not ready
     const {channels, programs} = epgData
@@ -134,12 +141,43 @@ function useEPGData(authState) {
     );
 }
 
+//optimize this function
+
 export function useSelectedEPGChannel(preSelectedChannelFilter) {
     const {authState} = useOktaAuth();
     const [channelFilter, setChannelFilter] = useState(preSelectedChannelFilter);
     const {data: allChannels} = useEPGData(authState);
+    const schedules = useQuery(['epgSchedules'], () =>
+            api.fetchSchedules(authState),
+        {
+            staleTime: 0,
+            cacheTime: 0
+        }
+    )
+    const updateProgramsWithScheduledIndicator = (extractProgramKeyFromSchedulesList, tvguide: {
+        channels: Array<{ id: number, name: string, webtv: { name: string, title: string } }>,
+        programs: Array<{ channel: number, start: number, stop: number, title: string }>
+    }) => {
+        console.time('filterChannels')
+        const ret = tvguide?.programs?.map(program => {
+            const isScheduled = extractProgramKeyFromSchedulesList.find(
+                schedule => schedule.channel === program.channel && schedule.start == program.start)
+            if (isScheduled) {
+                console.log(`program[${program.titles[0].value}] is scheduled`)
+            }
+            return {
+                ...program,
+                isScheduled: isScheduled
+            }
+        })
+        console.timeEnd('filterChannels')
+        return ret
+    };
+
     const selectedChannels = useQuery(['epgFilteredChannels', channelFilter], () => {
-         allChannels.programs = allChannels?.programs?.filter(filterOutPastPrograms());
+            allChannels.programs = allChannels?.programs?.filter(filterOutPastPrograms());
+
+
             return (!channelFilter) ? allChannels : {
                 channels: allChannels.channels
                     .filter(channel => channel.name && channel.name.toUpperCase().match(channelFilter.toUpperCase())),
@@ -150,5 +188,14 @@ export function useSelectedEPGChannel(preSelectedChannelFilter) {
             enabled: !!allChannels
         }
     )
+
+    //if schedules is ready then if a program from programs is on schedules list then add isScheduled flag to it
+    if (schedules.data && selectedChannels.data) {
+        const extractProgramKeyFromSchedulesList = schedules.data
+            .map(schedule => getProgramKeyParts(schedule.jobInfo?.programKey))
+            .filter(item => item);
+        selectedChannels.data.programs =
+            updateProgramsWithScheduledIndicator(extractProgramKeyFromSchedulesList, selectedChannels.data);
+    }
     return {setChannelFilter, selectedChannels};
 }

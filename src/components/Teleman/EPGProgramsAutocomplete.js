@@ -1,5 +1,5 @@
 import {useOktaAuth} from "@okta/okta-react";
-import React from "react";
+import React, {useEffect} from "react";
 import {calculateDeltaTime, fromlist, fromlist2, recordProgrom, toDate, toTime} from "./EPGDataUtils";
 import {Autocomplete, createFilterOptions, Tooltip} from "@mui/material";
 import {Link, styled, TextField} from "@material-ui/core";
@@ -9,6 +9,7 @@ import Paper from "@material-ui/core/Paper";
 import {grayColor} from "../../assets/jss/material-dashboard-react";
 import {red, green} from "@material-ui/core/colors";
 import {useHistory} from "react-router-dom";
+import {useQueryClient} from "react-query";
 
 export const styles = {
     container: {
@@ -90,10 +91,26 @@ export function EPGProgramHeader({classes, authState, channels, item}) {
     const ratingsContent = ratings ? `ratings: ${ratings}` : ''
     const actorsContent = actors ? `actors: ${actors};` : ''
     const directorsContent = directors ? `director: ${directors};` : '';
+    // const [scheduled, setScheduled] = React.useState(false);
+/*
+    const queryClient = useQueryClient()
+    useEffect(() => {
+        queryClient.invalidateQueries({queryKey: ['selectedChannels']})
+        // if (scheduled) {
+        //     recordProgrom(authState, getChannel(channels, item.channel), item)
+        // }
+    }, [scheduled]);
+*/
+
     return <>
         <Link
             className={classes.title}
-            onClick={(event) => recordProgrom(authState, getChannel(channels, item.channel), item)}
+            onClick={(event) => {
+                if (!item.isScheduled) {
+                    recordProgrom(authState, getChannel(channels, item.channel), item)
+                }
+                // setScheduled(!scheduled)
+            }}
         >{itemTitle}</Link>
         <Tooltip
             title={`${itemTitle} \n desc: ${itemDescription} \n${actorsContent}${directorsContent}${ratingsContent}`}>

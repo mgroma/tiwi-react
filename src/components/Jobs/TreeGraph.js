@@ -1,7 +1,7 @@
 // Copyright 2021 Observable, Inc.
 // Released under the ISC license.
 // https://observablehq.com/@d3/tree
-import React, {useEffect, useRef} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import * as d3 from "d3";
 
 function Tree(data, { // data is either tabular (array of objects) or hierarchy (nested objects)
@@ -426,5 +426,195 @@ export default () => {
 
     return <div ref={chartRef}></div>;
 }
+
+
+export const DependencyGraphGpt = ({ data = [
+    { name: "Parent", parentId: 123, id: 123 },
+    { name: "Node 1", parentId: 123, id: 456 },
+    { name: "Node 2", parentId: 456, id: 789 },
+    { name: "Node 3", parentId: 456, id: 987 },
+    { name: "Node 4", parentId: 123, id: 654 },
+    { name: "Node 5", parentId: 654, id: 321 },
+] }) => {
+    const svgRef = useRef(null);
+    const [debug, setDebug] = useState('');
+
+    useEffect(() => {
+        // Transform the data into hierarchical structure
+        const root = { id: null, children: [] };
+        const map = {};
+
+        data.forEach((node) => {
+            const { id, parentId, name } = node;
+            map[id] = { id, name, children: [] };
+        });
+
+        data.forEach((node) => {
+            const { parentId, id } = node;
+            if (parentId !== id) {
+                map[parentId].children.push(map[node.id]);
+            } else {
+                root.children.push(map[node.id]);
+            }
+        });
+        setDebug(JSON.stringify(root, null, 2) )
+
+        // Create the SVG container
+        const svg = d3.select(svgRef.current)
+            // .attr("width", 1800)
+            // .attr("height", 1800)
+            .append("g")
+            .attr("transform", "translate(50,50)");
+
+        // Create the graph
+        const tree = d3.tree().nodeSize([30, 30]);
+        const graph = tree(d3.hierarchy(root));
+
+        // Render the graph
+        svg.selectAll(".link")
+            .data(graph.links())
+            .enter()
+            .append("path")
+            .attr("class", "link")
+            .attr("d", d3.linkHorizontal()
+                .x((d) => d.y)
+                .y((d) => d.x));
+
+        const nodes = svg.selectAll(".node")
+            .data(graph.descendants())
+            .enter()
+            .append("g")
+            .attr("class", "node")
+            .attr("transform", (d) => `translate(${d.y},${d.x})`);
+
+        nodes.append("circle")
+            .attr("r", 4);
+
+        nodes.append("text")
+            .attr("dy", "0.35em")
+            .attr("x", (d) => (d.children ? -13 : 13))
+            .attr("text-anchor", (d) => (d.children ? "end" : "start"))
+            .text((d) => d.data.name + 'm');
+    }, [data]);
+
+    return <div style={{border: "solid"}}>
+        <pre>{debug}</pre>
+    <svg ref={svgRef}></svg>
+    </div>;
+}
+
+
+
+
+
+//create a d3 dependency graph for array of objects {name: "name", parentId: 123, id: 456} if parentId is same as id, it is a root node
+const data = [
+    {name: "miroot", parentId: 456, id: 456},
+    {name: "flare", parentId: 123, id: 456},
+    {name: "analytics", parentId: 456, id: 789},
+    {name: "cluster", parentId: 456, id: 101},
+    {name: "graph", parentId: 456, id: 102},
+    {name: "optimization", parentId: 456, id: 103},
+    {name: "animate", parentId: 456, id: 104}
+]
+
+
+const dependencyGraph = (data) => {
+    const root = data.find(d => d.parentId === d.id);
+    const children = data.filter(d => d.parentId !== d.id);
+    const nodes = [root];
+    const links = [];
+    const findChildren = (node) => {
+        const nodeChildren = children.filter(d => d.parentId === node?.id);
+        nodeChildren.forEach(d => {
+            nodes.push(d);
+            links.push({source: node, target: d});
+            findChildren(d);
+        })
+    }
+    findChildren(root);
+    return {nodes, links};
+}
+
+const renderDependencyGraph = (data) => {
+    const {nodes, links} = dependencyGraph(data);
+    const width = 1200;
+    const height = 600;
+    const svg = d3.select("#dependency-graph")
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height);
+/*
+    const simulation = d3.forceSimulation(nodes)
+        .force("link", d3.forceLink(links).id(d => d.id))
+        .force("charge", d3.forceManyBody().strength(-100))
+        .force("center", d3.forceCenter(width / 2, height / 2));
+*/
+    const link = svg.append("g")
+        .attr("stroke", "#999")
+        .attr("stroke-opacity", 0.6)
+        .selectAll("line")
+        .data(links)
+        .join("line")
+        .attr("stroke-width", 2);
+    const node = svg.append("g")
+        .attr("stroke", "#fff")
+        .attr("stroke-width", 1.5)
+        .selectAll("circle")
+        .data(nodes)
+        .join("circle")
+        .attr("r", 5)
+        .attr("fill", "#000")
+        // .call(drag(simulation));
+    node.append("title")
+        .text(d => d?.name);
+/*
+    simulation.on("tick", () => {
+        link
+            .attr("x1", d => d.source.x)
+            .attr("y1", d => d.source.y)
+            .attr("x2", d => d.target.x)
+            .attr("y2", d => d.target.y);
+        node
+            .attr("cx", d => d.x)
+            .attr("cy", d => d.y);
+    });
+*/
+}
+//drag function
+const drag = (simulation) => {
+    function dragstarted(event, d) {
+        if (!event.active) simulation.alphaTarget(0.3).restart();
+        d.fx = d.x;
+        d.fy = d.y;
+    }
+    function dragged(event, d) {
+        d.fx = event.x;
+        d.fy = event.y;
+    }
+    function dragended(event, d) {
+        if (!event.active) simulation.alphaTarget(0);
+        d.fx = null;
+        d.fy = null;
+    }
+    return d3.drag()
+        .on("start", dragstarted)
+        .on("drag", dragged)
+        .on("end", dragended);
+}
+//create reactjs comoonent for dependency graph
+export const DependencyGraph = () => {
+    const dependencyGraphRef = useRef(null);
+    useEffect(() => {
+        renderDependencyGraph(data);
+    }, []);
+    return <div id="dependency-graph" ref={dependencyGraphRef}>marek</div>
+}
+
+
+
+
+
+
 
 
