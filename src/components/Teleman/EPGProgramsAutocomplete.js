@@ -92,17 +92,17 @@ export function EPGProgramHeader({classes, authState, channels, item}) {
     const actorsContent = actors ? `actors: ${actors};` : ''
     const directorsContent = directors ? `director: ${directors};` : '';
     // const [scheduled, setScheduled] = React.useState(false);
-/*
-    const queryClient = useQueryClient()
-    useEffect(() => {
-        queryClient.invalidateQueries({queryKey: ['selectedChannels']})
-        // if (scheduled) {
-        //     recordProgrom(authState, getChannel(channels, item.channel), item)
-        // }
-    }, [scheduled]);
-*/
+    /*
+        const queryClient = useQueryClient()
+        useEffect(() => {
+            queryClient.invalidateQueries({queryKey: ['selectedChannels']})
+            // if (scheduled) {
+            //     recordProgrom(authState, getChannel(channels, item.channel), item)
+            // }
+        }, [scheduled]);
+    */
 
-    return <>
+    return <div style={item.isScheduled ? {backgroundColor: 'lightgrey'} : {}}>
         <Link
             className={classes.title}
             onClick={(event) => {
@@ -118,7 +118,7 @@ export function EPGProgramHeader({classes, authState, channels, item}) {
                 {getDescription(itemDescription, actors, directors, ratings)}
             </div>
         </Tooltip>
-    </>;
+    </div>;
 }
 
 export function EPGProgramTimes(item) {

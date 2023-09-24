@@ -18,24 +18,63 @@ import {useOktaAuth} from "@okta/okta-react";
 import api from "../../service/api";
 import readableBytes from "../Utils/ReadableBytes";
 import TableHead from "@material-ui/core/TableHead";
-import {Close, Edit, PlayArrowOutlined, Refresh} from "@material-ui/icons";
+import {ArrowDownward, Close, Edit, PlayArrowOutlined, Refresh} from "@material-ui/icons";
 import moment from "moment";
 import {RecordingEditDialog} from "./RecordingEditDialog";
+import ArrowUpward from "@material-ui/icons/ArrowUpward";
 
 const useStyles = makeStyles(styles);
 
-
+//create a function that return reactjs component that displays a column header with up and down arrow icon for sorting; add onClick handler that will set state of sortByField and toggle setSortOrder
+const SortableHeader = ({index, headerName, setSortByField, setSortOrder, sortOrder, sortbyField}
+) => {
+    const classes = useStyles();
+    const headerClasses = classnames(classes.tableCell, classes.tableHeadCell);
+    const arrowClasses = classnames(classes.tableCell, classes.tableHeadCellArrow);
+    const arrowIconClasses = classnames(classes.tableCell, classes.tableHeadCellArrowIcon);
+    const arrowIcon = (sortOrder === "asc") ? <ArrowUpward className={arrowIconClasses}/> :
+        <ArrowDownward className={arrowIconClasses}/>;
+    return (
+        <TableCell
+            key={index}
+            className={headerClasses}
+            onClick={() => {
+                setSortOrder((sortOrder === "asc") ? "desc" : "asc");
+                setSortByField(headerName);
+            }}>
+            {headerName}
+            {
+                sortbyField === headerName
+                &&
+                <Tooltip
+                    id="tooltip-top"
+                    title="Sort"
+                    placement="top"
+                    classes={{tooltip: classes.tooltip}}
+                >
+                    <IconButton aria-label="Sort" className={arrowClasses}>
+                        {arrowIcon}
+                    </IconButton>
+                </Tooltip>
+            }
+        </TableCell>
+    );
+}
 export default function RecordingList(props) {
     //page formatting
     const classes = useStyles();
     const tableCellClasses = classnames(classes.tableCell);
     const tableHeaderColor = "primary";
     const tableHead = ["Name", "Modified", "Size"];
-    // const tableHead = ["Name", "Created", "Modified", "Size"];
+    // alternative list: const tableHead = ["Name", "Created", "Modified", "Size"];
     const {listLength} = props;
 
+    //state
+    const [sortByField, setSortByField] = useState("Modified");
+    const [sortOrder, setSortOrder] = useState("asc");
     //jobs handling
     const [recordingForEditDialog, setRecordingForEditDialog] = useState(false);
+    const [recordingsApiResponse, setRecordingsApisResponse] = useState(null);
     const [recordings, setRecordings] = useState(null);
     const {authState} = useOktaAuth();
     var jobLastPLayed = null;
@@ -82,10 +121,33 @@ export default function RecordingList(props) {
         // props.history.push(`/admin/player/${file}`);
     }
 
+    const sortListByFieldAndOrder = (list) => {
+        if (!list) return;
+        // debugger
+        const sortedList = [...list];
+        //map sortByField to a field in the api response
+        const sortByFieldMap = {
+            "Name": "file",
+            "Modified": "modified",
+            "Size": "size"
+        }
+        const fieldToSortBy = sortByFieldMap[sortByField];
+        sortedList.sort((a, b) => {
+            if (a[fieldToSortBy] < b[fieldToSortBy]) return sortOrder === "asc" ? -1 : 1;
+            if (a[fieldToSortBy] > b[fieldToSortBy]) return sortOrder === "asc" ? 1 : -1;
+            return 0;
+        });
+        return sortedList;
+    }
+    const sortAndSlice = (list) => {
+        const sortedList = sortListByFieldAndOrder(list);
+        return listLength ? sortedList.slice(0, listLength) : sortedList;
+    }
+
     const fetchRecordings = () => {
         if (authState.isAuthenticated || true) {
             api.fetchRecordings(authState)
-                .then(json => setRecordings(listLength ? json.slice(0, listLength) : json));
+                .then(json => setRecordingsApisResponse(sortAndSlice(json)))
         }
     }
 
@@ -93,6 +155,10 @@ export default function RecordingList(props) {
         fetchRecordings();
 
     }, [authState, jobLastPLayed]);
+
+    useEffect(() => {
+        setRecordings(sortAndSlice(recordingsApiResponse));
+    }, [sortOrder, sortByField, recordingsApiResponse])
 
     const removeRecording = file => {
         api.removeRecording(authState, file)
@@ -126,13 +192,28 @@ export default function RecordingList(props) {
                     >
                         {tableHead.map((prop, key) => {
                             return (
-                                <TableCell
-                                    className={classes.tableCell + " " + classes.tableHeadCell}
+                                <SortableHeader
                                     key={key}
-                                >
-                                    {prop}
-                                </TableCell>
+                                    headerName={prop}
+                                    setSortByField={setSortByField}
+                                    setSortOrder={setSortOrder}
+                                    sortOrder={sortOrder}
+                                    sortbyField={sortByField}
+                                />
                             );
+                            /*
+                            todo remove it
+                                    <TableCell
+                                        className={classes.tableCell + " " + classes.tableHeadCell}
+                                        key={key}
+                                        onclick={() => {
+                                            alert(prop)
+                                        }}
+                                    >
+                                        [{prop}]
+                                    </TableCell>
+    */
+
                         })}
                         <TableCell
                             className={classes.tableCell + " " + classes.tableHeadCell}
@@ -158,7 +239,7 @@ export default function RecordingList(props) {
                                 // new Date(job.created).toLocaleString(),
                                 new Date(job.modified).toLocaleString(),
                                 readableBytes(job.size)
-                            ].map((item,index) => (
+                            ].map((item, index) => (
                                 <TableCell key={index} className={tableCellClasses}>{item}</TableCell>
                             ))}
                             <TableCell className={classes.tableActions}>
@@ -218,44 +299,44 @@ export default function RecordingList(props) {
                                 </Tooltip>
 
                                 {!job.stream &&
-                                <Tooltip
-                                    id="tooltip-top-start"
-                                    title="Stream"
-                                    placement="top"
-                                    classes={{tooltip: classes.tooltip}}
-                                >
-                                    <IconButton
-                                        aria-label="Stream"
-                                        className={classes.tableActionButton}
-                                        onClick={() => streamRecording(job.file)}
+                                    <Tooltip
+                                        id="tooltip-top-start"
+                                        title="Stream"
+                                        placement="top"
+                                        classes={{tooltip: classes.tooltip}}
                                     >
-                                        <Record
-                                            className={
-                                                classes.tableActionButtonIcon + " " + classes.play
-                                            }
-                                        />
-                                    </IconButton>
-                                </Tooltip>
+                                        <IconButton
+                                            aria-label="Stream"
+                                            className={classes.tableActionButton}
+                                            onClick={() => streamRecording(job.file)}
+                                        >
+                                            <Record
+                                                className={
+                                                    classes.tableActionButtonIcon + " " + classes.play
+                                                }
+                                            />
+                                        </IconButton>
+                                    </Tooltip>
                                 }
                                 {job.stream &&
-                                <Tooltip
-                                    id="tooltip-top-start"
-                                    title="Player"
-                                    placement="top"
-                                    classes={{tooltip: classes.tooltip}}
-                                >
-                                    <IconButton
-                                        aria-label="Player"
-                                        className={classes.tableActionButton}
-                                        onClick={() => startPlayer(job.file)}
+                                    <Tooltip
+                                        id="tooltip-top-start"
+                                        title="Player"
+                                        placement="top"
+                                        classes={{tooltip: classes.tooltip}}
                                     >
-                                        <PlayArrowOutlined
-                                            className={
-                                                classes.tableActionButtonIcon + " " + classes.play
-                                            }
-                                        />
-                                    </IconButton>
-                                </Tooltip>
+                                        <IconButton
+                                            aria-label="Player"
+                                            className={classes.tableActionButton}
+                                            onClick={() => startPlayer(job.file)}
+                                        >
+                                            <PlayArrowOutlined
+                                                className={
+                                                    classes.tableActionButtonIcon + " " + classes.play
+                                                }
+                                            />
+                                        </IconButton>
+                                    </Tooltip>
                                 }
                             </TableCell>
                         </TableRow>
