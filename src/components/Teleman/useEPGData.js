@@ -142,7 +142,12 @@ function useEPGData(authState) {
 }
 
 //optimize this function
-
+/**
+ * description: hook to get epg data for selected channel
+ *
+ * @param preSelectedChannelFilter - string to filter channels by
+ * @returns {{setChannelFilter: (value: (((prevState: *) => *) | *)) => void, selectedChannels: UseQueryResult<{channels: Array<{id: number, name: string, webtv: {name: string, title: string}}>, programs: Array<{channel: number, start: number, stop: number, title: string}>}|{channels: {id: number, name: string, webtv: {name: string, title: string}}[], programs: Array<{channel: number, start: number, stop: number, title: string}>}, unknown>}}
+ */
 export function useSelectedEPGChannel(preSelectedChannelFilter) {
     const {authState} = useOktaAuth();
     const [channelFilter, setChannelFilter] = useState(preSelectedChannelFilter);

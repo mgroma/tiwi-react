@@ -28,6 +28,10 @@ const tasksStyle = {
         borderLeft: "3px solid " + warningColor[3],
         borderBottom: "1px solid " + grayColor[5]
     },
+    tableRowLastPlayed: {
+        position: "relative",
+        borderBottom: "3px solid " + dangerColor[3]
+    },
     tableActions: {
         display: "flex",
         border: "none",
@@ -74,6 +78,14 @@ const tasksStyle = {
         backgroundColor: "transparent",
         color: dangerColor[0],
         boxShadow: "none"
+    },
+    searchWrapper: {
+        //bottom border thick, so that it appears under the search box, padding bottom 5px
+        borderBottom: "1px solid " + grayColor[5],
+        paddingBottom: "5px",
+    },
+    searchIcon: {
+        padding: "0px"
     }
 };
 export default tasksStyle;

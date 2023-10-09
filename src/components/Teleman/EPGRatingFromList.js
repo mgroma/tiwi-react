@@ -52,8 +52,23 @@
 // return {
 import React from "react";
 
-export const ratingFromList = (itemList) => {
+/**
+ *
+ * @param itemList - list of ratings
+ * @returns {*}
+ */
+export const getValidRatings = itemList => {
     const ratings = itemList?.value?.filter(item => item.type !== '')
+    return ratings;
+};
+
+export const ratingFromList = (itemList) => {
+    const ratings = getValidRatings(itemList);
     const ret = ratings?.map(item => <div><a href={item.url} target="_blank">{item.type}/{item.rank}</a></div>)
+    return ret || ''
+}
+export const ratingsToString = (itemList) => {
+    const ratings = getValidRatings(itemList);
+    const ret = ratings?.map(item => `${item.type}/${item.rank} `)
     return ret || ''
 }

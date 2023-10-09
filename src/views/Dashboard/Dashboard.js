@@ -34,8 +34,8 @@ export default function Dashboard() {
     const classes = useStyles();
     const {value} = useRecordingSearch();
     const {selectedChannels} = useSelectedEPGChannel();
-    const channels = selectedChannels.data && selectedChannels.data.channels
-    const programs = selectedChannels.data && selectedChannels.data.programs
+    const channels = selectedChannels?.data?.channels
+    const programs =  selectedChannels?.data?.programs
 
     const recordingStatus = `[${value}]`;
     return (

@@ -22,11 +22,92 @@ import {ArrowDownward, Close, Edit, PlayArrowOutlined, Refresh} from "@material-
 import moment from "moment";
 import {RecordingEditDialog} from "./RecordingEditDialog";
 import ArrowUpward from "@material-ui/icons/ArrowUpward";
+import {SearchOffRounded} from "@mui/icons-material";
 
 const useStyles = makeStyles(styles);
 
-//create a function that return reactjs component that displays a column header with up and down arrow icon for sorting; add onClick handler that will set state of sortByField and toggle setSortOrder
-const SortableHeader = ({index, headerName, setSortByField, setSortOrder, sortOrder, sortbyField}
+/**
+ * reacjJs component that allows user to type in a search string and filter the list of recordings. applies filter after typing at least 2 characters, and after a delay of 300ms.
+ * @param props {setFilter, filter}
+ * @returns {JSX.Element}
+ * @constructor
+ */
+const SearchFilter = ({setFilter}) => {
+    const classes = useStyles();
+    const [filterTimeout, setFilterTimeout] = useState(null);
+    const filterDelay = 30;
+    const [filterLength, setFilterLength] = useState(0);
+    const [filterActive, setFilterActive] = useState(false);
+    const [localFilter, setLocalFilter] = useState('');
+
+    useEffect(() => {
+        if (filterTimeout) clearTimeout(filterTimeout);
+        if (filterLength < 2 && filterLength > 0) return;
+        const timeout = setTimeout(() => {
+                setFilter(localFilter);
+            }
+            , filterDelay);
+        setFilterTimeout(timeout);
+        return () => {
+            if (timeout) clearTimeout(timeout);
+        }
+    }, [localFilter]);
+    return (
+        <div className={classes.searchWrapper}
+             style={{
+                 display: "flex",
+                 justifyContent: "center",
+                 alignItems: "center",
+             }}>
+            <input
+                type="text"
+                className={classes.searchInput}
+                placeholder="Search"
+                value={localFilter}
+                onChange={(e) => {
+                    setLocalFilter(e.target.value);
+                    setFilterLength(e.target.value.length);
+                }
+                }
+                onFocus={() => {
+                    setFilterActive(true);
+                }
+                }
+                onBlur={() => {
+                    setFilterActive(false);
+                }
+                }
+                style={{
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    backgroundColor: (filterActive) ? "#fafafa" : "transparent",
+                    border: (filterActive) ? "1px solid #ccc" : "1px solid transparent",
+                    borderRadius: "4px",
+                    fontSize: "14px",
+                    color: "#333"
+                }
+                }
+            />
+            <IconButton
+                aria-label="Search"
+                className={classes.searchIcon}
+                onClick={() => {
+                    setLocalFilter('');
+                    setFilter('');
+                }
+                }
+            >
+                <SearchOffRounded />
+            </IconButton>
+        </div>
+    )
+}
+
+/*create a function that return reactjs component that displays a column header with up and down arrow icon for sorting; add onClick handler that will set state of sortByField and toggle setSortOrder
+ */
+const SortableHeader = ({index, headerName, setSortByField, setSortOrder, sortOrder, sortbyField, filter, setFilter}
 ) => {
     const classes = useStyles();
     const headerClasses = classnames(classes.tableCell, classes.tableHeadCell);
@@ -60,6 +141,13 @@ const SortableHeader = ({index, headerName, setSortByField, setSortOrder, sortOr
         </TableCell>
     );
 }
+
+/**
+ * RecordingList component that displays a list of recordings in a table.
+ * @param props {listLength, setFilter, filter}
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export default function RecordingList(props) {
     //page formatting
     const classes = useStyles();
@@ -71,11 +159,13 @@ export default function RecordingList(props) {
 
     //state
     const [sortByField, setSortByField] = useState("Modified");
-    const [sortOrder, setSortOrder] = useState("asc");
+    const [filter, setFilter] = useState(null);
+    const [sortOrder, setSortOrder] = useState("desc");
     //jobs handling
     const [recordingForEditDialog, setRecordingForEditDialog] = useState(false);
     const [recordingsApiResponse, setRecordingsApisResponse] = useState(null);
     const [recordings, setRecordings] = useState(null);
+    const [jobLastPlayed, setJobLastPlayed] = useState(null);
     const {authState} = useOktaAuth();
     var jobLastPLayed = null;
 
@@ -123,8 +213,15 @@ export default function RecordingList(props) {
 
     const sortListByFieldAndOrder = (list) => {
         if (!list) return;
-        // debugger
-        const sortedList = [...list];
+        const filteredList = list.filter(item => {
+            if (filter) {
+                const lowerCaseName = item.file.toLowerCase();
+                const lowerCaseFilter = filter.toLowerCase();
+                return lowerCaseName.includes(lowerCaseFilter);
+            }
+            return true;
+        })
+        const sortedList = [...filteredList];
         //map sortByField to a field in the api response
         const sortByFieldMap = {
             "Name": "file",
@@ -141,7 +238,7 @@ export default function RecordingList(props) {
     }
     const sortAndSlice = (list) => {
         const sortedList = sortListByFieldAndOrder(list);
-        return listLength ? sortedList.slice(0, listLength) : sortedList;
+        return listLength ? sortedList?.slice(0, listLength) : sortedList;
     }
 
     const fetchRecordings = () => {
@@ -158,21 +255,21 @@ export default function RecordingList(props) {
 
     useEffect(() => {
         setRecordings(sortAndSlice(recordingsApiResponse));
-    }, [sortOrder, sortByField, recordingsApiResponse])
+    }, [sortOrder, sortByField, recordingsApiResponse,filter])
 
     const removeRecording = file => {
         api.removeRecording(authState, file)
             .then(() => fetchRecordings())
     };
-
-    const getRowClass = (job) => {
+    const getRowClass = ({job, isLastPlayed}) => {
         const dateModified = moment(job.modified)
+        const classLastPlayed = isLastPlayed ? classes.tableRowLastPlayed : "";
         const isToday = moment().isSame(dateModified, 'day');
         const fromLastHour = moment().subtract(1, 'minutes').isBefore(dateModified);
-        if (fromLastHour) return classes.tableRowLastHour;
+        if (fromLastHour) return classnames(classLastPlayed, classes.tableRowLastHour);
         return isToday ?
-            classes.tableRowToday :
-            classes.tableRow
+            classnames(classLastPlayed, classes.tableRowToday) :
+            classnames(classLastPlayed, classes.tableRow)
     }
 
     return (
@@ -185,6 +282,7 @@ export default function RecordingList(props) {
                     authState
                 />
             }
+            <SearchFilter setFilter={setFilter}/>
             <Table className={classes.table}>
                 <TableHead className={classes[tableHeaderColor + "TableHeader"]}>
                     <TableRow
@@ -199,6 +297,8 @@ export default function RecordingList(props) {
                                     setSortOrder={setSortOrder}
                                     sortOrder={sortOrder}
                                     sortbyField={sortByField}
+                                    filter={filter}
+                                    setFilter={setFilter}
                                 />
                             );
                             /*
@@ -230,7 +330,7 @@ export default function RecordingList(props) {
                         <TableRow
                             hover
                             key={index}
-                            className={getRowClass(job)}>
+                            className={getRowClass({job, isLastPlayed: jobLastPlayed === index})}>
                             <TableCell
                                 onClick={() => rename(job.file, index)}
                                 className={tableCellClasses}
@@ -252,7 +352,10 @@ export default function RecordingList(props) {
                                     <IconButton
                                         aria-label="Play"
                                         className={classes.tableActionButton}
-                                        onClick={() => playRecording(job.file)}
+                                        onClick={() => {
+                                            playRecording(job.file)
+                                            setJobLastPlayed(index)
+                                        }}
                                     >
                                         <Play
                                             className={

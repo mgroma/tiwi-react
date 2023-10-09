@@ -109,27 +109,40 @@ function toChannel2ProgramMap(data) {
         }, new Map());
 }
 
+/**
+ * Single Program Details
+ * @param classes -   material ui classes
+ * @param authState - okta auth state
+ * @param channels -  list of channels to be displayed
+ * @param width -  number of columns
+ * @returns {function(*, *): *}
+ * @constructor
+ */
+function EPGSingleProgramDetails(classes, authState, channels, width: number = 3) {
+    return (program, key) => (
+        <EpgItem width={width} key={key} item={program}>
+            <EPGProgramHeader
+                item={program}
+                classes={classes}
+                authState={authState}
+                channels={channels}
+            />
+            <span className={classes.description}>{ratingFromList(program.ratings)}</span>
+            <div className={classes.description}>
+                {toTime(program.start)}-{toTime(program.stop)}
+                {program.isScheduled && <span style={{color: 'red'}}> (scheduled)</span>}
+            </div>
+        </EpgItem>
+    );
+}
+
 function EPGProgramDetails({programs, classes, authState, channels}) {
     return <>
         {
             programs &&
             programs
                 .filter((item, index) => index < 3)
-                .map((program, key) => (
-                    <EpgItem width={3} key={key} item={program}>
-                        <EPGProgramHeader
-                            item={program}
-                            classes={classes}
-                            authState={authState}
-                            channels={channels}
-                        />
-                        <span className={classes.description}>{ratingFromList(program.ratings)}</span>
-                        <div className={classes.description}>
-                            {toTime(program.start)}-{toTime(program.stop)}
-                            {program.isScheduled && <span style={{color: 'red'}}> (scheduled)</span>}
-                        </div>
-                    </EpgItem>
-                ))
+                .map(EPGSingleProgramDetails(classes, authState, channels))
         }
     </>;
 }

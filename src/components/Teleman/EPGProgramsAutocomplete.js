@@ -10,6 +10,7 @@ import {grayColor} from "../../assets/jss/material-dashboard-react";
 import {red, green} from "@material-ui/core/colors";
 import {useHistory} from "react-router-dom";
 import {useQueryClient} from "react-query";
+import {getValidRatings, ratingFromList, ratingsToString} from "./EPGRatingFromList";
 
 export const styles = {
     container: {
@@ -61,7 +62,7 @@ function getBackgroundColorFor(deltaTime) {
 
 const ItemColored = props => {
     const {deltaTime} = props
-    const deltaHours = deltaTime && deltaTime.asHours()
+    const deltaHours = deltaTime?.asHours()
     const message = deltaHours > 0 ? `in ${deltaTime.humanize()}` : `${deltaTime && deltaTime.humanize()} ago`
     const RenderItem = Item({backgroundColor: getBackgroundColorFor(deltaTime)})
     return (<RenderItem>
@@ -73,22 +74,29 @@ const ItemColored = props => {
 function getDescription(itemDescription, actors, directors, ratings) {
     const actorsContent = actors ? `actors: [${actors}]` : ''
     const directorsContent = directors ? `director: [${directors}]` : ''
-    const ratingsContent = ratings ? `ratings: [${ratings}]` : ''
     return <>
         {itemDescription}
         {actorsContent}
         {directorsContent}
-        {ratingsContent}
+        {ratingFromList(ratings)}
     </>;
 }
 
+/**
+ * EPGProgramHeader
+ * @param classes
+ * @param authState
+ * @param channels
+ * @param item
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export function EPGProgramHeader({classes, authState, channels, item}) {
     const itemDescription = fromlist(item.descriptions);
     const itemTitle = fromlist(item.titles);
     const directors = fromlist(item.directors);
     const actors = fromlist(item.actors);
-    const ratings = fromlist2(item.ratings);
-    const ratingsContent = ratings ? `ratings: ${ratings}` : ''
+    const ratings = item.ratings;
     const actorsContent = actors ? `actors: ${actors};` : ''
     const directorsContent = directors ? `director: ${directors};` : '';
     // const [scheduled, setScheduled] = React.useState(false);
@@ -113,7 +121,7 @@ export function EPGProgramHeader({classes, authState, channels, item}) {
             }}
         >{itemTitle}</Link>
         <Tooltip
-            title={`${itemTitle} \n desc: ${itemDescription} \n${actorsContent}${directorsContent}${ratingsContent}`}>
+            title={`${itemTitle} \n desc: ${itemDescription} \n${actorsContent}${directorsContent}`+ ratingsToString(item.ratings)}>
             <div className={classes.description}>
                 {getDescription(itemDescription, actors, directors, ratings)}
             </div>
@@ -136,6 +144,29 @@ export function EPGProgramFooter(classes, item, history) {
     </div>;
 }
 
+export const renderSingleProgramItem = (item, classes, authState, channels, history, calculateDeltaTimeHO) => {
+    const deltaTime = calculateDeltaTimeHO && calculateDeltaTimeHO(item);
+    return (
+        <div
+            className={classes.container}
+            key={item.id}
+        >
+            <Grid container spacing={1}>
+                <Grid item xs={10}>
+                    {EPGProgramHeader({classes, authState, channels, item})}
+                </Grid>
+                <Grid item xs={2}
+                >
+                    <ItemColored deltaTime={deltaTime}/>
+                </Grid>
+                <Grid item xs={12}>
+                    {EPGProgramFooter(classes, item, history)}
+                </Grid>
+            </Grid>
+        </div>
+    );
+};
+
 export default function EPGProgramsAutocomplete({channels, programs}) {
     const classes = useStyles()
     const {authState} = useOktaAuth();
@@ -156,27 +187,7 @@ export default function EPGProgramsAutocomplete({channels, programs}) {
                 autoComplete
                 filterOptions={filterOptions}
                 renderInput={(params) => <TextField {...params} label={'Enter program or channel name...'}/>}
-                renderOption={(props, item) => {
-                    const deltaTime = calculateDeltaTimeHO(item);
-                    return (
-                        <div
-                            className={classes.container}
-                        >
-                            <Grid container spacing={1}>
-                                <Grid item xs={10}>
-                                    {EPGProgramHeader({classes, authState, channels, item})}
-                                </Grid>
-                                <Grid item xs={2}
-                                >
-                                    <ItemColored deltaTime={deltaTime}/>
-                                </Grid>
-                                <Grid item xs={12}>
-                                    {EPGProgramFooter(classes, item, history)}
-                                </Grid>
-                            </Grid>
-                        </div>
-                    );
-                }}
+                renderOption={(props, item) => renderSingleProgramItem(item, classes, authState, channels, history, calculateDeltaTimeHO)}
 
             />
         </>

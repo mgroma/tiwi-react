@@ -9,7 +9,58 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import styles from "assets/jss/material-dashboard-react/views/jobsStyle.js";
 import EPGGrid from "./EPGGrid";
+import Tree from "react-d3-tree";
+import EPGProgramsByRatings from "../Teleman/EPGProgramsByRatings";
 const useStyles = makeStyles(styles);
+
+const orgChart = {
+    name: 'CEO',
+    children: [
+        {
+            name: 'Manager',
+            attributes: {
+                department: 'Production',
+            },
+            children: [
+                {
+                    name: 'Foreman',
+                    attributes: {
+                        department: 'Fabricationa',
+                        url: "https://www.google.com"
+                    },
+                    children: [
+                        {
+                            name: 'Worker',
+                            attributes: {
+                                url: "https://www.google.com"
+                            }
+                        },
+                    ],
+                },
+                {
+                    name: 'Foreman',
+                    attributes: {
+                        department: 'Assembly',
+                    },
+                    children: [
+                        {
+                            name: 'Worker',
+                        },
+                    ],
+                },
+            ],
+        },
+    ],
+};
+
+function OrgChartTree() {
+    return (
+        // `<Tree />` will fill width/height of its container; in this case `#treeWrapper`.
+        <div id="treeWrapper" style={{ width: '50em', height: '20em' }}>
+            <Tree data={orgChart} />
+        </div>
+    );
+}
 
 
 const JobsPageold = (props) => {
@@ -48,6 +99,10 @@ const JobsPageold = (props) => {
 
 };
 const JobsPage = () => {
-  return <EPGGrid />
+  return <div>jobs page
+      <EPGProgramsByRatings />
+      {/*<OrgChartTree />*/}
+  </div>
+  // return <EPGGrid />
 }
 export default JobsPage
