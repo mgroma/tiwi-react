@@ -1,5 +1,10 @@
 import moment from "moment";
 import api from "../../service/api";
+import {useHistory} from "react-router-dom";
+import {Grid, styled, Tooltip} from "@material-ui/core";
+import {playChannel} from "../Player/PlayerUtils";
+import React from "react";
+import {grayColor} from "../../assets/jss/material-dashboard-react";
 
 export const getProgramsForChannel = (channel, programs) => {
     return markCurrent(programs
@@ -93,3 +98,40 @@ export function getChannelForName(channelName, channels) {
     }
     return null
 }
+
+export const Item = styled('div')(({theme}) => ({
+    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+    ...theme.typography.body2,
+    padding: theme.spacing(1),
+    textAlign: 'left',
+    // borderTop: "1px solid " + grayColor[10],
+    border: "1px solid " + grayColor[10],
+    // marginTop: 10,
+    color: theme.palette.text.secondary,
+    minHeight: '4rem',
+}));
+
+export const EpgChannel = ({channel, changePlayerUrl, authState}) => {
+    const history = useHistory()
+    return (<Grid item xs={12} md={1}><Item>
+        <Tooltip title={channel.name ? channel.name + ' - ' + channel.webtv.title : ''}>
+            <img
+                src={channel.logo}
+                style={{maxWidth: '5rem', maxHeight: '3rem'}}
+                loading={"lazy"}
+                onClick={(event) => playChannel(channel.webtv.name, changePlayerUrl, event, authState)}
+            />
+        </Tooltip>
+        {<div
+            style={{fontSize: '10px'}}
+            onClick={(event) => {
+                // alert('clicked!' + JSON.stringify(channel) + "event.shift=" + event.shiftKey)
+                history.push((event.shiftKey ? '/admin/jobs/' : '/admin/epgProgram/') + channel.id)
+
+            }}
+        >
+            {channel?.webtv?.title}
+        </div>}
+    </Item></Grid>);
+}
+

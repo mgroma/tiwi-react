@@ -13,7 +13,6 @@ function removeWhiteSpaces(title) {
 }
 
 export const filterOutPastPrograms = (now = Date.now()) => (program) => program.stop >= now
-
 const reduceToLastBestMatch = (prev, curr) => {
     if (curr
         && ((!prev)
@@ -73,6 +72,7 @@ const onlyWebTvEpg = (webTvData, epgData, allChannels = false) => {
  */
 
 const allWebTvWithOptionalEpg = (webTvData, epgData) => {
+    console.time('allWebTvWithOptionalEpg')
     if (!(webTvData && epgData)) return {channels: [], programs: []} //data not ready
     const {channels, programs} = epgData
     const webTvChannels = webTvData
@@ -104,12 +104,14 @@ const allWebTvWithOptionalEpg = (webTvData, epgData) => {
         })
         .filter(item => item)
     const webTvPrograms = getProgramsFor(programs, webTvChannels);
+    console.timeEnd('allWebTvWithOptionalEpg')
     //convert ratings from string to object
     // debugger;
     return {channels: webTvChannels, programs: webTvPrograms}
 }
 
 function useWebAndEpgData(authState) {
+    console.time('api.fetchWebChannels')
     const webTvQuery = useQuery(['webTvData'], () =>
             api.fetchWebChannels(authState),
         {
@@ -117,6 +119,8 @@ function useWebAndEpgData(authState) {
             cacheTime: 1000 * 60 * 6
         }
     )
+    console.timeEnd('api.fetchWebChannels')
+    console.time('api.fetchTvGuide')
     const epgDataQuery = useQuery(['epgData'], () =>
             api.fetchTvGuide(),
         {
@@ -125,6 +129,7 @@ function useWebAndEpgData(authState) {
             cacheTime: 1000 * 60 * 6
         }
     )
+    console.timeEnd('api.fetchTvGuide')
     return {webTvQuery, epgDataQuery};
 }
 
@@ -163,7 +168,7 @@ export function useSelectedEPGChannel(preSelectedChannelFilter) {
         channels: Array<{ id: number, name: string, webtv: { name: string, title: string } }>,
         programs: Array<{ channel: number, start: number, stop: number, title: string }>
     }) => {
-        console.time('filterChannels')
+        console.time('updateProgramsWithScheduledIndicator`')
         const ret = tvguide?.programs?.map(program => {
             const isScheduled = extractProgramKeyFromSchedulesList.find(
                 schedule => schedule.channel === program.channel && schedule.start == program.start)
@@ -175,7 +180,7 @@ export function useSelectedEPGChannel(preSelectedChannelFilter) {
                 isScheduled: isScheduled
             }
         })
-        console.timeEnd('filterChannels')
+        console.timeEnd('updateProgramsWithScheduledIndicator')
         return ret
     };
 

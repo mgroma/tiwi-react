@@ -178,6 +178,8 @@ export default function RecordingList(props) {
         startPlayer(fileName);
     }
 
+    const concatenateGroup = async (fileName) =>
+        await api.concatenateGroup(authState, fileName);
     const rename = async (fileName, index) => {
         const extractPrefix = fileName => {
             const matchGroups = fileName.match(/(?<prefix>.* - \d{4}-\d{2}-\d{2})/gm)
@@ -340,7 +342,12 @@ export default function RecordingList(props) {
                                 new Date(job.modified).toLocaleString(),
                                 readableBytes(job.size)
                             ].map((item, index) => (
-                                <TableCell key={index} className={tableCellClasses}>{item}</TableCell>
+                                <TableCell
+                                    onClick={() => {
+                                        alert(`concatenateGroup()/${job.file}`)
+                                        concatenateGroup(job.file)
+                                    }}
+                                    key={index} className={tableCellClasses}>{item}</TableCell>
                             ))}
                             <TableCell className={classes.tableActions}>
                                 <Tooltip

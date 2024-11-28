@@ -35,6 +35,8 @@ import EPG from "./components/Teleman/EPG";
 import JobsPage from "./components/Jobs/JobsPage";
 import {EPGPrograms} from "./components/Teleman/EPGPrograms";
 
+import EPGProgramsByRatings from "./components/Teleman/EPGProgramsByRatings";
+
 const dashboardRoutes = [
     {
         path: "/dashboard",
@@ -51,6 +53,14 @@ const dashboardRoutes = [
         component: OldDashboardPage,
         layout: "/admin",
         unsecure: true
+    },
+    {
+        path: "/recommendations",
+        name: "Recommentations",
+        icon: "video_label",
+        component: EPGProgramsByRatings,
+        layout: "/admin",
+        unsecure: true,
     },
     {
         path: "/jobs/:program?",
@@ -90,7 +100,8 @@ const dashboardRoutes = [
         icon: "list",
         component: PlayerPage,
         layout: "/admin",
-        unsecure: true
+        unsecure: true,
+        skipFromDisplay : true
     },
     {
         path: "/epgList",

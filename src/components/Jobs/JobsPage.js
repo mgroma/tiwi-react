@@ -5,12 +5,14 @@ import GridItem from "../Grid/GridItem";
 import Card from "../Card/Card";
 import CardHeader from "../Card/CardHeader";
 import CardBody from "../Card/CardBody";
-import { makeStyles } from "@material-ui/core/styles";
+import {makeStyles} from "@material-ui/core/styles";
 
 import styles from "assets/jss/material-dashboard-react/views/jobsStyle.js";
-import EPGGrid from "./EPGGrid";
 import Tree from "react-d3-tree";
-import EPGProgramsByRatings from "../Teleman/EPGProgramsByRatings";
+import MyD3Graph from "./d3graph/MyD3Graph";
+import EPGGrid from "./EPGGrid";
+import {SunburstChart} from "./SunBurstChart";
+
 const useStyles = makeStyles(styles);
 
 const orgChart = {
@@ -56,8 +58,8 @@ const orgChart = {
 function OrgChartTree() {
     return (
         // `<Tree />` will fill width/height of its container; in this case `#treeWrapper`.
-        <div id="treeWrapper" style={{ width: '50em', height: '20em' }}>
-            <Tree data={orgChart} />
+        <div id="treeWrapper" style={{width: '50em', height: '20em'}}>
+            <Tree data={orgChart}/>
         </div>
     );
 }
@@ -89,7 +91,7 @@ const JobsPageold = (props) => {
                             <li>grey out past jobs</li>
                             <li>red out failed jobs</li>
                             <li>green out jobs in progress</li>
-                            <li>x screen offset = startTime- beginnig  * / </li>
+                            <li>x screen offset = startTime- beginnig * /</li>
                         </ul>
                     </CardBody>
                 </Card>
@@ -99,10 +101,11 @@ const JobsPageold = (props) => {
 
 };
 const JobsPage = () => {
-  return <div>jobs page
-      <EPGProgramsByRatings />
-      {/*<OrgChartTree />*/}
-  </div>
-  // return <EPGGrid />
+    return <div>jobss page
+        {/*<MyD3Graph />*/}
+        {/*<OrgChartTree />*/}
+        {/*<EPGGrid/>*/}
+        <SunburstChart/>
+    </div>
 }
 export default JobsPage

@@ -47,6 +47,8 @@ const getStreamInfo = async (authState, channelName) => {
 };
 const playRecording = async (authState, recordingName) => _baseFetch(authState, `api/play/${recordingName}`, 'play recording: ' + recordingName);
 const removeRecording = async (authState, recordingName) => _baseFetch(authState, `api/remove/${recordingName}`, 'remove recording: ' + recordingName);
+
+const concatenateGroup = async (authState, recordingName) => _baseFetch(authState, `api/edit/concatenate/${recordingName}`, 'concatenate recording: ' + recordingName);
 const streamRecording = async (authState, recordingName) => _baseFetch(authState, `api/stream/${recordingName}`, 'stream recording: ' + recordingName);
 const saveStream = async (authState, channelName, recordingTime) => _baseFetch(authState, `api/stream/save/${channelName}?startTime=${recordingTime && recordingTime.startTime}&endTime=${recordingTime && recordingTime.endTime}`, 'save stream : ' + channelName);
 
@@ -85,5 +87,6 @@ export default {
     saveStream,
     fetchTvGuide,
     editRecording,
-    getRecordingInfo
+    getRecordingInfo,
+    concatenateGroup
 }

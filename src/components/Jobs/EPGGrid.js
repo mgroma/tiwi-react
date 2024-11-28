@@ -203,6 +203,8 @@ function getTimeDelta(start1, start2) {
 export const getComputerAvailableDiskSpace = () => {
     const freeSpaceInBytes = os.freemem();
     const freeSpaceInGB = (freeSpaceInBytes / (1024 ** 11)).toFixed(2);
-    return freeSpaceInGB;
+    //convert to integer
+    return parseInt(freeSpaceInGB);
+    // return freeSpaceInGB;
 
 }

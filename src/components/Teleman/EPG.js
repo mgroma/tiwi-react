@@ -11,7 +11,7 @@ import {Box, Grid, styled, Tooltip} from "@material-ui/core";
 import {FormControlLabel, Typography} from "@mui/material";
 import {useSelectedEPGChannel} from "./useEPGData";
 import CustomInput from "../CustomInput/CustomInput";
-import {toTime} from "./EPGDataUtils";
+import {EpgChannel, Item, toTime} from "./EPGDataUtils";
 import {EPGProgramHeader} from "./EPGProgramsAutocomplete";
 import {grayColor} from "../../assets/jss/material-dashboard-react";
 import {useOktaAuth} from "@okta/okta-react";
@@ -20,6 +20,7 @@ import {useRecordingSearch} from "../../context/RecordingSearchContext";
 import {useHistory} from "react-router-dom";
 import {ratingFromList} from "./EPGRatingFromList";
 import Checkbox from "@material-ui/core/Checkbox";
+import EPGProgramGrid from "./EPGProgramGrid";
 
 const DEFAULT_CHANNELS_TO_DISPLAY = 10;
 const MAX_CHANNELS_TO_DISPLAY = 300;
@@ -48,42 +49,6 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-const Item = styled('div')(({theme}) => ({
-    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: 'left',
-    // borderTop: "1px solid " + grayColor[10],
-    border: "1px solid " + grayColor[10],
-    // marginTop: 10,
-    color: theme.palette.text.secondary,
-    minHeight: '4rem',
-}));
-
-const EpgChannel = ({channel, changePlayerUrl, authState}) => {
-    const history = useHistory()
-    return (<Grid item xs={12} md={1}><Item
-    >
-        <Tooltip title={channel.name ? channel.name + ' - ' + channel.webtv.title : ''}>
-            <img
-                src={channel.logo}
-                style={{maxWidth: '5rem', maxHeight: '3rem'}}
-                loading={"lazy"}
-                onClick={(event) => playChannel(channel.webtv.name, changePlayerUrl, event, authState)}
-            />
-        </Tooltip>
-        {<div
-            style={{fontSize: '10px'}}
-            onClick={(event) => {
-                // alert('clicked!' + JSON.stringify(channel) + "event.shift=" + event.shiftKey)
-                history.push((event.shiftKey ? '/admin/jobs/' : '/admin/epgProgram/') + channel.id)
-
-            }}
-        >
-            {channel.webtv.title}
-        </div>}
-    </Item></Grid>);
-}
 const EpgItem = ({children, width, item}) => {
     let duration = (item.stop - item.start) / (1000 * 60);
     return (<div style={{width: width * 110}}><Item><Typography
@@ -118,7 +83,7 @@ function toChannel2ProgramMap(data) {
  * @returns {function(*, *): *}
  * @constructor
  */
-function EPGSingleProgramDetails(classes, authState, channels, width: number = 3) {
+function EPGSingleProgramDetails(classes, authState, channels, width = 3) {
     return (program, key) => (
         <EpgItem width={width} key={key} item={program}>
             <EPGProgramHeader
@@ -127,7 +92,6 @@ function EPGSingleProgramDetails(classes, authState, channels, width: number = 3
                 authState={authState}
                 channels={channels}
             />
-            <span className={classes.description}>{ratingFromList(program.ratings)}</span>
             <div className={classes.description}>
                 {toTime(program.start)}-{toTime(program.stop)}
                 {program.isScheduled && <span style={{color: 'red'}}> (scheduled)</span>}
@@ -167,6 +131,52 @@ for a given program
 
 function showSelectedChannelsCount(selectedChannels) {
     return <> ({selectedChannels?.data?.channels?.length || 0} channels)</>;
+}
+//todo: finish it up
+const EPGCurrentProgramsGridNew = (selectedChannels, maxChannels, changePlayerUrl, authState, channel2ProgramMap, classes) =>
+    <EPGProgramGrid
+        selectedChannels={selectedChannels}
+        maxChannels={maxChannels}
+        changePlayerUrl={changePlayerUrl}
+        authState={authState}
+        channel2ProgramMap={channel2ProgramMap}
+        classes={classes}
+    />
+;
+
+function EPGCurrentProgramsGrid(selectedChannels, maxChannels, changePlayerUrl, authState, channel2ProgramMap, classes) {
+    return <Box sx={{flexGrow: 1}}>
+        {
+            selectedChannels.data
+            && selectedChannels.data.channels
+            && selectedChannels.data.channels
+                .filter((item, index) => {
+                    return index < maxChannels;
+                })
+                .map((channel, key) => {
+                    return (
+                        <Grid container key={key}>
+                            <EpgChannel channel={channel}
+                                        changePlayerUrl={changePlayerUrl}
+                                        authState={authState}
+                            />
+
+
+                            <EPGProgramDetails
+                                programs={channel2ProgramMap &&
+                                    channel2ProgramMap
+                                        .get(channel.id)}
+                                classes={classes}
+                                authState={authState}
+                                channels={selectedChannels.data.channels}
+                            />
+
+
+                        </Grid>
+                    )
+                })
+        }
+    </Box>;
 }
 
 export default function EPG() {
@@ -221,38 +231,7 @@ export default function EPG() {
                             </Grid>
                             <Grid container>
                                 <GridItem xs={12} sm={12} md={12}>
-                                    <Box sx={{flexGrow: 1}}>
-                                        {
-                                            selectedChannels.data
-                                            && selectedChannels.data.channels
-                                            && selectedChannels.data.channels
-                                                .filter((item, index) => {
-                                                    return index < maxChannels;
-                                                })
-                                                .map((channel, key) => {
-                                                    return (
-                                                        <Grid container key={key}>
-                                                            <EpgChannel channel={channel}
-                                                                        changePlayerUrl={changePlayerUrl}
-                                                                        authState={authState}
-                                                            />
-
-
-                                                            <EPGProgramDetails
-                                                                programs={channel2ProgramMap &&
-                                                                    channel2ProgramMap
-                                                                        .get(channel.id)}
-                                                                classes={classes}
-                                                                authState={authState}
-                                                                channels={selectedChannels.data.channels}
-                                                            />
-
-
-                                                        </Grid>
-                                                    )
-                                                })
-                                        }
-                                    </Box>
+                                    {EPGCurrentProgramsGrid(selectedChannels, maxChannels, changePlayerUrl, authState, channel2ProgramMap, classes)}
                                 </GridItem>
                             </Grid>
                         </CardBody>
