@@ -25,6 +25,7 @@ const _baseFetchThirdParty = async (apiUrl, operationName, method = 'GET') => {
     }
     return response.json();
 }
+const scheduleEpg = async (authState) => _baseFetch(authState, 'api/schedule/epg?jobType=5', 'schedule EPG');
 const fetchTvGuide = async () => _baseFetchThirdParty( 'api/tvguide', 'fetch tv guide');
 // const fetchWebChannels = async (authState) => _baseFetch(authState, 'api/channels', 'fetch web channels')
 const fetchWebChannels = async (authState) => {
@@ -88,5 +89,6 @@ export default {
     fetchTvGuide,
     editRecording,
     getRecordingInfo,
-    concatenateGroup
+    concatenateGroup,
+    scheduleEpg
 }

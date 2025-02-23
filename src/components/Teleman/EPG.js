@@ -15,12 +15,12 @@ import {EpgChannel, Item, toTime} from "./EPGDataUtils";
 import {EPGProgramHeader} from "./EPGProgramsAutocomplete";
 import {grayColor} from "../../assets/jss/material-dashboard-react";
 import {useOktaAuth} from "@okta/okta-react";
-import {playChannel} from "../Player/PlayerUtils";
 import {useRecordingSearch} from "../../context/RecordingSearchContext";
-import {useHistory} from "react-router-dom";
-import {ratingFromList} from "./EPGRatingFromList";
 import Checkbox from "@material-ui/core/Checkbox";
 import EPGProgramGrid from "./EPGProgramGrid";
+import {useQueryClient} from "react-query";
+import {RefreshEpg} from "./EPGCacheUtils";
+
 
 const DEFAULT_CHANNELS_TO_DISPLAY = 10;
 const MAX_CHANNELS_TO_DISPLAY = 300;
@@ -132,6 +132,7 @@ for a given program
 function showSelectedChannelsCount(selectedChannels) {
     return <> ({selectedChannels?.data?.channels?.length || 0} channels)</>;
 }
+
 //todo: finish it up
 const EPGCurrentProgramsGridNew = (selectedChannels, maxChannels, changePlayerUrl, authState, channel2ProgramMap, classes) =>
     <EPGProgramGrid
@@ -180,6 +181,7 @@ function EPGCurrentProgramsGrid(selectedChannels, maxChannels, changePlayerUrl, 
 }
 
 export default function EPG() {
+    const queryClient = useQueryClient()
     const classes = useStyles();
     const {authState} = useOktaAuth();
     const {changePlayerUrl} = useRecordingSearch();
@@ -187,6 +189,7 @@ export default function EPG() {
     // const {setChannelFilter, selectedChannels} = useSelectedEPGChannel('canal');
     const channel2ProgramMap = toChannel2ProgramMap(selectedChannels.data)
     const [maxChannels, setMaxChannels] = useState(DEFAULT_CHANNELS_TO_DISPLAY)
+
 
     return (
         <div>
@@ -196,7 +199,8 @@ export default function EPG() {
                         <CardHeader color="primary">
                             <h4 className={classes.cardTitleWhite}>EPG Grid</h4>
                             <p className={classes.cardCategoryWhite}>TV
-                                Listing {showSelectedChannelsCount(selectedChannels)}</p>
+                                Listing {showSelectedChannelsCount(selectedChannels)} <RefreshEpg
+                                    queryClient={queryClient}/></p>
                         </CardHeader>
                         <CardBody>
                             <Grid container>
