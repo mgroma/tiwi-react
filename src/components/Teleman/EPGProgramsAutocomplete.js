@@ -11,6 +11,7 @@ import {red, green} from "@material-ui/core/colors";
 import {useHistory} from "react-router-dom";
 import {useQueryClient} from "react-query";
 import {getValidRatings, ratingFromList, ratingsToString} from "./EPGRatingFromList";
+import {useJobs} from "../../context/JobsProvider";
 
 export const styles = {
     container: {
@@ -99,6 +100,8 @@ export function EPGProgramHeader({classes, authState, channels, item}) {
     const ratings = item.ratings;
     const actorsContent = actors ? `actors: ${actors};` : ''
     const directorsContent = directors ? `director: ${directors};` : '';
+    const { recordWebChannel, isLoading } = useJobs();
+
     // const [scheduled, setScheduled] = React.useState(false);
     /*
         const queryClient = useQueryClient()
@@ -115,7 +118,8 @@ export function EPGProgramHeader({classes, authState, channels, item}) {
             className={classes.title}
             onClick={(event) => {
                 if (!item.isScheduled) {
-                    recordProgrom(authState, getChannel(channels, item.channel), item)
+                    recordProgrom(recordWebChannel, getChannel(channels, item.channel), item)
+                    // recordProgrom(authState, getChannel(channels, item.channel), item)
                 }
                 // setScheduled(!scheduled)
             }}

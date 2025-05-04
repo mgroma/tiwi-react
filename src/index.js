@@ -1,5 +1,6 @@
 /*!
 
+
 =========================================================
 * Material Dashboard React - v1.9.0
 =========================================================
@@ -16,11 +17,11 @@
 
 */
 import React from "react";
-import { createRoot } from 'react-dom/client';
+import {createRoot} from 'react-dom/client';
 import {createBrowserHistory} from "history";
 import {Router, Route, Switch, Redirect} from "react-router-dom";
 import {Security, LoginCallback} from '@okta/okta-react';
-import { OktaAuth, toRelativeUrl } from '@okta/okta-auth-js';
+import {OktaAuth, toRelativeUrl} from '@okta/okta-auth-js';
 import config from './config';
 import Login from './views/Login/Login';
 
@@ -30,7 +31,9 @@ import Admin from "layouts/Admin.js";
 
 import "assets/css/material-dashboard-react.css?v=1.9.0";
 import {RecordingSearchContextProvider} from "./context/RecordingSearchContext";
-import { QueryClient, QueryClientProvider } from 'react-query'
+import {QueryClient, QueryClientProvider} from 'react-query'
+import {JobsProvider} from "./context/JobsProvider";
+
 const hist = createBrowserHistory();
 const customAuthHandler = () => {
     hist.push('/login')
@@ -46,20 +49,23 @@ const root = createRoot(container); // createRoot(container!) if you use TypeScr
 root.render(
     <Router history={hist}>
         <QueryClientProvider client={queryClient}>
-        <RecordingSearchContextProvider>
-        <Security
-            onAuthRequired={customAuthHandler}
-            oktaAuth={oktaAuth}
-            restoreOriginalUri={restoreOriginalUri}
-        >
-            <Switch>
-                <Route path="/admin" component={Admin}/>
-                <Route path="/login" component={Login}/>
-                <Route path="/callback" component={LoginCallback} />
-                <Redirect from="/" to="/admin/dashboard"/>
-            </Switch>
-        </Security>
-        </RecordingSearchContextProvider>
+            <RecordingSearchContextProvider>
+                <Security
+                    onAuthRequired={customAuthHandler}
+                    oktaAuth={oktaAuth}
+                    restoreOriginalUri={restoreOriginalUri}
+                >
+                    <JobsProvider>
+                        <Switch>
+                            <Route path="/admin" component={Admin}/>
+                            <Route path="/login" component={Login}/>
+                            <Route path="/callback" component={LoginCallback}/>
+                            <Redirect from="/" to="/admin/dashboard"/>
+                        </Switch>
+                    </JobsProvider>
+                </Security>
+            </RecordingSearchContextProvider>
         </QueryClientProvider>
     </Router>
-);
+)
+;

@@ -19,6 +19,7 @@ import {Done, Stop, Timer} from "@material-ui/icons";
 import {useRecordingSearch} from "../../context/RecordingSearchContext";
 import {LinearProgress} from "@material-ui/core";
 import moment from "moment/moment";
+import {useJobs} from "../../context/JobsProvider";
 
 const useStyles = makeStyles(styles);
 
@@ -91,12 +92,28 @@ export default function ScheduleList() {
     const classes = useStyles();
     const tableCellClasses = classnames(classes.tableCell);
     //jobs handling
-    const [jobs, setJobs] = useState(null);
+    // const [jobs, setJobs] = useState(null);
     const {authState} = useOktaAuth();
     const [jobLastCancelled, setJobLastCancelled] = useState(null);
     const {value} = useRecordingSearch();
+    const {
+        jobs,
+        removeJob,
+        isLoading,
+        fetchSchedules
+    } = useJobs()
 
 
+    const cancelJob = (jobIndex) => {
+        removeJob(jobIndex);
+    }
+    const removeJobHandler = (jobIndex) => {
+        removeJob(jobIndex);    }
+
+    useEffect(() => {
+        fetchSchedules();
+    }, []);
+/*
     const cancelJob = (jobIndex) => {
         api.cancelJob(authState, jobIndex);
         setJobs([])
@@ -116,6 +133,7 @@ export default function ScheduleList() {
         }
 
     }, [authState, jobLastCancelled, value]);
+*/
 
     return (
         <Table className={classes.table}>
@@ -173,7 +191,7 @@ export default function ScheduleList() {
                                 <IconButton
                                     aria-label="Remove"
                                     className={classes.tableActionButton}
-                                    onClick={() => removeJob(index)}
+                                    onClick={() => removeJobHandler(index)}
                                 >
                                     <Close
                                         className={

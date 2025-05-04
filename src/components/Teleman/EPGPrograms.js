@@ -7,6 +7,7 @@ import {useSelectedEPGChannel} from "./useEPGData";
 import {playChannel} from "../Player/PlayerUtils";
 import {useRecordingSearch} from "../../context/RecordingSearchContext";
 import {ratingFromList} from "./EPGRatingFromList";
+import {useJobs} from "../../context/JobsProvider";
 
 /*
  @param programs: array of {
@@ -61,6 +62,7 @@ export function EPGPrograms() {
     const { program } = useParams()
     const {changePlayerUrl} = useRecordingSearch();
     const history = useHistory()
+    const { recordWebChannel, isLoading } = useJobs();
     const {selectedChannels} = useSelectedEPGChannel();
     const channels = selectedChannels.data && selectedChannels.data.channels
     const programs = selectedChannels.data && selectedChannels.data.programs
@@ -96,7 +98,7 @@ export function EPGPrograms() {
                                 style={item.current ? {
                                     backgroundColor: 'lightgray',
                                 } : {}}
-                                onClick={() => recordProgrom(authState, selectedChannel, item)}
+                                onClick={() => recordProgrom(recordWebChannel, selectedChannel, item)}
 
                             >
                                 <TableCell

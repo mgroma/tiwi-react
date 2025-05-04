@@ -80,12 +80,20 @@ export function getProgramKeyParts(key) {
     return {channel: parts[0], start: parts[1]}
 }
 
+export function recordProgrom(recordWebChannel, channel, program) {
+    recordWebChannel( channel.webtv.name, channel.webtv.title + ' - ' + fromlist(program.titles), {
+            startTime: moment(program.start), endTime: moment(program.stop)
+        }, getProgramKey(program))
+        // alert(`SCHEDULED web tv Channel = [${channel.webtv.name + "/" + channel.webtv.title}] [${fromlist(program.titles)}] start = ${moment(program.start)}, stop=[${moment(program.stop)}]`)
+}
+/*
 export function recordProgrom(authState, channel, program) {
         api.recordWebChannel(authState, channel.webtv.name, channel.webtv.title + ' - ' + fromlist(program.titles), {
             startTime: moment(program.start), endTime: moment(program.stop)
         }, getProgramKey(program))
         // alert(`SCHEDULED web tv Channel = [${channel.webtv.name + "/" + channel.webtv.title}] [${fromlist(program.titles)}] start = ${moment(program.start)}, stop=[${moment(program.stop)}]`)
 }
+*/
 /*
  channelName - name of the program e.g. CanalPlusPremium.pl
  channels - a list of all channels

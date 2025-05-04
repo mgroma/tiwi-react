@@ -6,16 +6,21 @@ import React from "react";
 import api from "../../service/api";
 import {useRecordingSearch} from "../../context/RecordingSearchContext";
 import {playChannel} from "../Player/PlayerUtils";
+import {useJobs} from "../../context/JobsProvider";
 
+/*
 const recordChannel = (channelName, channelTitle, recordingTime, authState) => {
     api.recordWebChannel(authState, channelName, channelTitle, recordingTime)
     // todo: go-forward API, saveStream is not needed anymore as separate API, it has been integrated with recordWebChannel
     //  api.saveStream(authState, channelName)
 }
+*/
 
 export default (props) => {
     const {classes, channel, recordingTime, authState} = props;
     const {handleChange, changePlayerUrl} = useRecordingSearch();
+    const { recordWebChannel, isLoading } = useJobs();
+
     return <span>
     <Tooltip
         id="tooltip-top-start"
@@ -28,7 +33,8 @@ export default (props) => {
                 className={classes.tableActionButton}
                 onClick={() => {
                     handleChange(`Recording ${channel.channel_name}`)
-                    recordChannel(channel.channel_name, channel.channel_title, recordingTime, authState)
+                    recordWebChannel(channel.channel_name, channel.channel_title, recordingTime)
+                    // recordWebChannel(channel.channel_name, channel.channel_title, recordingTime, authState)
                 }
                 }
             >
