@@ -18,11 +18,12 @@ import {useOktaAuth} from "@okta/okta-react";
 import api from "../../service/api";
 import readableBytes from "../Utils/ReadableBytes";
 import TableHead from "@material-ui/core/TableHead";
-import {ArrowDownward, Close, Edit, PlayArrowOutlined, Refresh} from "@material-ui/icons";
+import {ArrowDownward, Refresh, Edit, Close, PlayArrowOutlined} from "@material-ui/icons";
 import moment from "moment";
 import {RecordingEditDialog} from "./RecordingEditDialog";
 import ArrowUpward from "@material-ui/icons/ArrowUpward";
 import {SearchOffRounded} from "@mui/icons-material";
+import ConcatenateDialog from "./ConcatenateDialog";
 
 const useStyles = makeStyles(styles);
 
@@ -168,6 +169,7 @@ export default function RecordingList(props) {
     const [jobLastPlayed, setJobLastPlayed] = useState(null);
     const {authState} = useOktaAuth();
     var jobLastPLayed = null;
+    const [concatenateDialog, setConcatenateDialog] = useState({ open: false, fileName: null });
 
     const playRecording = (recordingName) => {
         api.playRecording(authState, recordingName);
@@ -274,6 +276,21 @@ export default function RecordingList(props) {
             classnames(classLastPlayed, classes.tableRow)
     }
 
+    const handleConcatenateClick = (fileName) => {
+        setConcatenateDialog({ open: true, fileName });
+    };
+
+    const handleConcatenateConfirm = async () => {
+        if (concatenateDialog.fileName) {
+            await concatenateGroup(concatenateDialog.fileName);
+            setConcatenateDialog({ open: false, fileName: null });
+        }
+    };
+
+    const handleConcatenateCancel = () => {
+        setConcatenateDialog({ open: false, fileName: null });
+    };
+
     return (
         <>
             {
@@ -343,11 +360,10 @@ export default function RecordingList(props) {
                                 readableBytes(job.size)
                             ].map((item, index) => (
                                 <TableCell
-                                    onClick={() => {
-                                        alert(`concatenateGroup()/${job.file}`)
-                                        concatenateGroup(job.file)
-                                    }}
-                                    key={index} className={tableCellClasses}>{item}</TableCell>
+                                    onClick={() => handleConcatenateClick(job.file)}
+                                    key={index} 
+                                    className={tableCellClasses}
+                                >{item}</TableCell>
                             ))}
                             <TableCell className={classes.tableActions}>
                                 <Tooltip
@@ -453,6 +469,13 @@ export default function RecordingList(props) {
                     ))}
                 </TableBody>
             </Table>
+
+            <ConcatenateDialog
+                open={concatenateDialog.open}
+                fileName={concatenateDialog.fileName}
+                onConfirm={handleConcatenateConfirm}
+                onCancel={handleConcatenateCancel}
+            />
         </>
     );
 }

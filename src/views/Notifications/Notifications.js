@@ -15,7 +15,6 @@ import Snackbar from "components/Snackbar/Snackbar.js";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
-import {MyFacebook} from "../UserProfile/MyFacebook";
 
 const styles = {
     cardCategoryWhite: {
@@ -150,7 +149,6 @@ export default function Notifications() {
             <CardBody>
                 <GridContainer justify="center">
                     <GridItem xs={12} sm={12} md={6} style={{textAlign: "center"}}>
-                        <MyFacebook/>
                     </GridItem>
                 </GridContainer>
 

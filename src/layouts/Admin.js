@@ -11,7 +11,7 @@ import Footer from "components/Footer/Footer.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
 import PlayerPopup from "components/Player/PlayerPopup";
 import {SecureRoute} from '@okta/okta-react';
-
+import useTitleHeader from "components/Utils/useTitleHeader";
 
 import routes from "routes.js";
 
@@ -88,6 +88,7 @@ export default function Admin({...rest}) {
             window.removeEventListener("resize", resizeFunction);
         };
     }, [mainPanel]);
+    useTitleHeader();
     return (
         <div className={classes.wrapper}>
             <Sidebar
@@ -115,7 +116,6 @@ export default function Admin({...rest}) {
                 ) : (
                     <div className={classes.map}>{switchRoutes}</div>
                 )}
-                {getRoute() ? <Footer/> : null}
 {/*
                 <FixedPlugin
                     handleImageClick={handleImageClick}

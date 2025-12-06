@@ -3,7 +3,7 @@ import {Button, Table, TableBody, TableCell, TableRow, Tooltip} from "@material-
 import {useOktaAuth} from "@okta/okta-react";
 import {fromlist, getChannelForName, getProgramsForChannel, recordProgrom, toDate, toTime} from "./EPGDataUtils";
 import {useHistory, useParams} from "react-router-dom";
-import {useSelectedEPGChannel} from "./useEPGData";
+import {useSelectedEPGChannel} from "./useEPGData.tsx";
 import {playChannel} from "../Player/PlayerUtils";
 import {useRecordingSearch} from "../../context/RecordingSearchContext";
 import {ratingFromList} from "./EPGRatingFromList";

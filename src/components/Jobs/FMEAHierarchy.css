@@ -1,0 +1,225 @@
+/* Graph.css */
+.graph {
+  position: relative;
+}
+
+.graph-status-bar {
+  padding: 10px;
+  margin-bottom: 20px;
+  background-color: #e9ecef;
+  border-radius: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+ 
+.graph-reset-button {
+  padding: 5px 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  background-color: white;
+  cursor: pointer;
+}
+
+.graph-levels-container {
+  display: flex;
+  gap: 50px;
+  padding: 20px;
+}
+
+.graph-level {
+  position: relative;
+  min-width: 150px;
+}
+
+.graph-level-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #f8f9fa;
+  z-index: -2;
+}
+
+.graph-level-header {
+  padding: 10px;
+  margin-bottom: 15px;
+  font-weight: bold;
+  text-align: center;
+  border-bottom: 1px solid #dee2e6;
+  background-color: #f8f9fa;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.graph-level-nodes {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 15px;
+}
+
+.graph-node {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.node-content {
+  flex: 1;
+}
+
+.slo-button {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.slo-button:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  color: #1976d2;
+}
+
+.slo-view {
+  padding: 1rem;
+}
+
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+}
+
+.breadcrumbs button {
+  background: none;
+  border: none;
+  color: #1976d2;
+  cursor: pointer;
+  padding: 0;
+  font-size: 1rem;
+}
+
+.breadcrumbs button:hover {
+  text-decoration: underline;
+}
+
+.breadcrumbs span {
+  color: #666;
+}
+
+.graph-node.selected {
+  border: 2px solid #007bff;
+  background-color: #e6f3ff;
+  box-shadow: 0 0 8px rgba(0,123,255,0.25);
+}
+
+.graph-node.connected {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.graph-node:not(.connected) {
+  opacity: 0.3;
+  transform: scale(0.95);
+}
+
+.graph-node.connected:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.graph-connections {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.graph-connection-path {
+  stroke: #007bff;
+  fill: none;
+  stroke-width: 1.5;
+  transition: all 0.3s ease;
+}
+
+/* Optional: Add hover effects for interactive elements */
+.graph-reset-button:hover {
+  background-color: #f8f9fa;
+  border-color: #007bff;
+}
+
+/* Optional: Add media queries for responsiveness */
+@media (max-width: 768px) {
+  .graph-levels-container {
+    gap: 20px;
+    padding: 10px;
+  }
+
+  .graph-level {
+    min-width: 120px;
+  }
+}
+
+.graph-controls {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: nowrap;
+    min-height: 40px;
+}
+
+.fmea-search {
+    flex: 0 0 300px;
+    margin: 0;
+}
+
+.graph-status-bar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 8px 16px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    flex: 1;
+    margin: 0;
+    height: 100%;
+}
+
+.graph-reset-button {
+    padding: 6px 12px;
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s ease;
+}
+
+.graph-reset-button:hover {
+    background-color: #5a6268;
+}

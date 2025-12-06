@@ -12,7 +12,6 @@ import config from '../../config';
 import * as OktaSignIn from '@okta/okta-signin-widget';
 import '@okta/okta-signin-widget/dist/css/okta-sign-in.min.css';
 
-
 const styles = {
     cardCategoryWhite: {
         color: "rgba(255,255,255,.62)",
@@ -30,7 +29,6 @@ const styles = {
         marginBottom: "3px",
         textDecoration: "none"
     },
-
 };
 
 const useStyles = makeStyles(styles);
@@ -76,7 +74,6 @@ export default function Login() {
                 registration: true,
                 showPasswordToggleOnSignInPage: true,
                 autoPush: true,
-
             }
         });
 
@@ -108,7 +105,6 @@ export default function Login() {
                         <CardBody>
                             <div id="sign-in-widget"/>
                         </CardBody>
-                        }
                     </Card>
                 </GridItem>
             </GridContainer>

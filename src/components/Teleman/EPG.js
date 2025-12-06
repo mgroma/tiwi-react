@@ -9,7 +9,7 @@ import CardBody from "components/Card/CardBody.js";
 
 import {Box, Grid, styled, Tooltip} from "@material-ui/core";
 import {FormControlLabel, Typography} from "@mui/material";
-import {useSelectedEPGChannel} from "./useEPGData";
+import {useSelectedEPGChannel} from "./useEPGData.tsx";
 import CustomInput from "../CustomInput/CustomInput";
 import {EpgChannel, Item, toTime} from "./EPGDataUtils";
 import {EPGProgramHeader} from "./EPGProgramsAutocomplete";

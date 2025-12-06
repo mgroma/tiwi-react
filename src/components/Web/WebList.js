@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import PropTypes from "prop-types";
 import classnames from "classnames";
+import {Link} from 'react-router-dom';
 // @material-ui/core components
 import {makeStyles} from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
@@ -21,7 +22,6 @@ import {Refresh} from "@material-ui/icons";
 
 const useStyles = makeStyles(styles);
 
-
 const getChannels = (jsonChannels, props) => {
     if (props && props.keyword)
         return jsonChannels
@@ -31,6 +31,14 @@ const getChannels = (jsonChannels, props) => {
                     .includes(props.keyword.toUpperCase()));
     else
         return jsonChannels;
+}
+
+const findEpgChannel = (webChannel, epgChannels) => {
+    if (!epgChannels) return null;
+    return epgChannels.find(epgChannel => 
+        epgChannel.webtv?.name === webChannel.channel_name ||
+        epgChannel.webtv?.title === webChannel.channel_title
+    );
 }
 
 const generateEndDateTime = () => moment().add(4, 'hours').toDate();
@@ -46,6 +54,7 @@ export default function WebList(props) {
     //channels handling
     const [channels, setChannels] = useState(null);
     const {authState} = useOktaAuth();
+    const {epgChannels} = props;
 
     const refreshChannels = (authState) => {
         if ((authState.isAuthenticated || true) && !channels) {
@@ -55,13 +64,12 @@ export default function WebList(props) {
     };
 
     useEffect(() => {
-
         refreshChannels(authState);
     }, [authState, channels]);
 
     function refresh() {
         setChannels(null)
-         onChangeStartDateTime(generateStartDateTime());
+        onChangeStartDateTime(generateStartDateTime());
         onChangeEndDateTime(generateEndDateTime())
         return null
     }
@@ -86,22 +94,39 @@ export default function WebList(props) {
 
             <Table className={classes.table}>
                 <TableBody>
-                    {channels && channels.map((channel, index) => (
-                        <TableRow key={index} className={classes.tableRow}>
-                            <TableCell className={tableCellClasses}>{channel.channel_title}</TableCell>
-                            <TableCell className={classes.tableActions}>
-                                <WebActions
-                                    classes={classes}
-                                    channel={channel}
-                                    recordingTime={{
-                                        startTime: startDateTime,
-                                        endTime: endDateTime
-                                    }}
-                                    authState={authState}
-                                />
-                            </TableCell>
-                        </TableRow>
-                    ))}
+                    {channels && channels.map((channel, index) => {
+                        const epgChannel = findEpgChannel(channel, epgChannels);
+                        return (
+                            <TableRow key={index} className={classes.tableRow}>
+                                <TableCell className={tableCellClasses}>
+                                    <Link 
+                                        to={epgChannel ? `/admin/epgProgram/${epgChannel.id}` : '#'}
+                                        style={{ 
+                                            textDecoration: 'none',
+                                            color: 'inherit',
+                                            cursor: epgChannel ? 'pointer' : 'not-allowed',
+                                            '&:hover': {
+                                                textDecoration: epgChannel ? 'underline' : 'none'
+                                            }
+                                        }}
+                                    >
+                                        {channel.channel_title}
+                                    </Link>
+                                </TableCell>
+                                <TableCell className={classes.tableActions}>
+                                    <WebActions
+                                        classes={classes}
+                                        channel={channel}
+                                        recordingTime={{
+                                            startTime: startDateTime,
+                                            endTime: endDateTime
+                                        }}
+                                        authState={authState}
+                                    />
+                                </TableCell>
+                            </TableRow>
+                        );
+                    })}
                 </TableBody>
             </Table>
         </>
@@ -109,5 +134,6 @@ export default function WebList(props) {
 }
 
 WebList.propTypes = {
-    keyword: PropTypes.string
+    keyword: PropTypes.string,
+    epgChannels: PropTypes.array
 };

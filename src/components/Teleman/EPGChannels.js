@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {Table, TableBody, TableCell, TableHead, TableRow} from "@material-ui/core";
 import {EPGPrograms} from "./EPGPrograms";
 import EPGProgramsAutocomplete from "./EPGProgramsAutocomplete";
-import {useSelectedEPGChannel} from "./useEPGData";
+import {useSelectedEPGChannel} from "./useEPGData.tsx";
 import CustomInput from "../CustomInput/CustomInput";
 import {getChannelForName} from "./EPGDataUtils";
 import {useHistory} from "react-router-dom";

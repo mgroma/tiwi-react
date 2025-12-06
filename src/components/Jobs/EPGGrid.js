@@ -4,7 +4,7 @@ import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import {Graph} from "./Graph";
-import {filterOutPastPrograms, useSelectedEPGChannel} from "../Teleman/useEPGData";
+import {filterOutPastPrograms, useSelectedEPGChannel} from "../Teleman/useEPGData.tsx";
 import {EPGProgramTimes} from "../Teleman/EPGProgramsAutocomplete";
 import {fromlist} from "../Teleman/EPGDataUtils";
 import {useHistory, useParams} from "react-router-dom";

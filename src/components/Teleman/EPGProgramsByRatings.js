@@ -11,7 +11,7 @@
  * display programs filtered to be above rank threshold and sorted by rank in descending order
  */
 import React from 'react';
-import {useSelectedEPGChannel} from "./useEPGData";
+import {useSelectedEPGChannel} from "./useEPGData.tsx";
 import {getValidRatings} from "./EPGRatingFromList";
 import * as program from 'commander'
 import {EPGProgramHeader, renderSingleProgramItem, styles} from "./EPGProgramsAutocomplete";

@@ -26,35 +26,67 @@ const useStyles = makeStyles(styles);
 const JobStatusMap = {
     'NOT_SCHEDULED': 'NOT_SCHEDULED',
     'SCHEDULED': <Timer/>,
-    'EXECUTING': <LinearProgress style={{minWidth: 50}}/>,
-    //later  'EXECUTING': <LinearProgress value={50} variant="determinate"/>,
+    'EXECUTING': null,
     'COMPLETED': <Done style={{color: "green"}}/>,
     'ERROR': 'ERROR',
     'KILLED': 'KILLED'
 }
 
+function getJobProgress(job) {
+    if (job.status === 'EXECUTING' && job.jobInfo.startTime && job.jobInfo.endTime) {
+        const now = moment();
+        const end = moment(job.jobInfo.endTime);
+        const start = moment(job.jobInfo.startTime);
+        const total = end.diff(start);
+        const elapsed = now.diff(start);
+        const progress = Math.min(Math.max(Math.round((elapsed / total) * 100), 0), 100);
+        return progress;
+    }
+    return 0;
+}
+
 function getJobTitle(job) {
     if (job.status === 'EXECUTING') {
-        const now = moment()
-        const end = moment(job.jobInfo.endTime)
-        const start = moment(job.jobInfo.startTime)
-        return `${Math.round(((now - start) / (end - start)) * 100)} %`
+        const progress = getJobProgress(job);
+        return `${progress}% complete`;
     }
-    return job.status
+    return job.status;
 }
 
 function JobStatus(job) {
     const status = JobStatusMap[job.status];
-    const title = getJobTitle(job)
-    return <Tooltip
-        id="tooltip-top"
-        title={title}
-        placement="top"
-    >
-        <div>
-            {status || job.status}
-        </div>
-    </Tooltip>;
+    const title = getJobTitle(job);
+    
+    if (job.status === 'EXECUTING') {
+        const progress = getJobProgress(job);
+        return (
+            <Tooltip
+                id="tooltip-top"
+                title={title}
+                placement="top"
+            >
+                <div style={{ minWidth: 100 }}>
+                    <LinearProgress 
+                        variant="determinate" 
+                        value={progress} 
+                        style={{ height: 4, borderRadius: 2 }}
+                    />
+                </div>
+            </Tooltip>
+        );
+    }
+    
+    return (
+        <Tooltip
+            id="tooltip-top"
+            title={title}
+            placement="top"
+        >
+            <div>
+                {status || job.status}
+            </div>
+        </Tooltip>
+    );
 }
 
 const isCronFormat = str => {
@@ -103,12 +135,32 @@ export default function ScheduleList() {
         fetchSchedules
     } = useJobs()
 
+    const filterOldCompletedJobs = (jobs) => {
+        const sixHoursAgo = moment().subtract(6, 'hours');
+        return jobs.filter(job => {
+            if (job.status === 'COMPLETED' && job.jobInfo?.endTime) {
+                return moment(job.jobInfo.endTime).isAfter(sixHoursAgo);
+            }
+            return true;
+        });
+    };
 
-    const cancelJob = (jobIndex) => {
-        removeJob(jobIndex);
+    const filteredJobs = jobs ? filterOldCompletedJobs(jobs) : [];
+
+    const cancelJob = async (jobIndex) => {
+        try {
+            await removeJob(jobIndex);
+        } catch (error) {
+            console.error('Error cancelling job:', error);
+        }
     }
-    const removeJobHandler = (jobIndex) => {
-        removeJob(jobIndex);    }
+    const removeJobHandler = async (jobIndex) => {
+        try {
+            await removeJob(jobIndex);
+        } catch (error) {
+            console.error('Error removing job:', error);
+        }
+    }
 
     useEffect(() => {
         fetchSchedules();
@@ -138,7 +190,7 @@ export default function ScheduleList() {
     return (
         <Table className={classes.table}>
             <TableBody>
-                {jobs && jobs.map((job, index) => (
+                {filteredJobs && filteredJobs.map((job, index) => (
                     <TableRow key={index} className={classes.tableRow}>
                         {[job.name,
                             JobStatus(job),

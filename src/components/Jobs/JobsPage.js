@@ -12,6 +12,7 @@ import Tree from "react-d3-tree";
 import MyD3Graph from "./d3graph/MyD3Graph";
 import EPGGrid from "./EPGGrid";
 import {SunburstChart} from "./SunBurstChart";
+import FMEAHierarchy from "./FMEAHierarchy";
 
 const useStyles = makeStyles(styles);
 
@@ -105,7 +106,8 @@ const JobsPage = () => {
         {/*<MyD3Graph />*/}
         {/*<OrgChartTree />*/}
         {/*<EPGGrid/>*/}
-        <SunburstChart/>
+        {/*<SunburstChart/>*/}
+        <FMEAHierarchy />
     </div>
 }
 export default JobsPage

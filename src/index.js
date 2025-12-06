@@ -38,7 +38,18 @@ const hist = createBrowserHistory();
 const customAuthHandler = () => {
     hist.push('/login')
 }
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      cacheTime: 1000 * 60 * 10, // 10 minutes
+      retry: 3,
+      retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
+      refetchOnWindowFocus: true,
+      refetchOnReconnect: true
+    }
+  }
+})
 const restoreOriginalUri = async (_oktaAuth, originalUri) => {
     hist.replace(toRelativeUrl(originalUri, window.location.origin));
 };

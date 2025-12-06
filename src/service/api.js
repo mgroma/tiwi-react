@@ -74,6 +74,75 @@ const editRecording = async (authState,
 
 const getRecordingInfo = async (authState, recordingName) => _baseFetch(authState, `api/recordings/${recordingName}`, 'get recording info : ' + recordingName);
 
+// SSE connection for job updates
+let eventSource = null;
+let reconnectTimeout = null;
+const RECONNECT_DELAY = 1000; // 1 second
+
+const connectToJobUpdates = (onMessage) => {
+    console.log('Setting up SSE connection...');
+    
+    const setupEventSource = () => {
+        if (eventSource) {
+            console.log('Closing existing SSE connection');
+            eventSource.close();
+        }
+
+        console.log('Creating new SSE connection to:', `${HOSTNAME}/api/epg-events`);
+        eventSource = new EventSource(`${HOSTNAME}/api/epg-events`);
+        
+        eventSource.onopen = () => {
+            console.log('SSE connection established');
+            if (reconnectTimeout) {
+                clearTimeout(reconnectTimeout);
+                reconnectTimeout = null;
+            }
+        };
+        
+        eventSource.onmessage = (event) => {
+            try {
+                const data = JSON.parse(event.data);
+                console.log('Received SSE message:', data);
+                onMessage(data);
+            } catch (error) {
+                console.error('Error parsing SSE message:', error);
+            }
+        };
+
+        eventSource.onerror = (error) => {
+            console.error('SSE Error:', error);
+            if (eventSource) {
+                eventSource.close();
+                eventSource = null;
+                
+                // Attempt to reconnect
+                if (!reconnectTimeout) {
+                    console.log('Scheduling SSE reconnection...');
+                    reconnectTimeout = setTimeout(() => {
+                        console.log('Attempting to reconnect SSE...');
+                        reconnectTimeout = null;
+                        setupEventSource();
+                    }, RECONNECT_DELAY);
+                }
+            }
+        };
+    };
+
+    setupEventSource();
+
+    return () => {
+        console.log('Cleaning up SSE connection');
+        if (eventSource) {
+            eventSource.close();
+            eventSource = null;
+        }
+        if (reconnectTimeout) {
+            clearTimeout(reconnectTimeout);
+            reconnectTimeout = null;
+        }
+    };
+};
+
 export default {
     fetchWebChannels,
     fetchSchedules,
@@ -90,5 +159,6 @@ export default {
     editRecording,
     getRecordingInfo,
     concatenateGroup,
-    scheduleEpg
+    scheduleEpg,
+    connectToJobUpdates
 }

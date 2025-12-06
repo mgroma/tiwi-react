@@ -47,7 +47,7 @@
     "vis-network": "^9.1.7"
   },
   "scripts": {
-    "start": "react-app-rewired start",
+    "start": "export NODE_OPTIONS=--openssl-legacy-provider && react-app-rewired start",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test --evn=jsdom",
     "eject": "react-scripts eject"

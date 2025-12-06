@@ -1,4 +1,5 @@
 import React from "react";
+import { Box } from '@mui/material';
 // react plugin for creating charts
 // @material-ui/core
 import {makeStyles} from "@material-ui/core/styles";
@@ -16,19 +17,19 @@ import CardHeader from "components/Card/CardHeader.js";
 import CardIcon from "components/Card/CardIcon.js";
 import CardFooter from "components/Card/CardFooter.js";
 
-
 import styles from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
 import WebList from "../../components/Web/WebList";
 import ScheduleList from "../../components/Lists/ScheduleList";
 import RecordingList from "../../components/Recordings/RecordingList";
 import {useRecordingSearch} from "../../context/RecordingSearchContext";
 import EPGProgramsAutocomplete from "../../components/Teleman/EPGProgramsAutocomplete";
-import {useSelectedEPGChannel} from "../../components/Teleman/useEPGData";
+import {useSelectedEPGChannel} from "../../components/Teleman/useEPGData.tsx";
 import {LiveTv} from "@material-ui/icons";
 import CardBody from "../../components/Card/CardBody";
+import { JobStatus } from '../../components/Teleman/JobStatus';
+import YouTubeRecordingForm from "../../components/YouTube/YouTubeRecordingForm";
 
 const useStyles = makeStyles(styles);
-
 
 export default function Dashboard() {
     const classes = useStyles();
@@ -39,7 +40,8 @@ export default function Dashboard() {
 
     const recordingStatus = `[${value}]`;
     return (
-        <div>
+        <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
+            <JobStatus />
             <GridContainer>
                 <GridItem xs={12} sm={12} md={12}>
                     <Card>
@@ -74,6 +76,7 @@ export default function Dashboard() {
                         tabContent: (
                             <WebList
                                 keyword={"sport"}
+                                epgChannels={channels}
                             />
                         )
                     },
@@ -83,6 +86,7 @@ export default function Dashboard() {
                         tabContent: (
                             <WebList
                                 keyword={"film"}
+                                epgChannels={channels}
                             />
                         )
                     },
@@ -92,6 +96,7 @@ export default function Dashboard() {
                         tabContent: (
                             <WebList
                                 keyword={"canal"}
+                                epgChannels={channels}
                             />
                         )
                     },
@@ -101,6 +106,7 @@ export default function Dashboard() {
                         tabContent: (
                             <WebList
                                 keyword={"hbo"}
+                                epgChannels={channels}
                             />
                         )
                     },
@@ -110,6 +116,7 @@ export default function Dashboard() {
                         tabContent: (
                             <WebList
                                 keyword={"polsat"}
+                                epgChannels={channels}
                             />
                         )
                     },
@@ -143,6 +150,11 @@ export default function Dashboard() {
             </GridItem>
             </GridContainer>
             </span>
-        </div>
+            <GridContainer>
+                <GridItem xs={12} sm={12} md={12}>
+                    <YouTubeRecordingForm />
+                </GridItem>
+            </GridContainer>
+        </Box>
     );
 }

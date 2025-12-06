@@ -41,21 +41,23 @@ module.exports = {
         // Remove the 'ModuleScopePlugin' which keeps us from requiring outside the src/ dir
         config.resolve.plugins = [];
 
-        // Define global vars from env vars (process.env has already been defined)
+        // Optimize for development
+        config.optimization = {
+            ...config.optimization,
+            removeAvailableModules: false,
+            removeEmptyChunks: false,
+            splitChunks: false,
+        };
+
+        // Use faster source maps in development
+        config.devtool = 'eval-source-map';
+
+        // Define global vars from env vars
         config.plugins = config.plugins.concat([
             new webpack.DefinePlugin({
                 'process.env': env,
             }),
         ]);
-
-        config.devtool = 'source-map';
-/*
-        config.module.rules.push({
-            test: /\.js$/,
-            use: ['source-map-loader'],
-            enforce: 'pre',
-        });
-*/
 
         return config;
     },
@@ -68,15 +70,23 @@ module.exports = {
             // Create the default config by calling configFunction with the proxy/allowedHost parameters
             const config = configFunction(proxy, allowedHost);
 
-            // Change the https certificate options to match your certificate, using the .env file to
-            // set the file paths & passphrase.
-            const fs = require('fs');
-            config.https = {
-                key: fs.readFileSync(process.env.REACT_HTTPS_KEY, 'utf8'),
-                cert: fs.readFileSync(process.env.REACT_HTTPS_CERT, 'utf8'),
-                // ca: fs.readFileSync(process.env.REACT_HTTPS_CA, 'utf8'),
-                // passphrase: process.env.REACT_HTTPS_PASS
+            // Optimize dev server
+            config.watchOptions = {
+                ignored: /node_modules/,
+                aggregateTimeout: 300,
+                poll: 1000,
             };
+
+            // Enable hot module replacement
+            config.hot = true;
+
+            // Change the https certificate options
+            if (process.env.REACT_HTTPS_KEY && process.env.REACT_HTTPS_CERT) {
+                config.https = {
+                    key: fs.readFileSync(process.env.REACT_HTTPS_KEY, 'utf8'),
+                    cert: fs.readFileSync(process.env.REACT_HTTPS_CERT, 'utf8'),
+                };
+            }
 
             // Return your customised Webpack Development Server config.
             return config;

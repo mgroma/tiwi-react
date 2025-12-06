@@ -36,14 +36,48 @@ export function JobsProvider({children}) {
     };
 
     const removeJob = async (jobId) => {
+        // Store previous state for rollback
+        let previousJobs = null;
+        
         try {
             setLoading('removingJob', true);
+            
+            // Optimistically remove job from local state
+            previousJobs = jobs;
+            setJobs(prevJobs => {
+                if (!prevJobs) return prevJobs;
+                return prevJobs.filter((job, index) => index !== jobId);
+            });
+            
+            // Attempt to remove job on server
+            console.log(`[removeJob] Attempting to remove job at index ${jobId}`);
             const response = await api.removeJob(authState, jobId);
-            // filter out item from prevJobs array whose index = jobId
-            setJobs(prevJobs => prevJobs.filter((job, index) => index !== jobId));
+            console.log(`[removeJob] API response:`, response);
+            
+            // Check if response indicates success (backend returns {status: 0} on success)
+            if (response && response.status !== undefined && response.status !== 0) {
+                console.warn(`[removeJob] API returned non-zero status: ${response.status} for jobId ${jobId}`);
+            }
+            
+            // Refetch schedules to ensure UI is in sync with server state
+            console.log(`[removeJob] Refetching schedules after removal`);
+            try {
+                await fetchSchedules();
+                console.log(`[removeJob] Successfully refetched schedules`);
+            } catch (fetchError) {
+                console.error(`[removeJob] Failed to refetch schedules after removal:`, fetchError);
+                // Don't throw here - the job removal might have succeeded even if refetch failed
+                // The rollback will happen if the removeJob API call itself failed
+            }
+            
             return true;
         } catch (error) {
-            console.error('Error removing job:', error);
+            console.error(`[removeJob] Error removing job ${jobId}:`, error);
+            // Rollback optimistic update on error
+            if (previousJobs !== null) {
+                console.log(`[removeJob] Rolling back optimistic update for job ${jobId}`);
+                setJobs(previousJobs);
+            }
             throw error;
         } finally {
             setLoading('removingJob', false);
