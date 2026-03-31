@@ -59,15 +59,17 @@ export const RefreshEpg = (authState) => {
                 sx={listStyle}
                 onClick={async () => {
                     try {
-                        // Only invalidate EPG-related queries
+                        // Invalidate all EPG-related queries (raw + derived) so UI shows fresh data
                         await Promise.all([
-                            queryClient.invalidateQueries({queryKey: ['webTvData']}),
-                            queryClient.invalidateQueries({queryKey: ['epgData']})
+                            queryClient.invalidateQueries(['webTvData']),
+                            queryClient.invalidateQueries(['epgData']),
+                            queryClient.invalidateQueries(['epgCombinedData']),
+                            queryClient.invalidateQueries(['epgFilteredChannels']),
+                            queryClient.invalidateQueries(['epgSchedules'])
                         ]);
-                        // Optionally force a refetch
                         await Promise.all([
-                            queryClient.refetchQueries({queryKey: ['webTvData']}),
-                            queryClient.refetchQueries({queryKey: ['epgData']})
+                            queryClient.refetchQueries(['webTvData']),
+                            queryClient.refetchQueries(['epgData'])
                         ]);
                     } catch (e) {
                         console.error('Error refreshing EPG data:', e);

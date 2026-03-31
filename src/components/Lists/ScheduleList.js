@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useMemo} from 'react';
 import PropTypes from "prop-types";
 import classnames from "classnames";
 // @material-ui/core components
@@ -7,10 +7,12 @@ import Tooltip from "@material-ui/core/Tooltip";
 import IconButton from "@material-ui/core/IconButton";
 import Table from "@material-ui/core/Table";
 import TableRow from "@material-ui/core/TableRow";
+import TableHead from "@material-ui/core/TableHead";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 // @material-ui/icons
 import Close from "@material-ui/icons/Close";
+import {ArrowDownward, ArrowUpward, Refresh} from "@material-ui/icons";
 // core components
 import styles from "assets/jss/material-dashboard-react/components/tasksStyle.js";
 import {useOktaAuth} from "@okta/okta-react";
@@ -22,6 +24,47 @@ import moment from "moment/moment";
 import {useJobs} from "../../context/JobsProvider";
 
 const useStyles = makeStyles(styles);
+
+const TABLE_HEAD = ["Name", "Status", "Start", "End"];
+
+/**
+ * Sortable column header with ascending/descending indicator.
+ */
+const SortableHeader = ({
+    headerName,
+    setSortByField,
+    setSortOrder,
+    sortOrder,
+    sortByField,
+}) => {
+    const classes = useStyles();
+    const headerClasses = classnames(classes.tableCell, classes.tableHeadCell);
+    const arrowClasses = classnames(classes.tableCell, classes.tableHeadCellArrow);
+    const arrowIconClasses = classnames(classes.tableCell, classes.tableHeadCellArrowIcon);
+    const arrowIcon = sortOrder === "asc" ? (
+        <ArrowUpward className={arrowIconClasses} />
+    ) : (
+        <ArrowDownward className={arrowIconClasses} />
+    );
+    return (
+        <TableCell
+            className={headerClasses}
+            onClick={() => {
+                setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
+                setSortByField(headerName);
+            }}
+        >
+            {headerName}
+            {sortByField === headerName && (
+                <Tooltip title="Sort" placement="top" classes={{ tooltip: classes.tooltip }}>
+                    <IconButton aria-label="Sort" className={arrowClasses} size="small">
+                        {arrowIcon}
+                    </IconButton>
+                </Tooltip>
+            )}
+        </TableCell>
+    );
+};
 
 const JobStatusMap = {
     'NOT_SCHEDULED': 'NOT_SCHEDULED',
@@ -135,6 +178,9 @@ export default function ScheduleList() {
         fetchSchedules
     } = useJobs()
 
+    const [sortByField, setSortByField] = useState("Start");
+    const [sortOrder, setSortOrder] = useState("desc");
+
     const filterOldCompletedJobs = (jobs) => {
         const sixHoursAgo = moment().subtract(6, 'hours');
         return jobs.filter(job => {
@@ -145,18 +191,83 @@ export default function ScheduleList() {
         });
     };
 
-    const filteredJobs = jobs ? filterOldCompletedJobs(jobs) : [];
+    const getSortValue = (job, field) => {
+        switch (field) {
+            case "Name":
+                return (job.name || "").toLowerCase();
+            case "Status":
+                return (job.status || "").toLowerCase();
+            case "Start": {
+                const start = job.jobInfo?.startTime;
+                if (!start) return "";
+                return isCronFormat(start) ? start : new Date(start).getTime();
+            }
+            case "End": {
+                const end = job.jobInfo?.endTime;
+                if (!end) return "";
+                return isCronFormat(job.jobInfo?.startTime) ? "" : new Date(end).getTime();
+            }
+            default:
+                return "";
+        }
+    };
 
-    const cancelJob = async (jobIndex) => {
+    const sortedJobs = useMemo(() => {
+        const filtered = jobs ? filterOldCompletedJobs(jobs) : [];
+        if (!filtered.length) return filtered;
+        const sorted = [...filtered];
+        const isAsc = sortOrder === "asc";
+        sorted.sort((a, b) => {
+            const va = getSortValue(a, sortByField);
+            const vb = getSortValue(b, sortByField);
+            if (va === vb) return 0;
+            if (va === "") return 1;
+            if (vb === "") return -1;
+            const cmp = typeof va === "number" && typeof vb === "number"
+                ? va - vb
+                : String(va).localeCompare(String(vb));
+            return isAsc ? cmp : -cmp;
+        });
+        return sorted;
+    }, [jobs, sortByField, sortOrder]);
+
+    // Find the actual index of a job in the original jobs array
+    const findJobIndexInOriginalArray = (job) => {
+        if (!jobs) return -1;
+        // First try to find by object reference (most reliable)
+        const indexByReference = jobs.findIndex(j => j === job);
+        if (indexByReference !== -1) return indexByReference;
+        
+        // Fall back to property matching if reference doesn't match
+        // (can happen if jobs array was recreated)
+        return jobs.findIndex(j => 
+            j.name === job.name && 
+            j.jobInfo?.startTime === job.jobInfo?.startTime &&
+            j.jobInfo?.endTime === job.jobInfo?.endTime &&
+            j.status === job.status
+        );
+    };
+
+    const cancelJob = async (job) => {
         try {
-            await removeJob(jobIndex);
+            const originalIndex = findJobIndexInOriginalArray(job);
+            if (originalIndex === -1) {
+                console.error('Could not find job in original array:', job);
+                return;
+            }
+            await removeJob(originalIndex);
         } catch (error) {
             console.error('Error cancelling job:', error);
         }
     }
-    const removeJobHandler = async (jobIndex) => {
+    const removeJobHandler = async (job) => {
         try {
-            await removeJob(jobIndex);
+            const originalIndex = findJobIndexInOriginalArray(job);
+            if (originalIndex === -1) {
+                console.error('Could not find job in original array:', job);
+                return;
+            }
+            await removeJob(originalIndex);
         } catch (error) {
             console.error('Error removing job:', error);
         }
@@ -187,10 +298,34 @@ export default function ScheduleList() {
     }, [authState, jobLastCancelled, value]);
 */
 
+     const tableHeaderColor = "primary";
+
     return (
         <Table className={classes.table}>
+            <TableHead className={classes[tableHeaderColor + "TableHeader"]}>
+                <TableRow className={classes.tableHeadRow}>
+                    {TABLE_HEAD.map((headerName) => (
+                        <SortableHeader
+                            key={headerName}
+                            headerName={headerName}
+                            setSortByField={setSortByField}
+                            setSortOrder={setSortOrder}
+                            sortOrder={sortOrder}
+                            sortByField={sortByField}
+                        />
+                    ))}
+                    <TableCell
+                        className={classes.tableCell + " " + classes.tableHeadCell}
+                        onClick={() => fetchSchedules()}
+                    >
+                        <IconButton aria-label="Refresh" size="small">
+                            <Refresh />
+                        </IconButton>
+                    </TableCell>
+                </TableRow>
+            </TableHead>
             <TableBody>
-                {filteredJobs && filteredJobs.map((job, index) => (
+                {sortedJobs && sortedJobs.map((job, index) => (
                     <TableRow key={index} className={classes.tableRow}>
                         {[job.name,
                             JobStatus(job),
@@ -225,7 +360,7 @@ export default function ScheduleList() {
                                 <IconButton
                                     aria-label="Close"
                                     className={classes.tableActionButton}
-                                    onClick={() => cancelJob(index)}
+                                    onClick={() => cancelJob(job)}
                                 >
                                     <Stop
                                         className={
@@ -243,7 +378,7 @@ export default function ScheduleList() {
                                 <IconButton
                                     aria-label="Remove"
                                     className={classes.tableActionButton}
-                                    onClick={() => removeJobHandler(index)}
+                                    onClick={() => removeJobHandler(job)}
                                 >
                                     <Close
                                         className={

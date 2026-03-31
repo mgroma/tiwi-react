@@ -9,6 +9,7 @@ import Button from "components/CustomButtons/Button.js";
 
 import styles from "assets/jss/material-dashboard-react/components/headerLinksStyle.js";
 import {useOktaAuth} from '@okta/okta-react';
+import WeebAccountStatus from "components/WeebAccountStatus/WeebAccountStatus.js";
 
 const useStyles = makeStyles(styles);
 
@@ -75,8 +76,8 @@ export default function AdminNavbarLinks() {
 
     return (
         <div>
-            <SearchWrapper
-            />
+            <WeebAccountStatus />
+            <SearchWrapper />
         </div>
     );
 }

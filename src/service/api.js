@@ -74,6 +74,8 @@ const editRecording = async (authState,
 
 const getRecordingInfo = async (authState, recordingName) => _baseFetch(authState, `api/recordings/${recordingName}`, 'get recording info : ' + recordingName);
 
+const getWeebAccountStatus = async () => _baseFetchThirdParty('api/weebAccountStatus', 'get Weeb account status');
+
 // SSE connection for job updates
 let eventSource = null;
 let reconnectTimeout = null;
@@ -160,5 +162,6 @@ export default {
     getRecordingInfo,
     concatenateGroup,
     scheduleEpg,
-    connectToJobUpdates
+    connectToJobUpdates,
+    getWeebAccountStatus
 }

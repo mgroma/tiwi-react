@@ -47,10 +47,19 @@ module.exports = {
             removeAvailableModules: false,
             removeEmptyChunks: false,
             splitChunks: false,
+            runtimeChunk: true,
         };
 
         // Use faster source maps in development
-        config.devtool = 'eval-source-map';
+        config.devtool = 'eval-cheap-module-source-map';
+
+        // Enable caching for faster rebuilds
+        config.cache = {
+            type: 'filesystem',
+            buildDependencies: {
+                config: [__filename],
+            },
+        };
 
         // Define global vars from env vars
         config.plugins = config.plugins.concat([
@@ -73,8 +82,7 @@ module.exports = {
             // Optimize dev server
             config.watchOptions = {
                 ignored: /node_modules/,
-                aggregateTimeout: 300,
-                poll: 1000,
+                aggregateTimeout: 200,
             };
 
             // Enable hot module replacement

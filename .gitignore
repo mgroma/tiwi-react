@@ -30,3 +30,16 @@ localhost.key
 
 #intellij
 .idea
+
+# TypeScript cache
+.tsbuildinfo
+
+# Temporary TypeScript config files
+tsconfig.*.json
+!tsconfig.json
+
+# IDE configurations
+.cursor
+.amazonq
+
+.env
