@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Understanding FMEA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .gradient-bg {
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    }
+    .risk-high {
+      background-color: #fef2f2;
+      border-left: 4px solid #ef4444;
+    }
+    .risk-medium {
+      background-color: #fffbeb;
+      border-left: 4px solid #f59e0b;
+    }
+    .risk-low {
+      background-color: #f0fdf4;
+      border-left: 4px solid #10b981;
+    }
+    .fade-in {
+      animation: fadeIn 0.5s ease-in;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="gradient-bg min-h-screen font-sans">
+<div class="container mx-auto px-4 py-8">
+  <!-- Header -->
+  <header class="text-center mb-12">
+    <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
+      <i class="fas fa-search-plus text-blue-500 mr-3"></i>
+      Understanding FMEA
+    </h1>
+    <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+      A systematic approach to identify potential failures and improve reliability
+    </p>
+  </header>
+
+  <!-- Main Content -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <!-- What is FMEA -->
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden fade-in">
+      <div class="bg-blue-600 p-4 text-white">
+        <h2 class="text-2xl font-semibold">
+          <i class="fas fa-question-circle mr-2"></i> What is FMEA?
+        </h2>
+      </div>
+      <div class="p-6">
+        <p class="text-gray-700 mb-4">
+          <strong>FMEA (Failure Mode and Effects Analysis)</strong> is a step-by-step approach for identifying all possible failures in a design, manufacturing process, product, or IT system. In software development, it helps anticipate potential system failures before they impact users.
+        </p>
+        <div class="bg-blue-50 p-4 rounded-lg mb-4">
+          <h3 class="font-semibold text-blue-800 mb-2">Key Characteristics:</h3>
+          <ul class="list-disc pl-5 text-gray-700 space-y-1">
+            <li>Systematic, proactive method</li>
+            <li>Identifies potential failure modes</li>
+            <li>Assesses effects of failures</li>
+            <li>Prioritizes risks based on severity</li>
+            <li>Helps develop preventive actions</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Types of FMEA -->
+
+    <!-- IT/Software FMEA Examples -->
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden fade-in">
+      <div class="bg-indigo-600 p-4 text-white">
+        <h2 class="text-2xl font-semibold">
+          <i class="fas fa-laptop-code mr-2"></i> FMEA in IT & Software
+        </h2>
+      </div>
+      <div class="p-6">
+        <div class="mb-6">
+          <h3 class="font-semibold text-indigo-800 mb-2">Software System Examples:</h3>
+          <div class="bg-indigo-50 p-4 rounded-lg mb-3">
+            <h4 class="font-medium text-indigo-700">E-commerce Checkout Failure</h4>
+            <ul class="list-disc pl-5 text-gray-700 space-y-1 mt-2">
+              <li><strong>Failure:</strong> Payment processing timeout</li>
+              <li><strong>Effect:</strong> Lost sales, customer frustration</li>
+              <li><strong>Solution:</strong> Implement retry logic, fallback payment providers</li>
+            </ul>
+          </div>
+          <div class="bg-indigo-50 p-4 rounded-lg mb-3">
+            <h4 class="font-medium text-indigo-700">Database Connection Issue</h4>
+            <ul class="list-disc pl-5 text-gray-700 space-y-1 mt-2">
+              <li><strong>Failure:</strong> Connection pool exhaustion</li>
+              <li><strong>Effect:</strong> Application downtime</li>
+              <li><strong>Solution:</strong> Connection pooling, circuit breakers</li>
+            </ul>
+          </div>
+        </div>
+        <div>
+          <h3 class="font-semibold text-indigo-800 mb-2">IT Infrastructure Examples:</h3>
+          <div class="bg-indigo-50 p-4 rounded-lg">
+            <h4 class="font-medium text-indigo-700">Server Failure</h4>
+            <ul class="list-disc pl-5 text-gray-700 space-y-1 mt-2">
+              <li><strong>Failure:</strong> Primary server hardware failure</li>
+              <li><strong>Effect:</strong> Service outage</li>
+              <li><strong>Solution:</strong> Implement high availability cluster</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden fade-in">
+      <div class="bg-green-600 p-4 text-white">
+        <h2 class="text-2xl font-semibold">
+          <i class="fas fa-layer-group mr-2"></i> Types of FMEA
+        </h2>
+      </div>
+      <div class="p-6">
+        <div class="mb-4">
+          <h3 class="font-semibold text-green-800 flex items-center">
+            <i class="fas fa-industry mr-2"></i> Design FMEA (DFMEA)
+          </h3>
+          <p class="text-gray-700 ml-7">
+            Analyzes potential failures in product design before manufacturing.
+          </p>
+        </div>
+        <div class="mb-4">
+          <h3 class="font-semibold text-green-800 flex items-center">
+            <i class="fas fa-cogs mr-2"></i> Process FMEA (PFMEA)
+          </h3>
+          <p class="text-gray-700 ml-7">
+            Examines potential failures in manufacturing or assembly processes.
+          </p>
+        </div>
+        <div>
+          <h3 class="font-semibold text-green-800 flex items-center">
+            <i class="fas fa-server mr-2"></i> System FMEA
+          </h3>
+          <p class="text-gray-700 ml-7">
+            Looks at system-level failures and interactions between components.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Benefits -->
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden fade-in">
+      <div class="bg-purple-600 p-4 text-white">
+        <h2 class="text-2xl font-semibold">
+          <i class="fas fa-medal mr-2"></i> Benefits
+        </h2>
+      </div>
+      <div class="p-6">
+        <div class="flex items-start mb-4">
+          <div class="bg-purple-100 p-2 rounded-full mr-3">
+            <i class="fas fa-chart-line text-purple-600"></i>
+          </div>
+          <p class="text-gray-700">
+            <strong>Improves quality</strong> by identifying and addressing potential failures early
+          </p>
+        </div>
+        <div class="flex items-start mb-4">
+          <div class="bg-purple-100 p-2 rounded-full mr-3">
+            <i class="fas fa-dollar-sign text-purple-600"></i>
+          </div>
+          <p class="text-gray-700">
+            <strong>Reduces costs</strong> by preventing failures before they occur
+          </p>
+        </div>
+        <div class="flex items-start mb-4">
+          <div class="bg-purple-100 p-2 rounded-full mr-3">
+            <i class="fas fa-clock text-purple-600"></i>
+          </div>
+          <p class="text-gray-700">
+            <strong>Saves time</strong> by avoiding rework and redesign
+          </p>
+        </div>
+        <div class="flex items-start">
+          <div class="bg-purple-100 p-2 rounded-full mr-3">
+            <i class="fas fa-shield-alt text-purple-600"></i>
+          </div>
+          <p class="text-gray-700">
+            <strong>Enhances safety</strong> by identifying critical failure modes
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FMEA Process -->
+  <div class="bg-white rounded-xl shadow-lg overflow-hidden mt-8 fade-in">
+    <div class="bg-orange-600 p-4 text-white">
+      <h2 class="text-2xl font-semibold">
+        <i class="fas fa-project-diagram mr-2"></i> FMEA Process Steps
+      </h2>
+    </div>
+    <div class="p-6">
+      <div class="relative">
+        <!-- Process Steps -->
+        <div class="space-y-6">
+          <!-- Step 1 -->
+          <div class="flex items-start">
+            <div class="bg-orange-100 text-orange-800 font-bold rounded-full w-8 h-8 flex items-center justify-center mr-4 mt-1 flex-shrink-0">
+              1
+            </div>
+            <div>
+              <h3 class="font-semibold text-gray-800">Identify Components/Process Steps</h3>
+              <p class="text-gray-700">Break down the system into manageable parts or process steps.</p>
+            </div>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="flex items-start">
+            <div class="bg-orange-100 text-orange-800 font-bold rounded-full w-8 h-8 flex items-center justify-center mr-4 mt-1 flex-shrink-0">
+              2
+            </div>
+            <div>
+              <h3 class="font-semibold text-gray-800">Identify Potential Failure Modes</h3>
+              <p class="text-gray-700">Determine how each component or process step could fail.</p>
+            </div>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="flex items-start">
+            <div class="bg-orange-100 text-orange-800 font-bold rounded-full w-8 h-8 flex items-center justify-center mr-4 mt-1 flex-shrink-0">
+              3
+            </div>
+            <div>
+              <h3 class="font-semibold text-gray-800">Analyze Effects</h3>
+              <p class="text-gray-700">Evaluate the consequences of each failure mode.</p>
+            </div>
+          </div>
+
+          <!-- Step 4 -->
+          <div class="flex items-start">
+            <div class="bg-orange-100 text-orange-800 font-bold rounded-full w-8 h-8 flex items-center justify-center mr-4 mt-1 flex-shrink-0">
+              4
+            </div>
+            <div>
+              <h3 class="font-semibold text-gray-800">Assign Severity, Occurrence, and Detection Ratings</h3>
+              <p class="text-gray-700">Rate each factor typically on a scale of 1-10.</p>
+            </div>
+          </div>
+
+          <!-- Step 5 -->
+          <div class="flex items-start">
+            <div class="bg-orange-100 text-orange-800 font-bold rounded-full w-8 h-8 flex items-center justify-center mr-4 mt-1 flex-shrink-0">
+              5
+            </div>
+            <div>
+              <h3 class="font-semibold text-gray-800">Calculate Risk Priority Number (RPN)</h3>
+              <p class="text-gray-700">RPN = Severity × Occurrence × Detection</p>
+            </div>
+          </div>
+
+          <!-- Step 6 -->
+          <div class="flex items-start">
+            <div class="bg-orange-100 text-orange-800 font-bold rounded-full w-8 h-8 flex items-center justify-center mr-4 mt-1 flex-shrink-0">
+              6
+            </div>
+            <div>
+              <h3 class="font-semibold text-gray-800">Develop and Implement Actions</h3>
+              <p class="text-gray-700">Address high-priority risks with corrective actions.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RPN Examples -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+    <div class="risk-high p-6 rounded-lg shadow fade-in">
+      <div class="flex items-center mb-3">
+        <div class="bg-red-100 text-red-800 p-2 rounded-full mr-3">
+          <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <h3 class="font-bold text-red-800">High Risk (RPN 100-1000)</h3>
+      </div>
+      <p class="text-gray-700">
+        Requires immediate corrective action. Example: A failure that could cause injury to users with high likelihood and difficult detection.
+      </p>
+    </div>
+
+    <div class="risk-medium p-6 rounded-lg shadow fade-in">
+      <div class="flex items-center mb-3">
+        <div class="bg-yellow-100 text-yellow-800 p-2 rounded-full mr-3">
+          <i class="fas fa-exclamation-circle"></i>
+        </div>
+        <h3 class="font-bold text-yellow-800">Medium Risk (RPN 30-99)</h3>
+      </div>
+      <p class="text-gray-700">
+        Needs corrective action when possible. Example: A failure that would require product return but occurs infrequently.
+      </p>
+    </div>
+
+    <div class="risk-low p-6 rounded-lg shadow fade-in">
+      <div class="flex items-center mb-3">
+        <div class="bg-green-100 text-green-800 p-2 rounded-full mr-3">
+          <i class="fas fa-check-circle"></i>
+        </div>
+        <h3 class="font-bold text-green-800">Low Risk (RPN 1-29)</h3>
+      </div>
+      <p class="text-gray-700">
+        May not require action. Example: A minor cosmetic issue that's easily detected and occurs rarely.
+      </p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="mt-12 text-center text-gray-600">
+    <p class="mb-2">
+      FMEA is widely used in industries like automotive, aerospace, healthcare, and manufacturing.
+    </p>
+    <p>
+      <i class="fas fa-lightbulb text-yellow-500 mr-1"></i>
+      Tip: FMEA is most effective when conducted by cross-functional teams early in the design process.
+    </p>
+  </footer>
+</div>
+
+<script>
+  // Simple animation trigger
+  document.addEventListener('DOMContentLoaded', function() {
+    const elements = document.querySelectorAll('.fade-in');
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = 1;
+        }
+      });
+    }, { threshold: 0.1 });
+
+    elements.forEach(element => {
+      element.style.opacity = 0;
+      observer.observe(element);
+    });
+  });
+</script>
+</body>
+</html>

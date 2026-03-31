@@ -1,0 +1,164 @@
+.slo-management {
+    display: flex;
+    gap: 2rem;
+    padding: 1rem;
+    height: 100%;
+}
+
+.operations-list {
+    width: 250px;
+    border-right: 1px solid #e0e0e0;
+    padding-right: 1rem;
+}
+
+.operation-item {
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.operation-item:hover {
+    background-color: #f5f5f5;
+}
+
+.operation-item.selected {
+    background-color: #e3f2fd;
+    font-weight: 500;
+}
+
+.slo-details {
+    flex: 1;
+}
+
+.slo-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.create-slo-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background-color: #1976d2;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.create-slo-button:hover {
+    background-color: #1565c0;
+}
+
+.slo-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.slo-item {
+    background-color: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.slo-metric {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.metric-name {
+    font-weight: 500;
+    font-size: 1.1rem;
+}
+
+.status-icon {
+    width: 24px;
+    height: 24px;
+}
+
+.status-icon.implemented {
+    color: #4caf50;
+}
+
+.status-icon.requested {
+    color: #ff9800;
+}
+
+.status-icon.not-started {
+    color: #f44336;
+}
+
+.slo-values {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 1rem;
+}
+
+.slo-value, .error-budget {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.label {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.value {
+    font-weight: 500;
+}
+
+.slo-icon {
+    width: 20px;
+    height: 20px;
+}
+
+.slo-icon.good {
+    color: #4caf50;
+}
+
+.slo-icon.warning {
+    color: #ff9800;
+}
+
+.slo-icon.bad {
+    color: #f44336;
+}
+
+.slo-thresholds {
+    display: flex;
+    gap: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e0e0e0;
+}
+
+.threshold {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 1rem;
+} 
