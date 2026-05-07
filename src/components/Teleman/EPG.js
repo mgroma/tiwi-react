@@ -8,7 +8,7 @@ import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
 
 import {Box, Grid, styled, Tooltip} from "@material-ui/core";
-import {FormControlLabel, Typography} from "@mui/material";
+import {FormControlLabel, Typography, Alert} from "@mui/material";
 import {useSelectedEPGChannel} from "./useEPGData.tsx";
 import CustomInput from "../CustomInput/CustomInput";
 import {EpgChannel, Item, toTime} from "./EPGDataUtils";
@@ -185,7 +185,7 @@ export default function EPG() {
     const classes = useStyles();
     const {authState} = useOktaAuth();
     const {changePlayerUrl} = useRecordingSearch();
-    const {setChannelFilter, selectedChannels} = useSelectedEPGChannel('');
+    const {setChannelFilter, selectedChannels, isEpgRefreshing} = useSelectedEPGChannel('');
     // const {setChannelFilter, selectedChannels} = useSelectedEPGChannel('canal');
     const channel2ProgramMap = toChannel2ProgramMap(selectedChannels.data)
     const [maxChannels, setMaxChannels] = useState(DEFAULT_CHANNELS_TO_DISPLAY)
@@ -203,6 +203,11 @@ export default function EPG() {
                                     queryClient={queryClient}/></p>
                         </CardHeader>
                         <CardBody>
+                            {isEpgRefreshing && (
+                                <Alert severity="info" sx={{ mb: 2 }}>
+                                    EPG data is being refreshed on the server. It will automatically reload when ready.
+                                </Alert>
+                            )}
                             <Grid container>
                                 <GridItem xs={6}>
                                     <CustomInput
