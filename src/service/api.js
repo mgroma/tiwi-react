@@ -21,7 +21,13 @@ const _baseFetchThirdParty = async (apiUrl, operationName, method = 'GET') => {
         method: method
     })
     if (!response.ok) {
-        throw Error(`error executing ${operationName}: error=[${response.error()}]`);
+        const err = new Error(`error executing ${operationName}: ${response.status} ${response.statusText}`);
+        err.status = response.status;
+        if (response.status === 503) {
+            const retryAfter = response.headers.get('Retry-After');
+            err.retryAfterMs = retryAfter ? parseInt(retryAfter, 10) * 1000 : null;
+        }
+        throw err;
     }
     return response.json();
 }

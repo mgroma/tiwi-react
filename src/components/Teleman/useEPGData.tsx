@@ -156,7 +156,7 @@ function useWebAndEpgData(authState: any) {
         {
             // enabled: !!authState?.accessToken,
             staleTime: 1000 * 60 * 15, // 15 minutes
-            cacheTime: 1000 * 60 * 10, // 10 minutes
+            cacheTime: 1000 * 60 * 20, // 20 minutes
             refetchInterval: 1000 * 60 * 15, // Refetch every 15 minutes
             refetchIntervalInBackground: false,
             onError: (error) => {
@@ -175,10 +175,17 @@ function useWebAndEpgData(authState: any) {
             cacheTime: 1000 * 60 * 60 * 24, // 24 hours
             refetchInterval: 1000 * 60 * 60 * 6, // Refetch every 6 hours
             refetchIntervalInBackground: false,
-            retry: 2,
-            retryDelay: 2 * 60 * 1000, //allow for 2 minutes between retries
-            onError: (error) => {
-                console.error('EPG data query error:', error);
+            retry: 3,
+            retryDelay: (attemptIndex: number, error: any) => {
+                if (error?.retryAfterMs) return error.retryAfterMs;
+                return Math.min(1000 * 2 ** attemptIndex, 120000);
+            },
+            onError: (error: any) => {
+                if (error?.status === 503) {
+                    console.warn('EPG data temporarily unavailable (503), will retry');
+                } else {
+                    console.error('EPG data query error:', error);
+                }
             }
         }
     );
@@ -190,8 +197,10 @@ function useEPGData(authState: any) {
     const queryClient = useQueryClient();
     const {webTvQuery, epgDataQuery} = useWebAndEpgData(authState);
 
+    const isEpgRefreshing = epgDataQuery.isError && (epgDataQuery.error as any)?.status === 503;
+
     // Remove the SSE connection since it's handled by JobStatus
-    return useQuery(['epgCombinedData'], () =>
+    const combinedQuery = useQuery(['epgCombinedData'], () =>
             allWebTvWithOptionalEpg(webTvQuery.data,
                 epgDataQuery.data),
         {
@@ -207,6 +216,8 @@ function useEPGData(authState: any) {
             }
         }
     );
+
+    return Object.assign(combinedQuery, { isEpgRefreshing });
 }
 
 //optimize this function
@@ -219,7 +230,9 @@ function useEPGData(authState: any) {
 export function useSelectedEPGChannel(preSelectedChannelFilter: string) {
     const {authState} = useOktaAuth();
     const [channelFilter, setChannelFilter] = useState(preSelectedChannelFilter);
-    const {data: allChannels} = useEPGData(authState);
+    const epgResult = useEPGData(authState);
+    const {data: allChannels} = epgResult;
+    const isEpgRefreshing = epgResult.isEpgRefreshing;
     const schedules = useQuery(['epgSchedules'], () =>
             api.fetchSchedules(authState),
         {
@@ -277,6 +290,7 @@ export function useSelectedEPGChannel(preSelectedChannelFilter: string) {
     }
     return {
         selectedChannels,
-        setChannelFilter
+        setChannelFilter,
+        isEpgRefreshing
     };
 }
