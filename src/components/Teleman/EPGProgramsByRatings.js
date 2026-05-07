@@ -13,7 +13,6 @@
 import React from 'react';
 import {useSelectedEPGChannel} from "./useEPGData.tsx";
 import {getValidRatings} from "./EPGRatingFromList";
-import * as program from 'commander'
 import {EPGProgramHeader, renderSingleProgramItem, styles} from "./EPGProgramsAutocomplete";
 import {useOktaAuth} from "@okta/okta-react";
 import {makeStyles} from "@material-ui/core/styles";
